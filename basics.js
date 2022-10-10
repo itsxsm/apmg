@@ -520,7 +520,7 @@ function spaces_struck_by_player_with_chip_from_space(
 		{
 			test_js.forEach(t_j => {
 				var space = [i + shift, t_j];
-				is_blocked[t_j] || will_block_beyond[t_j];
+				is_blocked[t_j] ||= will_block_beyond[t_j];
 				will_block_beyond[t_j] = is_space_blocking(space);
 				if (!is_blocked[t_j]) spaces.push(space);
 			});
