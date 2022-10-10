@@ -631,7 +631,7 @@ function i_use_this_attack(player, battle_chip) {
 
 
 	// TODO: currently, a chip hits at most one target, the one lined up for.
-	// chips should hit every chip in the strike zone.
+	// chips should hit every panel in the strike zone.
 	if (Math.random() < BASE_HITRATE) { 
 		var damage = parseInt(battle_chip[DAMAGE_INDEX], 10);
 		if (battle_chip[DAMAGE_INDEX] == "???") {
