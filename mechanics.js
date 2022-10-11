@@ -75,7 +75,7 @@ const battle_chip_data_from_bn1 = [
 	["74", "Recov150", "ACEGL", "None", "-150", "Recover 150HP", "**", "Recover"],
 	["75", "Recov200", "ACEGL", "None", "-200", "Recover 200HP", "***", "Recover"],
 	["76", "Recov300", "ACEGL", "None", "-300", "Recover 300HP", "****", "Recover"],
-	["77", "Steal", "AELPS", "None", "", "Steal left column of enemy area", "***", "Enemy_Front Steal_Control"],
+	["77", "Steal", "AELPS", "None", "", "Steal left column of enemy area", "*", "Enemy_Front Steal_Control"],
 	["78", "Geddon1", "FHJLN", "None", "", "All panels become cracked!", "***", "Both_Areas Terrain Cracked"],
 	// ["79", "Geddon2", "ABEIK", "None", "", "Erases all empty panels", "****", "Both_Areas Terrain Broken"],
 	// ["80", "Escape", "FHJLN", "None", "", "Escape from most enemies", "***", "Guard Stealth"],
@@ -128,6 +128,9 @@ const battle_chip_data_from_bn1 = [
 	["127", "LifeAura", "AHKMP", "None", "", "Negate all attacks w/ damage<100", "*****", "Guard Barrier Aura 100"]
 ]
 
+// TEST CHANGES: Steal Rarity *** => *
+
+
 const NAME_INDEX = 1;
 const CODES_INDEX = 2;
 const ELEMENT_INDEX = 3;
@@ -143,6 +146,7 @@ const color_reset = "\x1b[0m";
 
 var matches_played = 0;
 var turns = 0;
+var _interval_matches_to_play; // set only by run_game
 
 const ALL_SPACES = [];
 for (var j = 0; j <= 2; j++) {
@@ -1129,40 +1133,42 @@ function game_round(interval = null) {
 		player1.records.chip_ids_used_this_match.length = 0;
 		player2.records.chip_ids_used_this_match.length = 0;
 
-		if (interval) {
+		if (interval && matches_played >= _interval_matches_to_play) {
 			clearInterval(interval);
+			final_report();
 		} else {
 			reset_game();
 		}
 	}
 }
 
+function final_report() {
+	player1.target = null;
+	player2.target = null;
+	battle_chip_data_from_bn1.forEach(chip => {
+		chip_id = parseInt(chip[0], 10);
+		if (!chip_id) return;
+		var uses = (player1.records.chip_uses_by_id[chip_id] || 0)
+			+ (player2.records.chip_uses_by_id[chip_id] || 0);
+		if (!uses) return;
+		var wins = (player1.records.chip_wins_by_id[chip_id] || 0)
+			+ (player2.records.chip_wins_by_id[chip_id] || 0);
+		console.log(`${chip} winrate: ${((wins + 0.0)/uses).toFixed(3)}`)
+	})
+	console.log(
+		`Average turns per match: ${(turns/matches_played).toFixed(1)}`
+	);
+}
+
 // top level execution
 
-function run_game(use_timer, no_timer_matches = 1) {
+function run_game(use_timer, matches_to_play = 3) {
 	if (use_timer) {
-		var interval = setInterval(() => game_round(interval), 1000);
+		_interval_matches_to_play = matches_to_play;
+		var interval = setInterval(() => game_round(interval), 100);
 	} else {
-		while (matches_played < no_timer_matches) {
-			game_round();
-		}
-		player1.target = null;
-		player2.target = null;
-		// console.log(player1);
-		// console.log(player2);
-
-		battle_chip_data_from_bn1.forEach(chip => {
-			chip_id = parseInt(chip[0], 10);
-			if (!chip_id) return;
-			var uses = (player1.records.chip_uses_by_id[chip_id] || 0)
-				+ (player2.records.chip_uses_by_id[chip_id] || 0);
-			if (!uses) return;
-			var wins = (player1.records.chip_wins_by_id[chip_id] || 0)
-				+ (player2.records.chip_wins_by_id[chip_id] || 0);
-			console.log(`${chip} winrate: ${((wins + 0.0)/uses).toFixed(3)}`)
-		})
-
-		console.log(`Average turns per match: ${(turns/matches_played).toFixed(1)}`)
+		while (matches_played < matches_to_play) game_round();
+		final_report();
 	}
 }
 
