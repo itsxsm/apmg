@@ -60,6 +60,20 @@ function move_navi_to_space(navi, space) {
 	sprite.div.style.top = (space[1] * 24 + sprite.top_offset_0) + "px";
 }
 
+function repaint_panel_control() {
+	// TODO: use a grid shadow DOM for this instead
+	[...document.getElementsByClassName("panel")].forEach(div => {
+		var classes_str = div.className;
+		var i = get_i_from_classes_str(classes_str);
+		var j = get_j_from_classes_str(classes_str);
+		if (is_space_east([i, j])) {
+			div.classList.replace("west", "east")
+		} else {
+			div.classList.replace("east", "west");
+		}
+	});
+}
+
 reporter.interpreters.push((message) => {
 	console.log(`-> animator received message: ${message}`);
 	const words = message.split(' ');
@@ -82,26 +96,16 @@ reporter.interpreters.push((message) => {
 		const space = [parseInt(words[3], 10), parseInt(words[4], 10)];
 		move_navi_to_space(navi, space);
 	} else if (message.includes("steals control")) {
-		// TODO: use a grid shadow DOM for this instead
-		[...document.getElementsByClassName("panel")].forEach(div => {
-			var classes_str = div.className;
-			var i = get_i_from_classes_str(classes_str);
-			var j = get_j_from_classes_str(classes_str);
-			if (is_space_east([i, j])) {
-				div.classList.replace("west", "east")
-			} else {
-				div.classList.replace("east", "west");
-			}
-		})
+		repaint_panel_control();
 	} else if (message.includes("cannot line up")) {
 		; // nothing to do
+	} else if (message == "Game reset.") {
+		move_navi_to_space(player1, [0, 0]);
+		move_navi_to_space(player2, [5, 2]);
+		repaint_panel_control();
 	} else {
 		console.log("-> no interpeter for message.");
 	}
 });
 
 console.log("Animator loaded.");
-
-// TODO: there is currently an error with control painting where a navi will
-// *sometimes* step onto panels they do not appear to control.
-// This should not happen!
