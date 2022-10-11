@@ -1,5 +1,5 @@
 if (!reporter) {
-	cosole.log("ERROR: load Mechanics before Runner.");
+	console.log("ERROR: load Mechanics before Runner.");
 }
 
 console.log("Runner is loading.");
