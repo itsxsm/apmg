@@ -216,6 +216,8 @@ player2.target = player1;
 
 const BASE_HITRATE = 0.9;
 
+const reporter = { interpreters: [] };
+
 // *** stateless calculation functions on simple objects ***********************
 
 function random_item(list) {
@@ -853,7 +855,10 @@ function player_sets_terrain_with_chip(player, battle_chip) {
 	report(`${name_of(player)} changes ${spaces_changed} to ${new_terrain}.`);
 }
 
-function report(message) { console.log(message); }
+function report(message) { 
+	console.log(message);
+	reporter.interpreters.forEach(interpreter => { interpreter(message); });
+}
 
 function deal_damage_amount_from_player_to_target_with_chip(
 	amount, player, target, battle_chip)
@@ -1134,39 +1139,31 @@ function game_round(interval = null) {
 
 // top level execution
 
-const USE_TIMER = false;
+function run_game(use_timer, no_timer_matches = 1) {
+	if (use_timer) {
+		var interval = setInterval(() => game_round(interval), 1000);
+	} else {
+		while (matches_played < no_timer_matches) {
+			game_round();
+		}
+		player1.target = null;
+		player2.target = null;
+		// console.log(player1);
+		// console.log(player2);
 
-if (USE_TIMER) {
-	var interval = setInterval(() => game_round(interval), 1000);
-} else {
-	while (matches_played < 2) {
-		game_round();
+		battle_chip_data_from_bn1.forEach(chip => {
+			chip_id = parseInt(chip[0], 10);
+			if (!chip_id) return;
+			var uses = (player1.records.chip_uses_by_id[chip_id] || 0)
+				+ (player2.records.chip_uses_by_id[chip_id] || 0);
+			if (!uses) return;
+			var wins = (player1.records.chip_wins_by_id[chip_id] || 0)
+				+ (player2.records.chip_wins_by_id[chip_id] || 0);
+			console.log(`${chip} winrate: ${((wins + 0.0)/uses).toFixed(3)}`)
+		})
+
+		console.log(`Average turns per match: ${(turns/matches_played).toFixed(1)}`)
 	}
-	player1.target = null;
-	player2.target = null;
-	// console.log(player1);
-	// console.log(player2);
-
-	battle_chip_data_from_bn1.forEach(chip => {
-		chip_id = parseInt(chip[0], 10);
-		if (!chip_id) return;
-		var uses = (player1.records.chip_uses_by_id[chip_id] || 0)
-			+ (player2.records.chip_uses_by_id[chip_id] || 0);
-		if (!uses) return;
-		var wins = (player1.records.chip_wins_by_id[chip_id] || 0)
-			+ (player2.records.chip_wins_by_id[chip_id] || 0);
-		console.log(`${chip} winrate: ${((wins + 0.0)/uses).toFixed(3)}`)
-	})
-
-	console.log(`Average turns per match: ${(turns/matches_played).toFixed(1)}`)
 }
 
-// stage graphics -- battlefield_exe2.gif
-// red_row_0: 5:239 -> 44:262
-// red_row_1: 5:263 -> 44:286
-// red_row_2: 5:287 -> 44:318
-// blue_row_0: 125:239 -> 164:262
-// blue_row_1: 125:263 -> 164:286
-// blue_row_2: 125:287 -> 164:318
-// protoman_standing: 231:195 -> 280:249 (Blues_EXE1.gif, exclusive rect)
-// magicman_standing: 131:317 -> 168:383 (MagicMan.png, exclusive rect)
+console.log("Mechanics loaded.");
