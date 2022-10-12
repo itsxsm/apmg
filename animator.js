@@ -111,8 +111,7 @@ function set_sprite_pose(sprite, pose) {
 		log_error(`set_sprite_pose got unrecognized pose: ${pose}`);
 		return;
 	}
-	sprite.div.classList.remove(sprite.pose);
-	sprite.div.classList.add(pose);
+	sprite.div.classList.replace(sprite.pose, pose);
 	sprite.pose = pose;
 
 	const navi = sprite.navi;
