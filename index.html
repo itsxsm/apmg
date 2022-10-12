@@ -65,6 +65,7 @@
   .navi {
     position: absolute;
   }
+  /* TODO: either use row classes on navis or set z-index directly */
   .navi.row_0 {
     z-index: 500;
   }
@@ -75,28 +76,59 @@
     z-index: 502;
   }
 
+  /* TODO: for proper handling of pose height changes, set position from bottom */;
   #protoman {
-    top: 66px;
-    width: 50px;
-    height: 55px;
+    top: 66px; /* why does this not apply at start?? */
   }
   #protoman.west.standing {
-    left: 0px;
+    top: 66px; /* why does this have to be set here and not on #protoman ?? */
+    left: 2px;
+    width: 50px;
+    height: 55px;
     background: url("sprites/ProtoMan_west.gif") -183px -182px;
   }
+  #protoman.west.attacking {
+    top: 66px;
+    left: 2px; /* unconfirmed */
+    width: 51px;
+    height: 68px;
+    background: url("sprites/ProtoMan_west.gif") -8px -244px;
+  }
+  #protoman.west.struck {
+    top: 66px;
+    left: 2px; /* unconfirmed */
+    width: 38px;
+    height: 57px;
+    background: url("sprites/ProtoMan_west.gif") -261px -394px;    
+  }
+
+  /* TODO: calculate and set mirror values on setup instead of hardcoding */
   #protoman.east.standing {
-    left: -12px;
+    left: -188px;
     background: url("sprites/ProtoMan_east.gif") -247px -182px;
   }
 
   #magicman {
     top: 102px;
-    width: 38px;
-    height: 67px;
   }
   #magicman.east.standing {
     left: 203px;
+    width: 38px;
+    height: 67px;
     background: url("sprites/MagicMan_east.gif") -131px -317px;
+  }
+  #magicman.east.attacking {
+    left: 203px; /* unconfirmed */
+    width: 49px;
+    height: 70px;
+    background: url("sprites/MagicMan_east.gif") -253px -123px;    
+  }
+  #magicman.east.struck {
+    /* MagicMan has no struck sprite so teleport is used as a stand-in */
+    left: 203px; /* unconfirmed*/
+    width: 35px;
+    height: 81px;
+    background: url("sprites/MagicMan_east.gif") -257px -305px;
   }
   
 </style>

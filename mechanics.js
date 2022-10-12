@@ -217,6 +217,7 @@ const player2 = {
 
 player1.target = player2;
 player2.target = player1;
+var last_to_act = player2;
 
 const BASE_HITRATE = 0.9;
 
@@ -1109,14 +1110,18 @@ function reset_game() {
 	);
 	[0, 1, 2].forEach(i => are_spaces_east[i] = [false, false, false]);
 	[3, 4, 5].forEach(i => are_spaces_east[i] = [true, true, true]);
+	last_to_act = player2;
 	report(`Game reset.`);
 }
 
-function game_round(interval = null) {
-	print_the_stage();
-	before_every_full_round();
-	i_take_my_turn(player1);
-	if (!is_kod(player2)) i_take_my_turn(player2);
+function game_turn(interval = null) {
+	var actor = last_to_act == player1 ? player2 : player1;
+
+	if (actor == player1) before_every_full_round();
+	// print_the_stage();
+
+	i_take_my_turn(actor);
+	last_to_act = actor;
 
 	if (is_the_game_over()) {
 		player1_is_kod = is_kod(player1);
@@ -1162,12 +1167,12 @@ function final_report() {
 
 // top level execution
 
-function run_game(use_timer, matches_to_play = 3) {
+function run_game(use_timer, matches_to_play = 3, turn_time = 5000) {
 	if (use_timer) {
 		_interval_matches_to_play = matches_to_play;
-		var interval = setInterval(() => game_round(interval), 100);
+		var interval = setInterval(() => game_turn(interval), turn_time);
 	} else {
-		while (matches_played < matches_to_play) game_round();
+		while (matches_played < matches_to_play) game_turn();
 		final_report();
 	}
 }
