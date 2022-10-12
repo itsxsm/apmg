@@ -355,7 +355,7 @@ function is_space_gap(space) { return terrain[space[0]][space[1]] == "Broken"; }
 function is_the_game_over() { return is_kod(player1) || is_kod(player2); }
 
 function name_of(x) {
-	return (Array.isArray(x) ? x[NAME_INDEX] : x.name ) || "Anonymous";
+	return (Array.isArray(x) ? x[NAME_INDEX] : x?.name ) || "Anonymous";
 }
 
 function spaces_where_player_could_hit_space_with_chip(
