@@ -18,6 +18,7 @@ sprites = {
 		id: "protoman",
 		navi: player1,
 		div: document.getElementById("protoman"),
+		hp_div: document.getElementById("protoman-hp"),
 		left_offset_0s_by_side_and_pose: {
 			"west": {
 				"standing": 2,
@@ -30,13 +31,13 @@ sprites = {
 				"struck": -12
 			}
 		},
-		top_offset_0: 66,
 		pose: "standing"
 	},
 	"MagicMan.nav": {
 		id: "magicman",
 		navi: player2,
 		div: document.getElementById("magicman"),
+		hp_div: document.getElementById("magicman-hp"),
 		left_offset_0s_by_side_and_pose: {
 			"west": {
 				"standing": 3,
@@ -50,7 +51,6 @@ sprites = {
 			}
 		},
 		is_east: true,
-		top_offset_0: 54,
 		pose: "standing"
 	}
 }
@@ -123,14 +123,23 @@ function set_sprite_pose(sprite, pose) {
 	// positioning doesn't need to be recalculated when pose changes?
 
 	const space = navi.space;
+	var bottom_px = get_bottom_line_px_for_j(space[1]) + 2;
+
 	sprite.div.style.left = (space[0] * 40 + left_offset_0) + "px";
-	sprite.div.style.top = (space[1] * 24 + sprite.top_offset_0) + "px";
+	sprite.div.style.bottom = bottom_px + "px";
+}
+
+function set_sprite_hp(sprite, hp) {
+	sprite = check_and_rescue_sprite(sprite);
+	sprite.hp_div.innerHTML = hp;
 }
 
 function repaint_for_turn_start() {
-	[player1, player2].forEach(p =>
-		set_sprite_pose(get_sprite_by_navi_name(name_of(p)), "standing")
-	);
+	[player1, player2].forEach(p => {
+		const sprite = get_sprite_by_navi_name(name_of(p));
+		set_sprite_pose(sprite, "standing");
+		set_sprite_hp(sprite, p.hp);
+	});
 }
 
 // TODO: when this function is updated for true animation,
@@ -154,9 +163,10 @@ function move_navi_to_space(navi, space) {
 	const side = navi.is_east ? "east" : "west";
 	const left_offset_0 =
 		sprite.left_offset_0s_by_side_and_pose[side][sprite.pose];
+	var bottom_px = get_bottom_line_px_for_j(space[1]) + 2;
 
 	sprite.div.style.left = (space[0] * 40 + left_offset_0) + "px";
-	sprite.div.style.top = (space[1] * 24 + sprite.top_offset_0) + "px";
+	sprite.div.style.bottom = bottom_px + "px";
 }
 
 function repaint_panel_control() {
@@ -173,6 +183,8 @@ function repaint_panel_control() {
 	});
 }
 
+function get_bottom_line_px_for_j(j) { return [60, 36, 8][j]; }
+
 function repaint_obstacles() {
 	// not the most efficient, but simple: remove everything and then recreate
 
@@ -186,9 +198,13 @@ function repaint_obstacles() {
 	obstacles.forEach(obstacle => {
 		const div = document.createElement("div");
 		const name = name_of(obstacle);
+
+		var bottom_px = get_bottom_line_px_for_j(obstacle.space[1]) + 2;
+
 		div.id = name; // TODO: double check if this is right
 		div.style.left = (obstacle.space[0] * 40) + "px";
-		div.style.top = (obstacle.space[1] * 24) + "px";
+		div.style.bottom = bottom_px + "px";
+
 		const chip_series =
 			`obstacle-${trim_trailing_digit(name_of(obstacle.chip))}`;
 		div.classList.add("obstacle", chip_series);
@@ -196,8 +212,7 @@ function repaint_obstacles() {
 			id: name,
 			div: div,
 			left_offset_west_0: 0,
-			left_offset_east_0: 0,
-			top_offset_0: 0
+			left_offset_east_0: 0
 		};
 		document.getElementById("minigame").insertBefore(div, obstacle_anchor);
 	});
@@ -240,7 +255,7 @@ function animate_message(message) {
 	} else if (message.includes(" misses")) {
 		const navi = get_navi_by_name(words[0]);
 		paint_navi_uses_chip_type_on_target(navi, "Shot", undefined, false);
-	} else if (message.includes(" places a ")
+	} else if (message.includes(" places ")
 		|| message.includes(" is deleted"))
 	{
 		repaint_obstacles();

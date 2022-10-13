@@ -4,9 +4,10 @@
   #minigame {
     margin-left: 50px;
     position: relative;
-    width: 500px;
-    height: 500px;
+    width: 240px;
+    height: 190px;
     z-index: -1000;
+    border: 1px solid blue;
   }
 
   .panel {
@@ -16,14 +17,14 @@
     z-index: 0;
   }
   .panel.row_0 {
-    top: 100px;
+    bottom: 56px;
   }
   .panel.row_1 {
-    top: 124px;
+    bottom: 32px;
   }
   .panel.row_2 {
-    top: 148px;
-    height: 36px;
+    bottom: 0px;
+    height: 32px;
   }
   .panel.col_0 {
     left: 0x;
@@ -75,33 +76,45 @@
   .navi.row_2 {
     z-index: 502;
   }
+  .navi-hp {
+    font-family:  andale mono, monospace;
+    font-size: 14px;
+    color: #f0e8c8;
+    text-shadow:
+      -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    position: absolute;
+    border: 1px solid geen;
+    height: 20px;
+    width: 30px;
+    bottom: -15px;
+    left: 5px;
+    z-index: 100;
+  }
 
   /* TODO: for proper handling of pose height changes, set position from bottom */;
   #protoman {
-    top: 66px; /* why does this not apply at start?? */
+    bottom: 62px; /* why does this not apply at start?? */
   }
   #protoman.west.standing {
-    top: 66px; /* why does this have to be set here and not on #protoman ?? */
+    bottom: 62px; /* why does this have to be set here and not on #protoman ?? */
     left: 2px;
     width: 50px;
     height: 55px;
     background: url("sprites/ProtoMan_west.gif") -183px -182px;
   }
   #protoman.west.attacking {
-    top: 66px;
     width: 51px;
     height: 68px;
     background: url("sprites/ProtoMan_west.gif") -8px -244px;
   }
   #protoman.west.struck {
-    top: 66px;
     width: 38px;
     height: 57px;
     background: url("sprites/ProtoMan_west.gif") -261px -394px;    
   }
 
   #magicman {
-    top: 102px;
+    bottom: 2px;
   }
   #magicman.east.standing {
     left: 203px;
@@ -174,8 +187,12 @@
     <div id="panel_5_1" class="panel row_1 col_5 east"></div>
     <div id="panel_5_2" class="panel row_2 col_5 east"></div>
 
-    <div id="protoman" class="navi west standing"></div>
-    <div id="magicman" class="navi east standing"></div>
+    <div id="protoman" class="navi west standing">
+      <div id="protoman-hp" class="navi-hp">600</div>
+    </div>
+    <div id="magicman" class="navi east standing">
+      <div id="magicman-hp" class="navi-hp">600</div>
+    </div>
 
     <div id="obstacle-anchor"></div>
   </div>
@@ -187,12 +204,15 @@
 
 <!--
 // stage graphics -- battlefield_exe2.gif
-// red_row_0: 5:239 -> 44:262
-// red_row_1: 5:263 -> 44:286
-// red_row_2: 5:287 -> 44:318
+// red_row_0: 5:239 -> 44:262  inclusive border / h=24 w=40 / includes top outline only
+// red_row_1: 5:263 -> 44:286  inclusive border / h=24 w=40 / includes top outline only
+// red_row_2: 5:287 -> 44:318  inclusive border / h=32 w=40 / includes top AND bottom outlines
+
 // blue_row_0: 125:239 -> 164:262
 // blue_row_1: 125:263 -> 164:286
 // blue_row_2: 125:287 -> 164:318
-// protoman_standing: 247:182 -> 296:236 (Blues_EXE1.gif, exclusive rect)
-// magicman_standing: 131:317 -> 168:383 (MagicMan.png, exclusive rect)
+
+// these are EXCLUSIVE BOXES
+// protoman_standing: 247:182 -> 296:236 (Blues_EXE1.gif, exclusive border)
+// magicman_standing: 131:317 -> 168:383 (MagicMan.png, exclusive border)
 -->
