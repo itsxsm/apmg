@@ -66,34 +66,22 @@
   .navi {
     position: absolute;
   }
-  /* TODO: either use row classes on navis or set z-index directly */
-  .navi.row_0 {
-    z-index: 500;
-  }
-  .navi.row_1 {
-    z-index: 501;
-  }
-  .navi.row_2 {
-    z-index: 502;
-  }
   .navi-hp {
-    font-family:  andale mono, monospace;
+    position: absolute;
+    font-family: andale mono, monospace;
     font-size: 14px;
     color: #f0e8c8;
     text-shadow:
       -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-    position: absolute;
-    border: 1px solid geen;
-    height: 20px;
-    width: 30px;
     bottom: -15px;
     left: 5px;
-    z-index: 100;
+    z-index: 1000;
   }
 
   /* TODO: for proper handling of pose height changes, set position from bottom */;
   #protoman {
-    bottom: 62px; /* why does this not apply at start?? */
+    bottom: 62px; /* why does this not apply at start if .west.standing bottom is unset ?? */
+    z-index: 110;
   }
   #protoman.west.standing {
     bottom: 62px; /* why does this have to be set here and not on #protoman ?? */
@@ -115,6 +103,7 @@
 
   #magicman {
     bottom: 2px;
+    z-index: 310;
   }
   #magicman.east.standing {
     left: 203px;

@@ -93,11 +93,11 @@ function get_sprite_by_navi_name(navi_name) {
 }
 
 function check_and_rescue_sprite(sprite) {
-	if (sprite.div) return sprite;
+	if (sprite?.div) return sprite;
 	
 	log_error("non-sprite passed to sprite method")
 	if (typeof sprite == "string") return get_sprite_by_navi_name(sprite);
-	if (sprite.kind == "Navi") return get_sprite_by_navi_name(name_of(sprite));
+	if (is_navi(sprite)) return get_sprite_by_navi_name(name_of(sprite));
 	return null;
 }
 
@@ -127,6 +127,7 @@ function set_sprite_pose(sprite, pose) {
 
 	sprite.div.style.left = (space[0] * 40 + left_offset_0) + "px";
 	sprite.div.style.bottom = bottom_px + "px";
+	sprite.div.style.zIndex = get_z_index_for_j(space[1]) + 10;
 }
 
 function set_sprite_hp(sprite, hp) {
@@ -167,6 +168,7 @@ function move_navi_to_space(navi, space) {
 
 	sprite.div.style.left = (space[0] * 40 + left_offset_0) + "px";
 	sprite.div.style.bottom = bottom_px + "px";
+	sprite.div.style.zIndex = get_z_index_for_j(space[1]) + 10;
 }
 
 function repaint_panel_control() {
@@ -185,11 +187,21 @@ function repaint_panel_control() {
 
 function get_bottom_line_px_for_j(j) { return [60, 36, 8][j]; }
 
+function get_z_index_for_j(j) { return 100 * (j + 1); }
+
 function repaint_obstacles() {
 	// not the most efficient, but simple: remove everything and then recreate
 
+	console.log("@@@@@@ in repaint_obstacles, before");
+	console.log("sprites...")
+	console.log(sprites);
+	console.log("obstacles...")
+	console.log(obstacles);
+
 	Object.keys(sprites).filter(x => !x.endsWith(".nav"))
 		.forEach(sprite_name => {
+			console.log("@@ div to remove...")
+			console.log(JSON.stringify(sprites[sprite_name]));
 			sprites[sprite_name].div.remove();
 			delete sprites[sprite_name]; 
 		});
@@ -199,11 +211,13 @@ function repaint_obstacles() {
 		const div = document.createElement("div");
 		const name = name_of(obstacle);
 
-		var bottom_px = get_bottom_line_px_for_j(obstacle.space[1]) + 2;
+		const bottom_px = get_bottom_line_px_for_j(obstacle.space[1]) + 2;
 
-		div.id = name; // TODO: double check if this is right
+		div.id = name;
+		div.style.position = "absolute";
 		div.style.left = (obstacle.space[0] * 40) + "px";
 		div.style.bottom = bottom_px + "px";
+		div.style.zIndex = get_z_index_for_j(obstacle.space[1]);
 
 		const chip_series =
 			`obstacle-${trim_trailing_digit(name_of(obstacle.chip))}`;
@@ -215,7 +229,18 @@ function repaint_obstacles() {
 			left_offset_east_0: 0
 		};
 		document.getElementById("minigame").insertBefore(div, obstacle_anchor);
+		console.log("@@@@@@@@@@ inserted an obstacle div")
+		console.log("div...")
+		console.log(div);
+		console.log("sprite...")
+		console.log(sprites[name]);
 	});
+
+	console.log("@@@@@@ in repaint_obstacles, after");
+	console.log("sprites...")
+	console.log(sprites);
+	console.log("obstacles...")
+	console.log(obstacles);
 }
 
 function animate_message(message) {
@@ -244,6 +269,7 @@ function animate_message(message) {
 	} else if (message.includes(" steals control ")) {
 		repaint_panel_control();
 	} else if (message == "Game reset.") {
+		console.log("@@@@@@@@@@@@@@@@@@ GAME RESET @@@@@@@@@@@@@@@@@@@@@@@@@@")
 		repaint_obstacles();
 		move_navi_to_space(player1, [0, 0]);
 		move_navi_to_space(player2, [5, 2]);
@@ -252,11 +278,16 @@ function animate_message(message) {
 		const navi = get_navi_by_name(words[0]);
 		const target = get_navi_by_name(words[5]);
 		paint_navi_uses_chip_type_on_target(navi, "Shot", target, true);
+		if (is_navi(target)) {
+			const target_sprite = get_sprite_by_navi_name(name_of(target));
+			set_sprite_hp(target_sprite, target.hp);
+		}
 	} else if (message.includes(" misses")) {
 		const navi = get_navi_by_name(words[0]);
 		paint_navi_uses_chip_type_on_target(navi, "Shot", undefined, false);
 	} else if (message.includes(" places ")
-		|| message.includes(" is deleted"))
+		|| message.endsWith(" is deleted.")
+		|| message.endsWith(" has burned out."))
 	{
 		repaint_obstacles();
 	} else if (message.includes(" cannot line up ")

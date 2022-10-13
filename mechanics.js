@@ -215,8 +215,6 @@ const player2 = {
 	}
 };
 
-player1.target = player2;
-player2.target = player1;
 var last_to_act = player2;
 
 const BASE_HITRATE = 0.9;
@@ -293,6 +291,8 @@ function does_player_control_space(player, space) {
 	return is_space_east(space) == player.is_east;
 }
 
+function is_navi(x) { return x?.kind == "Navi" };
+
 function get_chips_by_rarity() {
 	if (_chips_by_rarity[1].length) return _chips_by_rarity;
 	battle_chip_data_from_bn1.forEach(battle_chip => {
@@ -307,7 +307,9 @@ function get_chips_by_rarity() {
 function get_special_damage(player, battle_chip) {
 	switch (battle_chip[DESCRIPTION_INDEX]) {
 		case "Do damage = to your HP loss":
-			return player.max_hp - player.hp;
+			if (player.max_hp <= 1000) return player.max_hp - player.hp;
+			const missing_hp_ratio = 1.0 - player.hp / player.max_hp;
+			return Math.round(missing_hp_ratio * 1000, 0);
 		default:
 			console.log("ERROR: Unhandled Special Damage description");
 			return 10;
@@ -317,6 +319,10 @@ function get_special_damage(player, battle_chip) {
 function get_occupant(space) {
 	const all_occupants = [player1, player2].concat(obstacles);
 	return all_occupants.find(x => are_spaces_equal(x.space, space));
+}
+
+function get_opponent(navi) {
+	return navi == player1 ? player2 : player1;
 }
 
 function get_widened_spaces(spaces) {
@@ -609,7 +615,7 @@ function i_move_to_space(player, space) {
 }
 
 function i_use_this_attack(player, battle_chip) {
-	var target = player.target;
+	var target = get_opponent(player);
 	var nearest_space = nearest_space_where_player_can_hit_space_with_chip(
 		player, target.space, battle_chip
 	);
@@ -750,7 +756,7 @@ function before_every_turn() {
 				report(message);
 				if (is_kod(player)) {
 					player_kos_target_with_chip(
-						player.target, player, obstacle.chip
+						get_opponent(player), player, obstacle.chip
 					);
 				}
 				break;
@@ -996,16 +1002,19 @@ function player_steals_control_of_near_column(player) {
 }
 
 function delete_obstacle(obstacle) {
+	console.log("XXXXXXXXXXXXXXXX in delete_obstacle")
+	console.log("len before = " + obstacles.length);
 	const obstacle_index = obstacles.indexOf(obstacle);
 	if (obstacle_index == -1) {
 		console.log("ERROR: obstacle to delete not found");
 		return;
 	}
 	obstacles.splice(obstacle_index, 1);
+	console.log("len after = " + obstacles.length);
 }
 
 function player_kos_target_with_chip(player, target, battle_chip) {
-	if (target.kind == "Navi") {
+	if (is_navi(target)) {
 		const chip_id = parseInt(battle_chip[0], 10);
 		// report(`${name_of(target)} has been KOd by ${name_of(player)}!`);
 		player.records.chip_kos_by_id[chip_id] ||= 0;
@@ -1013,8 +1022,9 @@ function player_kos_target_with_chip(player, target, battle_chip) {
 		return;
 	}
 
-	report(`${name_of(target)} is deleted.`);
+	const name = name_of(target);
 	delete_obstacle(target);
+	report(`${name} is deleted.`);
 }
 
 function print_the_stage() {
@@ -1148,8 +1158,6 @@ function game_turn(interval = null) {
 }
 
 function final_report() {
-	player1.target = null;
-	player2.target = null;
 	battle_chip_data_from_bn1.forEach(chip => {
 		chip_id = parseInt(chip[0], 10);
 		if (!chip_id) return;
