@@ -121,13 +121,13 @@ function set_sprite_pose(sprite, pose) {
     sprite.div.classList.replace(sprite.pose, pose);
     sprite.pose = pose;
 
+    // TODO: obstacle left offsets were replaced with margin-left settings,
+    // see if the same can be done for navi poses
+
     const navi = sprite.navi;
     const side = navi.is_east ? "east" : "west";
     const left_offset_0 =
         sprite.left_offset_0s_by_side_and_pose[side][sprite.pose];
-
-    // TODO: can margin or padding be used for the pose offset so that absolute
-    // positioning doesn't need to be recalculated when pose changes?
 
     const space = navi.space;
     var bottom_px = get_bottom_line_px_for_j(space[1]) + 2;
