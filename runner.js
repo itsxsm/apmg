@@ -4,6 +4,6 @@ if (!reporter) {
 
 console.log("Runner is loading.");
 
-run_game(true, 3, 100);
+run_game(true, 5, 1000);
 
 console.log("Runner has exited.");

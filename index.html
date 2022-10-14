@@ -5,7 +5,7 @@
     margin-left: 50px;
     position: relative;
     width: 240px;
-    height: 190px;
+    height: 150px;
     z-index: -1000;
     border: 1px solid blue;
   }
@@ -151,6 +151,16 @@
     margin-left: 10px;
     background: url("sprites/battlefield_exe2.gif") -425px -179px;
   }
+
+  #hand {
+    margin-top: 10px;
+  }
+  .battle-chip-card {
+    width: 64px;
+    height: 56px;
+    border: 1px solid green;
+    display: inline-block;
+  }
   
 </style>
 </head>
@@ -187,6 +197,15 @@
     </div>
 
     <div id="obstacle-anchor"></div>
+  </div>
+  <div id="hand">
+    <!-- this works for MVP, may need to refactor later 
+         for smooth sliding animations -->
+    <div id="battle-chip-card-0" class="battle-chip-card"></div>
+    <div id="battle-chip-card-1" class="battle-chip-card"></div>
+    <div id="battle-chip-card-2" class="battle-chip-card"></div>
+    <div id="battle-chip-card-3" class="battle-chip-card"></div>
+    <div id="battle-chip-card-4" class="battle-chip-card"></div>
   </div>
 
   <script src="mechanics.js" type="text/javascript"></script>

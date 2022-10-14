@@ -182,6 +182,7 @@ const player1 = {
     max_hp: STARTING_HP,
     space: [0, 0],
     is_east: false,
+    hand: [],
     records: {
         chip_ids_used_this_match: [],
         chip_uses_by_id: [],
@@ -192,7 +193,7 @@ const player1 = {
         ties: 0,
         losses: 0,
         matches: 0
-    }
+    },
 };
 
 const player2 = {
@@ -202,6 +203,7 @@ const player2 = {
     max_hp: STARTING_HP,
     space: [5, 2],
     is_east: true,
+    hand: [],
     records: {
         chip_ids_used_this_match: [],
         chip_uses_by_id: [],
@@ -673,8 +675,20 @@ function i_use_this_attack(player, battle_chip) {
     }   
 }
 
+function remove_chip_from_players_hand(battle_chip, player) {
+    const chip_index = player.hand.indexOf(battle_chip);
+    if (chip_index == -1) {
+        console.log("ERROR: chip to remove not found");
+        return;
+    }
+    player.hand.splice(chip_index, 1);
+
+};
+
 function i_use_this_battle_chip(player, battle_chip) {
-    report(`${name_of(player)} draws ${name_of(battle_chip)}.`);
+    report(`${name_of(player)} uses ${name_of(battle_chip)}.`);
+    remove_chip_from_players_hand(battle_chip, player);
+    deal_player_a_new_chip(player);
 
     const chip_id = parseInt(battle_chip[0], 10);
     player.records.chip_ids_used_this_match.push(chip_id);
@@ -728,7 +742,8 @@ function i_take_my_turn(player) {
     turns += 1;
     report(`${name_of(player)}'s turn. (${player.hp}/${player.max_hp})`);
     before_every_turn();
-    my_battle_chip = conjure_a_random_battle_chip();
+
+    const my_battle_chip = random_item(player.hand);
     i_use_this_battle_chip(player, my_battle_chip);
 }
 
@@ -1014,15 +1029,12 @@ function player_steals_control_of_near_column(player) {
 }
 
 function delete_obstacle(obstacle) {
-    console.log("XXXXXXXXXXXXXXXX in delete_obstacle")
-    console.log("len before = " + obstacles.length);
     const obstacle_index = obstacles.indexOf(obstacle);
     if (obstacle_index == -1) {
         console.log("ERROR: obstacle to delete not found");
         return;
     }
     obstacles.splice(obstacle_index, 1);
-    console.log("len after = " + obstacles.length);
 }
 
 function player_kos_target_with_chip(player, target, battle_chip) {
@@ -1080,7 +1092,7 @@ function heal_player_by_amount(player, amount) {
     report(`${name_of(player)} recovers ${amount} HP.`);
 }
 
-function conjure_a_random_battle_chip(rerolls = 0) {
+function conjure_a_random_battle_chip() {
     chips_by_rarity = get_chips_by_rarity();
     random_value = Math.random();
     if (random_value >= 0.50) return random_item(chips_by_rarity[1]);
@@ -1120,25 +1132,39 @@ function player_defeats_player(winner, loser) {
     loser.records.matches++;
 }
 
+function deal_player_a_hand(player) {
+    [0, 1, 2, 3, 4].forEach((idx) => {
+        player.hand[idx] = conjure_a_random_battle_chip();
+    });
+}
+
+function deal_player_a_new_chip(player) {
+    player.hand.push(conjure_a_random_battle_chip());   
+}
+
 function reset_game() {
     [player1, player2].forEach(p => {
         p.hp = p.max_hp;
         p.barrier_chip = null;
         p.shield_chip = null;
+        deal_player_a_hand(p);
     });
     obstacles.length = 0;
-    [0, 1, 2, 3, 4, 5].forEach(i => 
-        terrain[i] = ['Normal', 'Normal', 'Normal']
-    );
-    [0, 1, 2].forEach(i => are_spaces_east[i] = [false, false, false]);
-    [3, 4, 5].forEach(i => are_spaces_east[i] = [true, true, true]);
+    [0, 1, 2, 3, 4, 5].forEach(i => {
+        [0, 1, 2].forEach(j => { 
+            terrain[i][j] = 'Normal'; 
+            are_spaces_east[i][j] = i >= 3;
+        });
+    });
     last_to_act = player2;
+
     report(`Game reset.`);
 }
 
 function game_turn(interval = null) {
     var actor = last_to_act == player1 ? player2 : player1;
 
+    if (!actor.hand.length) deal_player_a_hand(actor);
     if (actor == player1) before_every_full_round();
     // print_the_stage();
 

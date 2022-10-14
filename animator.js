@@ -55,6 +55,10 @@ sprites = [
     }
 ];
 
+card_divs = [0, 1, 2, 3, 4].map(idx => {
+    return document.getElementById(`battle-chip-card-${idx}`);
+});
+
 // for some reason, cannot assign navi references as keys?
 // this results in an object with only one key...
 // sprites_by_navi = {};
@@ -145,6 +149,7 @@ function set_sprite_hp(sprite, hp) {
 
 function repaint_for_turn_start() {
     [player1, player2].forEach(p => {
+        if (p == player1) repaint_battle_chip_cards();
         const sprite = get_sprite_by_navi(p);
         set_sprite_pose(sprite, "standing");
         set_sprite_hp(sprite, p.hp);
@@ -177,6 +182,14 @@ function move_navi_to_space(navi, space) {
     sprite.div.style.left = (space[0] * 40 + left_offset_0) + "px";
     sprite.div.style.bottom = bottom_px + "px";
     sprite.div.style.zIndex = get_z_index_for_j(space[1]) + 10;
+}
+
+function repaint_battle_chip_cards() {
+    card_divs.forEach((div, idx) => {
+        const card_number = player1.hand[idx][0].padStart(3, 0);
+        div.style.backgroundImage =
+            `url('sprites/cards_bn1/card${card_number}.gif')`;
+    });
 }
 
 function repaint_panel_control() {
@@ -260,6 +273,7 @@ function animate_message(message) {
         move_navi_to_space(player1, [0, 0]);
         move_navi_to_space(player2, [5, 2]);
         repaint_panel_control();
+        repaint_battle_chip_cards();
     } else if (message.includes(" damage to ")) {
         const navi = get_navi_by_name(words[0]);
         const target = get_navi_by_name(words[5]);
