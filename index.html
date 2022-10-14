@@ -1,3 +1,229 @@
-<html><head></head><body>
-  Placeholder for the most basic GUI version of the game, which is fully clientside and uses no libraries.
+<html>
+<head>
+<style>
+  #minigame {
+    margin-left: 50px;
+    position: relative;
+    width: 240px;
+    height: 150px;
+    z-index: -1000;
+    border: 1px solid blue;
+  }
+
+  .panel {
+    position: absolute;
+    width: 40px;
+    height: 24px;
+    z-index: 0;
+  }
+  .panel.row_0 {
+    bottom: 56px;
+  }
+  .panel.row_1 {
+    bottom: 32px;
+  }
+  .panel.row_2 {
+    bottom: 0px;
+    height: 32px;
+  }
+  .panel.col_0 {
+    left: 0x;
+  }
+  .panel.col_1 {
+    left: 40px;
+  }
+  .panel.col_2 {
+    left: 80px;
+  }
+  .panel.col_3 {
+    left: 120px;
+  }
+  .panel.col_4 {
+    left: 160px;
+  }
+  .panel.col_5 {
+    left: 200px;
+  }
+  .panel.row_0.west {
+    background: url("sprites/battlefield_exe2.gif") -5px -239px;
+  }
+  .panel.row_1.west {
+    background: url("sprites/battlefield_exe2.gif") -5px -263px;
+  }
+  .panel.row_2.west {
+    background: url("sprites/battlefield_exe2.gif") -5px -287px;
+  }
+  .panel.row_0.east {
+    background: url("sprites/battlefield_exe2.gif") -125px -239px;
+  }
+  .panel.row_1.east {
+    background: url("sprites/battlefield_exe2.gif") -125px -263px;
+  }
+  .panel.row_2.east {
+    background: url("sprites/battlefield_exe2.gif") -125px -287px;
+  }
+
+  .navi {
+    position: absolute;
+  }
+  .navi-hp {
+    position: absolute;
+    font-family: andale mono, monospace;
+    font-size: 14px;
+    color: #f0e8c8;
+    text-shadow:
+      -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    bottom: -15px;
+    left: 5px;
+    z-index: 1000;
+  }
+
+  /* TODO: for proper handling of pose height changes, set position from bottom */;
+  #protoman {
+    bottom: 62px; /* why does this not apply at start if .west.standing bottom is unset ?? */
+    z-index: 110;
+  }
+  #protoman.west.standing {
+    bottom: 62px; /* why does this have to be set here and not on #protoman ?? */
+    left: 2px;
+    width: 50px;
+    height: 55px;
+    background: url("sprites/ProtoMan_west.gif") -183px -182px;
+  }
+  #protoman.west.attacking {
+    width: 51px;
+    height: 68px;
+    background: url("sprites/ProtoMan_west.gif") -8px -244px;
+  }
+  #protoman.west.struck {
+    width: 38px;
+    height: 57px;
+    background: url("sprites/ProtoMan_west.gif") -261px -394px;    
+  }
+
+  #magicman {
+    bottom: 2px;
+    z-index: 310;
+  }
+  #magicman.east.standing {
+    left: 203px;
+    width: 38px;
+    height: 67px;
+    background: url("sprites/MagicMan_east.gif") -131px -317px;
+  }
+  #magicman.east.attacking {
+    width: 49px;
+    height: 70px;
+    background: url("sprites/MagicMan_east.gif") -253px -123px;    
+  }
+  #magicman.east.struck {
+    /* MagicMan has no struck sprite so teleport is used as a stand-in */
+    width: 35px;
+    height: 81px;
+    background: url("sprites/MagicMan_east.gif") -257px -305px;
+  }
+
+  /* Sprites Inc. oddly does not have the obstacle sprites from BN1 */
+  /* Various placeholders are used for now until they can be grabbed */
+
+  .obstacle-RockCube {
+    width: 34px;
+    height: 45px;
+    margin-left: 3px;
+    background: url("sprites/battlefield_exe2.gif") -306px -186px;
+  }
+  .obstacle-IceCube {
+    /* TODO: this is just RockCube again, replace with IceMan's IceCube */;
+    width: 34px;
+    height: 45px;
+    margin-left: 3px;
+    background: url("sprites/battlefield_exe2.gif") -306px -186px;
+  }
+  .obstacle-Candle {
+    width: 24px;
+    height: 53px;
+    margin-left: 8px;
+    background: url("sprites/flameman.gif") -264px -409px;
+  }
+  .obstacle-Anubis {
+    width: 19px;
+    height: 54px;
+    margin-left: 10px;
+    background: url("sprites/battlefield_exe2.gif") -425px -179px;
+  }
+
+  #hand {
+    margin-top: 10px;
+  }
+  .battle-chip-card {
+    width: 64px;
+    height: 56px;
+    border: 1px solid green;
+    display: inline-block;
+  }
+  
+</style>
+</head>
+<body>
+  Placeholder for the simplest GUI version of the base minigame.
+
+  <br>
+
+  <div id="minigame">
+    <div id="panel_0_0" class="panel row_0 col_0 west"></div>
+    <div id="panel_0_1" class="panel row_1 col_0 west"></div>
+    <div id="panel_0_2" class="panel row_2 col_0 west"></div>
+    <div id="panel_1_0" class="panel row_0 col_1 west"></div>
+    <div id="panel_1_1" class="panel row_1 col_1 west"></div>
+    <div id="panel_1_2" class="panel row_2 col_1 west"></div>
+    <div id="panel_2_0" class="panel row_0 col_2 west"></div>
+    <div id="panel_2_1" class="panel row_1 col_2 west"></div>
+    <div id="panel_2_2" class="panel row_2 col_2 west"></div>
+    <div id="panel_3_0" class="panel row_0 col_3 east"></div>
+    <div id="panel_3_1" class="panel row_1 col_3 east"></div>
+    <div id="panel_3_2" class="panel row_2 col_3 east"></div>
+    <div id="panel_4_0" class="panel row_0 col_4 east"></div>
+    <div id="panel_4_1" class="panel row_1 col_4 east"></div>
+    <div id="panel_4_2" class="panel row_2 col_4 east"></div>
+    <div id="panel_5_0" class="panel row_0 col_5 east"></div>
+    <div id="panel_5_1" class="panel row_1 col_5 east"></div>
+    <div id="panel_5_2" class="panel row_2 col_5 east"></div>
+
+    <div id="protoman" class="navi west standing">
+      <div id="protoman-hp" class="navi-hp">600</div>
+    </div>
+    <div id="magicman" class="navi east standing">
+      <div id="magicman-hp" class="navi-hp">600</div>
+    </div>
+
+    <div id="obstacle-anchor"></div>
+  </div>
+  <div id="hand">
+    <!-- this works for MVP, may need to refactor later 
+         for smooth sliding animations -->
+    <div id="battle-chip-card-0" class="battle-chip-card"></div>
+    <div id="battle-chip-card-1" class="battle-chip-card"></div>
+    <div id="battle-chip-card-2" class="battle-chip-card"></div>
+    <div id="battle-chip-card-3" class="battle-chip-card"></div>
+    <div id="battle-chip-card-4" class="battle-chip-card"></div>
+  </div>
+
+  <script src="mechanics.js" type="text/javascript"></script>
+  <script src="animator.js" type="text/javascript"></script>
+  <script src="runner.js" type="text/javascript"></script>
 </body></html>
+
+<!--
+// stage graphics -- battlefield_exe2.gif
+// red_row_0: 5:239 -> 44:262  inclusive border / h=24 w=40 / includes top outline only
+// red_row_1: 5:263 -> 44:286  inclusive border / h=24 w=40 / includes top outline only
+// red_row_2: 5:287 -> 44:318  inclusive border / h=32 w=40 / includes top AND bottom outlines
+
+// blue_row_0: 125:239 -> 164:262
+// blue_row_1: 125:263 -> 164:286
+// blue_row_2: 125:287 -> 164:318
+
+// these are EXCLUSIVE BOXES
+// protoman_standing: 247:182 -> 296:236 (Blues_EXE1.gif, exclusive border)
+// magicman_standing: 131:317 -> 168:383 (MagicMan.png, exclusive border)
+-->
