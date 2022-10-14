@@ -146,7 +146,14 @@ const color_reset = "\x1b[0m";
 
 var matches_played = 0;
 var turns = 0;
-var _interval_matches_to_play; // set only by run_game
+
+ // _interval_settings should be set ONLY in run_game
+var _interval_settings = {
+    matches_to_play: 1,
+    active_interval: null,
+    interval_time: 1000,
+    await_operator: false
+}
 
 const ALL_SPACES = [];
 for (var j = 0; j <= 2; j++) {
@@ -1161,11 +1168,21 @@ function reset_game() {
     report(`Game reset.`);
 }
 
-function game_turn(interval = null) {
+function game_turn() {
     var actor = last_to_act == player1 ? player2 : player1;
+    const interval = _interval_settings.active_interval;
 
     if (!actor.hand.length) deal_player_a_hand(actor);
-    if (actor == player1) before_every_full_round();
+    if (actor == player1) {
+        before_every_full_round();
+        // MVP: won't handle await_operator mode when not using timer,
+        // as there is no clear use case for that combination.
+        if (interval && _interval_settings.await_operator) {
+            console.log("Game awaiting operator choice.")
+            clearInterval(_interval_settings.active_interval);
+            return;
+        }
+    }
     // print_the_stage();
 
     i_take_my_turn(actor);
@@ -1186,7 +1203,7 @@ function game_turn(interval = null) {
         player1.records.chip_ids_used_this_match.length = 0;
         player2.records.chip_ids_used_this_match.length = 0;
 
-        if (interval && matches_played >= _interval_matches_to_play) {
+        if (interval && matches_played >= _interval_settings.matches_to_play) {
             clearInterval(interval);
             final_report();
         } else {
@@ -1213,10 +1230,15 @@ function final_report() {
 
 // top level execution
 
-function run_game(use_timer, matches_to_play = 3, turn_time = 5000) {
+function run_game(
+    use_timer, matches_to_play = 1, turn_time = 1000, await_operator = false)
+{
     if (use_timer) {
-        _interval_matches_to_play = matches_to_play;
-        var interval = setInterval(() => game_turn(interval), turn_time);
+        _interval_settings.matches_to_play = matches_to_play;
+        _interval_settings.interval_time = turn_time;
+        _interval_settings.await_operator = await_operator;
+        _interval_settings.active_interval =
+            setInterval(() => game_turn(), turn_time);
     } else {
         while (matches_played < matches_to_play) game_turn();
         final_report();
