@@ -201,15 +201,23 @@
   <div id="hand">
     <!-- this works for MVP, may need to refactor later 
          for smooth sliding animations -->
-    <div id="battle-chip-card-0" class="battle-chip-card"></div>
-    <div id="battle-chip-card-1" class="battle-chip-card"></div>
-    <div id="battle-chip-card-2" class="battle-chip-card"></div>
-    <div id="battle-chip-card-3" class="battle-chip-card"></div>
-    <div id="battle-chip-card-4" class="battle-chip-card"></div>
+
+    <!-- onclick handlers are for initial pre-Firebase prototyping only -->
+    <div id="battle-chip-card-0"
+      class="battle-chip-card" onclick="operator_chooses_chip_idx(0)"></div>
+    <div id="battle-chip-card-1"
+      class="battle-chip-card" onclick="operator_chooses_chip_idx(1)"></div>
+    <div id="battle-chip-card-2"
+      class="battle-chip-card" onclick="operator_chooses_chip_idx(2)"></div>
+    <div id="battle-chip-card-3"
+      class="battle-chip-card" onclick="operator_chooses_chip_idx(3)"></div>
+    <div id="battle-chip-card-4"
+      class="battle-chip-card" onclick="operator_chooses_chip_idx(4)"></div>
   </div>
 
   <script src="mechanics.js" type="text/javascript"></script>
   <script src="animator.js" type="text/javascript"></script>
+  <script src="operation.js" type="text/javascript"></script>
   <script src="runner.js" type="text/javascript"></script>
 </body></html>
 

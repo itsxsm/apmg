@@ -1,7 +1,12 @@
-function log_error(message) { console.log(`ERROR: ${message}`); }
+console.log("Animator is loading.");
 
-if (!reporter) {
+if (!log_error) {
+    function log_error(message) { console.log(`ERROR: ${message}`); }
+}
+
+if (!reporter || !player1) {
     log_error("load Mechanics before Animator");
+    throw new Error("script loading order error");
 }
 
 const ALL_POSES = ["standing", "attacking", "struck"];
@@ -291,7 +296,7 @@ function animate_message(message) {
     {
         repaint_obstacles();
     } else if (message.includes(" cannot line up ")
-        || message.includes(" draws ")
+        || (message.includes(" uses ") && words.length == 3)
         || message.includes(" is already at max HP"))
     {
         ; // nothing to do

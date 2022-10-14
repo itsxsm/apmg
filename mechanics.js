@@ -1,3 +1,5 @@
+console.log("Mechanics is loading.");
+
 const battle_chip_data_from_bn1 = [
     ["1", "Cannon", "ABCDE", "None", "40", "A nice, big cannon!", "*", "Shot"],
     ["2", "HiCannon", "FGHIJ", "None", "80", "A nice, big cannon!", "**", "Shot"],
@@ -149,6 +151,7 @@ var turns = 0;
 
  // _interval_settings should be set ONLY in run_game
 var _interval_settings = {
+    use: false,
     matches_to_play: 1,
     active_interval: null,
     interval_time: 1000,
@@ -750,7 +753,13 @@ function i_take_my_turn(player) {
     report(`${name_of(player)}'s turn. (${player.hp}/${player.max_hp})`);
     before_every_turn();
 
-    const my_battle_chip = random_item(player.hand);
+    var my_battle_chip;
+    if (player.operator_chosen_chip) {
+        my_battle_chip = player.operator_chosen_chip;
+        player.operator_chosen_chip = null;
+    } else {
+        my_battle_chip = random_item(player.hand);
+    }
     i_use_this_battle_chip(player, my_battle_chip);
 }
 
@@ -1175,8 +1184,13 @@ function game_turn() {
     if (!actor.hand.length) deal_player_a_hand(actor);
     if (actor == player1) {
         before_every_full_round();
+
         // MVP: won't handle await_operator mode when not using timer,
         // as there is no clear use case for that combination.
+
+        // TODO: this code will pause the interval immediately on the player's
+        // turn; instead it should keep going (see operation.js)
+
         if (interval && _interval_settings.await_operator) {
             console.log("Game awaiting operator choice.")
             clearInterval(_interval_settings.active_interval);
@@ -1234,6 +1248,7 @@ function run_game(
     use_timer, matches_to_play = 1, turn_time = 1000, await_operator = false)
 {
     if (use_timer) {
+        _interval_settings.use = true;
         _interval_settings.matches_to_play = matches_to_play;
         _interval_settings.interval_time = turn_time;
         _interval_settings.await_operator = await_operator;
