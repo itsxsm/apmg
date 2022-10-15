@@ -77,6 +77,16 @@
     left: 5px;
     z-index: 1000;
   }
+  .navi-barrier {
+    /* MVP implementation, appears over navi semi-transparent. */
+    /* TODO: make barriers at the same DOM level as navis
+       and reposition them together so that the barrier graphic can appear behind. */
+    opacity:  0.85;
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    z-index: 0;
+  }
 
   /* TODO: for proper handling of pose height changes, set position from bottom */;
   #protoman {
@@ -122,6 +132,20 @@
     height: 81px;
     background: url("sprites/MagicMan_east.gif") -257px -305px;
   }
+
+  /* TODO: these barriers are all the same, replace with proper sprites */
+
+  /* TODO: resize barrier width/height depending on the navi sprite so that
+     the absolute clearance above is the same as MegaMan.EXE
+     and the clearance on the sides is at least 2px */
+  .barrier-Barrier {
+    /*opacity: 0.9;*/
+    margin-left: -7px;
+    width: 54px;
+    height: 38px;
+    background: url("sprites/atks_barrier.png") -59px -16px;
+  }
+
 
   /* Sprites Inc. oddly does not have the obstacle sprites from BN1 */
   /* Various placeholders are used for now until they can be grabbed */
@@ -191,9 +215,11 @@
 
     <div id="protoman" class="navi west standing">
       <div id="protoman-hp" class="navi-hp">600</div>
+      <div id="protoman-barrier" class="navi-barrier"></div>
     </div>
     <div id="magicman" class="navi east standing">
       <div id="magicman-hp" class="navi-hp">600</div>
+      <div id="magicman-barrier" class="navi-barrier"></div>
     </div>
 
     <div id="obstacle-anchor"></div>

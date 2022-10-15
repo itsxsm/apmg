@@ -13,6 +13,16 @@ const ALL_POSES = ["standing", "attacking", "struck"];
 const ALL_STANDARD_CHIP_TYPES = ["Shot", "Sword", "Toss"];
 const SPECIAL_CHIP_ANIMATIONS = {};
 
+function grab_after_dash(space_delim_string, word) {
+    if (!space_delim_string || !word) return null;
+    const words = space_delim_string.split(' ');
+    for (var i = 0; i < words.length; i++) {
+        var parts = words[i].split('-');
+        if (parts.length == 2 && parts[0] == word) return parts[1];
+    }
+    return null;
+}
+
 sprites = [
     // TODO: use document.onload so scripts don't have to be after structure?
 
@@ -24,6 +34,7 @@ sprites = [
         navi: player1,
         div: document.getElementById("protoman"),
         hp_div: document.getElementById("protoman-hp"),
+        barrier_div: document.getElementById("protoman-barrier"),
         left_offset_0s_by_side_and_pose: {
             "west": {
                 "standing": 2,
@@ -43,6 +54,7 @@ sprites = [
         navi: player2,
         div: document.getElementById("magicman"),
         hp_div: document.getElementById("magicman-hp"),
+        barrier_div: document.getElementById("magicman-barrier"),
         left_offset_0s_by_side_and_pose: {
             "west": {
                 "standing": 3,
@@ -177,7 +189,38 @@ function paint_navi_uses_chip_type_on_target(
     if (target_sprite && does_hit) { set_sprite_pose(target_sprite, "struck"); }
 }
 
+function repaint_barriers(for_move_only = false) {
+    [sprites[0], sprites[1]].forEach(sprite => {
+        const div = sprite.barrier_div;
+
+        // there's nothing to do on move with the semitransparent child div
+        // barrier, but for barrier behind we'll need to move the barrier div
+        // whenever the navi moves.
+        if (for_move_only) return;
+
+        var old_class = grab_after_dash(div.className, "barrier");
+        if (old_class) old_class = `barrier-${old_class}`;
+        if (!sprite.navi.barrier_chip) {
+            if (old_class) div.classList.remove(old_class);
+            return;
+        }
+
+        //const new_class = `barrier-${p.barrier_chip}`;
+        const new_class = "barrier-Barrier";
+
+        if (old_class) {
+            div.classList.replace(old_class, new_class);
+        } else {
+            div.classList.add(new_class);
+        }
+    });
+}
+
+function repaint_barriers_for_move() { repaint_barriers(true) }
+
 function move_navi_to_space(navi, space) {
+    if (!are_spaces_equal(space, navi.space))
+        log_error("animator got move message out of sync with navi");
     const sprite = get_sprite_by_navi(navi);
     const side = navi.is_east ? "east" : "west";
     const left_offset_0 =
@@ -271,6 +314,7 @@ function animate_message(message) {
         const navi = get_navi_by_name(words[0]);
         const space = [parseInt(words[3], 10), parseInt(words[4], 10)];
         move_navi_to_space(navi, space);
+        repaint_barriers_for_move();
     } else if (message.includes(" steals control ")) {
         repaint_panel_control();
     } else if (message == "Game reset.") {
@@ -279,6 +323,7 @@ function animate_message(message) {
         move_navi_to_space(player2, [5, 2]);
         repaint_panel_control();
         repaint_battle_chip_cards();
+        repaint_barriers();
     } else if (message.includes(" damage to ")) {
         const navi = get_navi_by_name(words[0]);
         const target = get_navi_by_name(words[5]);
@@ -295,6 +340,9 @@ function animate_message(message) {
         || message.endsWith(" has burned out."))
     {
         repaint_obstacles();
+    } else if (message.endsWith("raises a barrier.")
+        || message.endsWith("and is broken.")) {
+        repaint_barriers();
     } else if (message.includes(" cannot line up ")
         || (message.includes(" uses ") && words.length == 3)
         || message.includes(" is already at max HP"))
