@@ -12,6 +12,11 @@ if (!reporter || !player1) {
 const ALL_POSES = ["standing", "attacking", "struck"];
 const ALL_STANDARD_CHIP_TYPES = ["Shot", "Sword", "Toss"];
 const SPECIAL_CHIP_ANIMATIONS = {};
+var _cache_buster = 0;
+
+const ANIMATION_TIMES_MS = {
+    "Recover": 500,
+};
 
 function grab_after_dash(space_delim_string, word) {
     if (!space_delim_string || !word) return null;
@@ -35,6 +40,7 @@ sprites = [
         div: document.getElementById("protoman"),
         hp_div: document.getElementById("protoman-hp"),
         barrier_div: document.getElementById("protoman-barrier"),
+        effect_div: document.getElementById("protoman-effect"),
         left_offset_0s_by_side_and_pose: {
             "west": {
                 "standing": 2,
@@ -55,6 +61,7 @@ sprites = [
         div: document.getElementById("magicman"),
         hp_div: document.getElementById("magicman-hp"),
         barrier_div: document.getElementById("magicman-barrier"),
+        effect_div: document.getElementById("magicman-effect"),
         left_offset_0s_by_side_and_pose: {
             "west": {
                 "standing": 3,
@@ -240,6 +247,10 @@ function repaint_battle_chip_cards() {
     });
 }
 
+function repaint_terrain() {
+    ;
+}
+
 function repaint_panel_control() {
     // TODO: use a grid shadow DOM for this instead
     [...document.getElementsByClassName("panel")].forEach(div => {
@@ -252,6 +263,18 @@ function repaint_panel_control() {
             div.classList.replace("east", "west");
         }
     });
+}
+
+function paint_recover_effect_on_navi(navi) {
+    const effect_div = get_sprite_by_navi(navi).effect_div;
+    effect_div.classList.add("effect-Recover");
+    const background =
+        `url("sprites/recover_anim_ge.gif?cache_buster=${_cache_buster++}")`;
+    effect_div.style.backgroundImage = background;
+    setTimeout(() => {
+        effect_div.classList.remove("effect-Recover");
+        effect_div.style.backgroundImage = "none";
+    }, ANIMATION_TIMES_MS["Recover"]);
 }
 
 function get_bottom_line_px_for_j(j) { return [60, 36, 8][j]; }
@@ -343,16 +366,24 @@ function animate_message(message) {
     } else if (message.endsWith("raises a barrier.")
         || message.endsWith("and is broken.")) {
         repaint_barriers();
+    } else if (message.includes( " recovers " )) {
+        const navi = get_navi_by_name(words[0]);
+        if (navi) paint_recover_effect_on_navi(navi);
     } else if (message.includes(" cannot line up ")
         || (message.includes(" uses ") && words.length == 3)
         || message.includes(" is already at max HP"))
     {
         ; // nothing to do
+    } else if (message.includes(" changes the terrain ")) {
+        repaint_terrain();
     } else {
         console.log(`-> no animation interpreter for message: ${message}`);
     }
 }
 
 reporter.interpreters.push(animate_message);
+
+// TODO: hands are not yet assigned at load time, change for faster testing
+// repaint_battle_chip_cards();
 
 console.log("Animator loaded.");

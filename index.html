@@ -44,22 +44,22 @@
   .panel.col_5 {
     left: 200px;
   }
-  .panel.row_0.west {
+  .panel.row_0.terrain-Normal.west {
     background: url("sprites/battlefield_exe2.gif") -5px -239px;
   }
-  .panel.row_1.west {
+  .panel.row_1.terrain-Normal.west {
     background: url("sprites/battlefield_exe2.gif") -5px -263px;
   }
-  .panel.row_2.west {
+  .panel.row_2.terrain-Normal.west {
     background: url("sprites/battlefield_exe2.gif") -5px -287px;
   }
-  .panel.row_0.east {
+  .panel.row_0.terrain-Normal.east {
     background: url("sprites/battlefield_exe2.gif") -125px -239px;
   }
-  .panel.row_1.east {
+  .panel.row_1.terrain-Normal.east {
     background: url("sprites/battlefield_exe2.gif") -125px -263px;
   }
-  .panel.row_2.east {
+  .panel.row_2.terrain-Normal.east {
     background: url("sprites/battlefield_exe2.gif") -125px -287px;
   }
 
@@ -78,14 +78,18 @@
     z-index: 1000;
   }
   .navi-barrier {
-    /* MVP implementation, appears over navi semi-transparent. */
-    /* TODO: make barriers at the same DOM level as navis
-       and reposition them together so that the barrier graphic can appear behind. */
-    opacity:  0.85;
     position: absolute;
+    opacity:  0.85;
     bottom: 0px;
     left: 0px;
     z-index: 0;
+  }
+  .navi-effect {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    z-index: 1;
+    background: none;
   }
 
   /* TODO: for proper handling of pose height changes, set position from bottom */;
@@ -141,11 +145,16 @@
   .barrier-Barrier {
     /*opacity: 0.9;*/
     margin-left: -7px;
-    width: 54px;
-    height: 38px;
-    background: url("sprites/atks_barrier.png") -59px -16px;
+    width: 59px;
+    height: 54px;
+    background: url("sprites/barrier_anim.gif");
   }
 
+  .effect-Recover {
+    width: 31px;
+    height: 61px;
+    margin-left: 5px;
+  }
 
   /* Sprites Inc. oddly does not have the obstacle sprites from BN1 */
   /* Various placeholders are used for now until they can be grabbed */
@@ -158,16 +167,16 @@
   }
   .obstacle-IceCube {
     /* TODO: this is just RockCube again, replace with IceMan's IceCube */;
-    width: 34px;
-    height: 45px;
-    margin-left: 3px;
-    background: url("sprites/battlefield_exe2.gif") -306px -186px;
+    width: 36px;
+    height: 39px;
+    margin-left: 2px;
+    background: url("sprites/IceMan.png") -315px -357px;
   }
   .obstacle-Candle {
-    width: 24px;
-    height: 53px;
-    margin-left: 8px;
-    background: url("sprites/flameman.gif") -264px -409px;
+    width: 28px;
+    height: 62px;
+    margin-left: 6px;
+    background: url("sprites/candle_anim.gif");
   }
   .obstacle-Anubis {
     width: 19px;
@@ -194,32 +203,34 @@
 <body>
   <br>
   <div id="minigame">
-    <div id="panel_0_0" class="panel row_0 col_0 west"></div>
-    <div id="panel_0_1" class="panel row_1 col_0 west"></div>
-    <div id="panel_0_2" class="panel row_2 col_0 west"></div>
-    <div id="panel_1_0" class="panel row_0 col_1 west"></div>
-    <div id="panel_1_1" class="panel row_1 col_1 west"></div>
-    <div id="panel_1_2" class="panel row_2 col_1 west"></div>
-    <div id="panel_2_0" class="panel row_0 col_2 west"></div>
-    <div id="panel_2_1" class="panel row_1 col_2 west"></div>
-    <div id="panel_2_2" class="panel row_2 col_2 west"></div>
-    <div id="panel_3_0" class="panel row_0 col_3 east"></div>
-    <div id="panel_3_1" class="panel row_1 col_3 east"></div>
-    <div id="panel_3_2" class="panel row_2 col_3 east"></div>
-    <div id="panel_4_0" class="panel row_0 col_4 east"></div>
-    <div id="panel_4_1" class="panel row_1 col_4 east"></div>
-    <div id="panel_4_2" class="panel row_2 col_4 east"></div>
-    <div id="panel_5_0" class="panel row_0 col_5 east"></div>
-    <div id="panel_5_1" class="panel row_1 col_5 east"></div>
-    <div id="panel_5_2" class="panel row_2 col_5 east"></div>
+    <div id="panel_0_0" class="panel row_0 col_0 terrain-Normal west"></div>
+    <div id="panel_0_1" class="panel row_1 col_0 terrain-Normal west"></div>
+    <div id="panel_0_2" class="panel row_2 col_0 terrain-Normal west"></div>
+    <div id="panel_1_0" class="panel row_0 col_1 terrain-Normal west"></div>
+    <div id="panel_1_1" class="panel row_1 col_1 terrain-Normal west"></div>
+    <div id="panel_1_2" class="panel row_2 col_1 terrain-Normal west"></div>
+    <div id="panel_2_0" class="panel row_0 col_2 terrain-Normal west"></div>
+    <div id="panel_2_1" class="panel row_1 col_2 terrain-Normal west"></div>
+    <div id="panel_2_2" class="panel row_2 col_2 terrain-Normal west"></div>
+    <div id="panel_3_0" class="panel row_0 col_3 terrain-Normal east"></div>
+    <div id="panel_3_1" class="panel row_1 col_3 terrain-Normal east"></div>
+    <div id="panel_3_2" class="panel row_2 col_3 terrain-Normal east"></div>
+    <div id="panel_4_0" class="panel row_0 col_4 terrain-Normal east"></div>
+    <div id="panel_4_1" class="panel row_1 col_4 terrain-Normal east"></div>
+    <div id="panel_4_2" class="panel row_2 col_4 terrain-Normal east"></div>
+    <div id="panel_5_0" class="panel row_0 col_5 terrain-Normal east"></div>
+    <div id="panel_5_1" class="panel row_1 col_5 terrain-Normal east"></div>
+    <div id="panel_5_2" class="panel row_2 col_5 terrain-Normal east"></div>
 
     <div id="protoman" class="navi west standing">
       <div id="protoman-hp" class="navi-hp">600</div>
       <div id="protoman-barrier" class="navi-barrier"></div>
+      <div id="protoman-effect" class="navi-effect"></div>
     </div>
     <div id="magicman" class="navi east standing">
       <div id="magicman-hp" class="navi-hp">600</div>
       <div id="magicman-barrier" class="navi-barrier"></div>
+      <div id="magicman-effect" class="navi-effect"></div>
     </div>
 
     <div id="obstacle-anchor"></div>

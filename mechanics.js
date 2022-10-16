@@ -906,7 +906,8 @@ function player_sets_terrain_with_chip(player, battle_chip) {
             spaces_changed++;
         }
     });
-    report(`${name_of(player)} changes ${spaces_changed} to ${new_terrain}.`);
+    report(`${name_of(player)} changes the terrain of ${spaces_changed} `
+        + `to ${new_terrain}.`);
 }
 
 function report(message) { 
