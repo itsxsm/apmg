@@ -44,22 +44,22 @@
   .panel.col_5 {
     left: 200px;
   }
-  .panel.row_0.terrain-Normal.west {
+  .panel.row_0.west {
     background: url("sprites/battlefield_exe2.gif") -5px -239px;
   }
-  .panel.row_1.terrain-Normal.west {
+  .panel.row_1.west {
     background: url("sprites/battlefield_exe2.gif") -5px -263px;
   }
-  .panel.row_2.terrain-Normal.west {
+  .panel.row_2.west {
     background: url("sprites/battlefield_exe2.gif") -5px -287px;
   }
-  .panel.row_0.terrain-Normal.east {
+  .panel.row_0.east {
     background: url("sprites/battlefield_exe2.gif") -125px -239px;
   }
-  .panel.row_1.terrain-Normal.east {
+  .panel.row_1.east {
     background: url("sprites/battlefield_exe2.gif") -125px -263px;
   }
-  .panel.row_2.terrain-Normal.east {
+  .panel.row_2.east {
     background: url("sprites/battlefield_exe2.gif") -125px -287px;
   }
 
@@ -185,6 +185,46 @@
     background: url("sprites/battlefield_exe2.gif") -425px -179px;
   }
 
+  .terrain {
+    position: absolute;
+    left: 0px;
+    bottom: 0px;
+  }
+
+  .terrain-Normal {
+    margin-left: 3px;
+    margin-bottom: 3px;
+    width: 34px;
+    height: 17px;
+    background: url("sprites/battlefield_exe2.gif") -18px -337px;
+  }
+
+  .terrain-Cracked {
+    margin-left: 3px;
+    margin-bottom: 3px;
+    width: 34px;
+    height: 17px;
+    background: url("sprites/battlefield_exe2.gif") -58px -337px;
+  }
+
+  .terrain-Broken {
+    margin-left: 3px;
+    margin-bottom: 3px;
+    width: 34px;
+    height: 17px;
+    background: url("sprites/battlefield_exe2.gif") -98px -337px;    
+  }
+
+  .row_2 .terrain-Normal {
+    margin-bottom: 11px;
+  }
+  .row_2 .terrain-Cracked {
+    margin-bottom: 11px;
+  }
+  .row_2 .terrain-Broken {
+    margin-bottom: 11px;
+  }
+
   #hand {
     max-width: 350px;
     margin-top: 20px;
@@ -203,24 +243,60 @@
 <body>
   <br>
   <div id="minigame">
-    <div id="panel_0_0" class="panel row_0 col_0 terrain-Normal west"></div>
-    <div id="panel_0_1" class="panel row_1 col_0 terrain-Normal west"></div>
-    <div id="panel_0_2" class="panel row_2 col_0 terrain-Normal west"></div>
-    <div id="panel_1_0" class="panel row_0 col_1 terrain-Normal west"></div>
-    <div id="panel_1_1" class="panel row_1 col_1 terrain-Normal west"></div>
-    <div id="panel_1_2" class="panel row_2 col_1 terrain-Normal west"></div>
-    <div id="panel_2_0" class="panel row_0 col_2 terrain-Normal west"></div>
-    <div id="panel_2_1" class="panel row_1 col_2 terrain-Normal west"></div>
-    <div id="panel_2_2" class="panel row_2 col_2 terrain-Normal west"></div>
-    <div id="panel_3_0" class="panel row_0 col_3 terrain-Normal east"></div>
-    <div id="panel_3_1" class="panel row_1 col_3 terrain-Normal east"></div>
-    <div id="panel_3_2" class="panel row_2 col_3 terrain-Normal east"></div>
-    <div id="panel_4_0" class="panel row_0 col_4 terrain-Normal east"></div>
-    <div id="panel_4_1" class="panel row_1 col_4 terrain-Normal east"></div>
-    <div id="panel_4_2" class="panel row_2 col_4 terrain-Normal east"></div>
-    <div id="panel_5_0" class="panel row_0 col_5 terrain-Normal east"></div>
-    <div id="panel_5_1" class="panel row_1 col_5 terrain-Normal east"></div>
-    <div id="panel_5_2" class="panel row_2 col_5 terrain-Normal east"></div>
+    <div id="panel_0_0" class="panel row_0 col_0 west">
+      <div id="terrain_0_0" class="terrain terrain-Normal"></div>
+    </div>
+    <div id="panel_0_1" class="panel row_1 col_0 west">
+      <div id="terrain_0_1" class="terrain terrain-Normal"></div>      
+    </div>
+    <div id="panel_0_2" class="panel row_2 col_0 west">
+      <div id="terrain_0_2" class="terrain terrain-Normal"></div>
+    </div>
+    <div id="panel_1_0" class="panel row_0 col_1 west">
+      <div id="terrain_1_0" class="terrain terrain-Normal"></div>
+    </div>
+    <div id="panel_1_1" class="panel row_1 col_1 west">
+      <div id="terrain_1_1" class="terrain terrain-Normal"></div>
+    </div>
+    <div id="panel_1_2" class="panel row_2 col_1 west">
+      <div id="terrain_1_2" class="terrain terrain-Normal"></div>
+    </div>
+    <div id="panel_2_0" class="panel row_0 col_2 west">
+      <div id="terrain_2_0" class="terrain terrain-Normal"></div>
+    </div>
+    <div id="panel_2_1" class="panel row_1 col_2 west">
+      <div id="terrain_2_1" class="terrain terrain-Normal"></div>
+    </div>
+    <div id="panel_2_2" class="panel row_2 col_2 west">
+      <div id="terrain_2_2" class="terrain terrain-Normal"></div>
+    </div>
+    <div id="panel_3_0" class="panel row_0 col_3 east">
+      <div id="terrain_3_0" class="terrain terrain-Normal"></div>
+    </div>
+    <div id="panel_3_1" class="panel row_1 col_3 east">
+      <div id="terrain_3_1" class="terrain terrain-Normal"></div>
+    </div>
+    <div id="panel_3_2" class="panel row_2 col_3 east">
+      <div id="terrain_3_2" class="terrain terrain-Normal"></div>
+    </div>
+    <div id="panel_4_0" class="panel row_0 col_4 east">
+      <div id="terrain_4_0" class="terrain terrain-Normal"></div>
+    </div>
+    <div id="panel_4_1" class="panel row_1 col_4 east">
+      <div id="terrain_4_1" class="terrain terrain-Normal"></div>
+    </div>
+    <div id="panel_4_2" class="panel row_2 col_4 east">
+      <div id="terrain_4_2" class="terrain terrain-Normal"></div>
+    </div>
+    <div id="panel_5_0" class="panel row_0 col_5 east">
+      <div id="terrain_5_0" class="terrain terrain-Normal"></div>
+    </div>
+    <div id="panel_5_1" class="panel row_1 col_5 east">
+      <div id="terrain_5_1" class="terrain terrain-Normal"></div>
+    </div>
+    <div id="panel_5_2" class="panel row_2 col_5 east">
+      <div id="terrain_5_2" class="terrain terrain-Normal"></div>
+    </div>
 
     <div id="protoman" class="navi west standing">
       <div id="protoman-hp" class="navi-hp">600</div>
@@ -271,4 +347,39 @@
 // these are EXCLUSIVE BOXES
 // protoman_standing: 247:182 -> 296:236 (Blues_EXE1.gif, exclusive border)
 // magicman_standing: 131:317 -> 168:383 (MagicMan.png, exclusive border)
+
+
+TERRAIN
+NORMAL
+  18,337 -> 51,353 ; 
+
+CRACKED
+  58,337
+
+BROKEN
+  98, 337
+
+EMPTY
+  138
+
+ICE
+  178
+
+LAVA
+  218
+
+GRASS
+  258
+
+HOLY
+  298
+
+POISON
+  338
+
+MAGNET
+  378
+
 -->
+
+

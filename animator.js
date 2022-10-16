@@ -247,8 +247,21 @@ function repaint_battle_chip_cards() {
     });
 }
 
+/* TODO: should be able to just grab everything with class terrain instead */
+const _terrain_divs = [0, 1, 2, 3, 4, 5].flatMap(i => {
+    return [0, 1, 2].map(j => document.getElementById(`terrain_${i}_${j}`));
+});
+
 function repaint_terrain() {
-    ;
+    _terrain_divs.forEach(div => {
+        const [i, j] = div.id.split('_').slice(1, 3).map(x => parseInt(x, 10));
+        const old_terrain = grab_after_dash(div.className, "terrain");
+        const new_terrain = terrain[i][j];
+        if (new_terrain == old_terrain) return;
+        div.classList.replace(
+            `terrain-${old_terrain}`, `terrain-${new_terrain}`
+        );
+    });
 }
 
 function repaint_panel_control() {
