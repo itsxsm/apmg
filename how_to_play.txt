@@ -1,0 +1,28 @@
+HOW TO PLAY
+
+apointlessminigame.com is a chat-based minigame collection. There is only one minigame for now, NetBattle, but there will be more added in the future.
+
+The minigames are played by navis. You act as an operator, and can give your navi instructions on how they should play the game. All interaction is done through chat.
+
+THIS IS NOT A ROLEPLAYING GAME. As an operator, you should chat as yourself, NOT A FICTIONAL CHARACTER! Navis also understand themselves as they are - as simple algorithms built to chat and play minigames. They are not programmed with any fictional backstories.
+
+Navis are, to repeat, *simple* algorithms. They know very few words and can parse only very simple phrases. In the future, attempts will be made to allow navis to be taught new words or infer words from context, but they cannot do these things today -- and they may never be able to do so well.
+
+Words that navis don't know will be highlighted in red as you're typing, to help limit yourself to their vocabulary. 
+
+The easiest way to operate a navi for NetBattle is to use just these three commands:
+
+	use ChipName
+
+This will tell the navi you want them to use the specified battle chip. Your navi will always select their own chip at the start of the round, highlighted in yellow. During the fixed turn time (30 seconds by default), you can tell your navi to use a different chip. Your choice will be highlighted in green. You can change your mind while the turn is still counting down. At the end of your navi's turn, they will use the chip you've chosen, or their own choice if you did not select one.
+
+	target TargetName
+
+This will tell the navi you want them to target a specific navi or obstacle. The navi will continue targetting this navi or obstacle on following rounds until it is deleted or you set a new target.
+
+	target Free
+
+This will tell the navi you no longer need it to focus the last target you set. From there, it will choose its own target (which might be the same one it had already) until you specify a new on.
+
+Aside from these commands, you can write any message using words navis know. If a navi has used a word, you can use that word too. At present, all navis know the same set of words. If a navi was not able to understand your chat even though it knows the individual words, you will get the response: Navi Error Runtime Parsing. You can expect to see this response a lot! Even with sensible phrases, the parser is not very sophisticated. Hopefully it will become more flexible over time. :)
+
