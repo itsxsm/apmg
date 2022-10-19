@@ -249,24 +249,22 @@ function move_navi_to_space(navi, space) {
 }
 
 function repaint_battle_chip_cards() {
-    // TODO: this always highlights the first instance of any multiple chip,
-    // which leads to awkward click handling. Change these vars in mechanics
-    // to be slot indexes instead of direct chip references.
-    var found = false;
-    const chosen_chip = player1.operator_chosen_chip ||
-        player1.navi_chosen_chip;
+    const [slot, chooser] = get_chip_slot_and_chooser(player1);
     card_divs.forEach((div, idx) => {
         const card_number = player1.hand[idx][0].padStart(3, 0);
         div.style.backgroundImage =
             `url('sprites/cards_bn1/card${card_number}.gif')`;
-        if (player1.hand[idx] == chosen_chip && !found) {
+        if (idx == slot) {
             div.parentElement.classList.add("chosen");
-            if (player1.operator_chosen_chip)
+            if (chooser == "Operator")
                 div.parentElement.classList.add("operator-choice");
-            found = true;
         } else {
             div.parentElement.classList.remove("chosen", "operator-choice");
         }
+
+        // TODO: collect divs once at start instead
+        document.getElementById(`chip-name-${idx}`).innerHTML
+            = name_of(player1.hand[idx]);
     });
 }
 

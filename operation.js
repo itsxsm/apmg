@@ -16,7 +16,12 @@ if (!reporter?.interpreters?.length) {
 }
 
 function operator_chooses_chip_idx(idx) {
-    player1.operator_chosen_chip = player1.hand[idx];
+    player1.operator_chosen_chip_slot = idx;
+    try {
+        repaint_battle_chip_cards();
+    } catch (err) {
+        console.log("Unable to paint selection.");
+    }
 
     if (!_interval_settings.use) {
         log_error("operator choice behavior without timer is undefined");
