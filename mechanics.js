@@ -128,10 +128,8 @@ const battle_chip_data_from_bn1 = [
     ["125", "FireAura", "BGINT", "Fire", "", "Null<40dmg Weak vs. [Aqua]", "***", "Guard Barrier Aura 40"],
     ["126", "WoodAura", "CFJOQ", "Wood", "", "Null<80dmg Weak vs. [Fire]", "****", "Guard Barrier Aura 80"],
     ["127", "LifeAura", "AHKMP", "None", "", "Negate all attacks w/ damage<100", "*****", "Guard Barrier Aura 100"]
-]
-
+];
 // TEST CHANGES: Steal Rarity *** => *
-
 
 const NAME_INDEX = 1;
 const CODES_INDEX = 2;
@@ -673,8 +671,8 @@ function get_hitcheck_modifier(player, target) {
     // a boost of 1 class should give the same advantage in any stat.
     if (aim_num >= dodge_num) return 1.0 + (aim_num - dodge_num) * 0.1;
 
-    // enhanced dodging needs to be calculated a little differently
-    // this formula uses "Effective HP Advantage" = 1 / hitrate, e.g...
+    // dodge > aim needs to be calculated a little differently
+    // consider that "effective survivability advantage" = 1 / hitrate, e.g...
     // 90% hit =>  1.1111x advantage for target (vs 100% hit)
     // 50% hit =>  2.0000x advantage for target
     // 10% hit => 10.0000x advantage for target
@@ -909,19 +907,25 @@ function i_use_this_battle_chip(player, battle_chip) {
     }
 }
 
+function i_start_my_turn(player) {
+    player.navi_chosen_chip = random_item(player.hand);
+}
+
+function i_end_my_turn(player) {
+    const my_battle_chip = player.operator_chosen_chip
+        || player.navi_chosen_chip;
+    if (!my_battle_chip) return; // expected once per battle at the start
+    player.operator_chosen_chip = null;
+    player.navi_chosen_chip = null;
+    i_use_this_battle_chip(player, my_battle_chip);
+}
+
 function i_take_my_turn(player) {
     turns += 1;
-    report(`${name_of(player)}'s turn. (${player.hp}/${player.max_hp})`);
+    i_end_my_turn(get_opponent(player)); // needs revision for teams
     before_every_turn();
-
-    var my_battle_chip;
-    if (player.operator_chosen_chip) {
-        my_battle_chip = player.operator_chosen_chip;
-        player.operator_chosen_chip = null;
-    } else {
-        my_battle_chip = random_item(player.hand);
-    }
-    i_use_this_battle_chip(player, my_battle_chip);
+    i_start_my_turn(player);
+    report(`${name_of(player)}'s turn. (${player.hp}/${player.max_hp})`);
 }
 
 // *** world action methods ****************************************************
@@ -1419,6 +1423,12 @@ function final_report() {
 function run_game(
     use_timer, matches_to_play = 1, turn_time = 1000, await_operator = false)
 {
+    // deal hands from the start to enable quick rerolls
+    // when testing particular chips
+    deal_player_a_hand(player1);
+    deal_player_a_hand(player2);
+    report("Game started.");
+
     if (use_timer) {
         _interval_settings.use = true;
         _interval_settings.matches_to_play = matches_to_play;

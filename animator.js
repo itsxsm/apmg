@@ -190,8 +190,8 @@ function set_sprite_hp(sprite, hp) {
 }
 
 function repaint_for_turn_start() {
+    repaint_battle_chip_cards();
     [player1, player2].forEach(p => {
-        if (p == player1) repaint_battle_chip_cards();
         const sprite = get_sprite_by_navi(p);
         set_sprite_pose(sprite, "standing");
         set_sprite_hp(sprite, p.hp);
@@ -204,10 +204,8 @@ function paint_navi_uses_chip_type_on_target(
     navi, chip_type, target, does_hit = true)
 {
     const sprite = get_sprite_by_navi(navi);
-
-    // TODO: fix for obstacle targets
-    const target_sprite =
-        target ? get_sprite_by_navi(target) : null;
+    const target_sprite = (target && is_navi(target))
+        ? get_sprite_by_navi(target) : null;
 
     // for now fixed attacking pose stands in for all chip uses
     set_sprite_pose(sprite, "attacking");
@@ -251,10 +249,22 @@ function move_navi_to_space(navi, space) {
 }
 
 function repaint_battle_chip_cards() {
+    var found = false;
+    const chosen_chip = player1.operator_chosen_chip ||
+        player1.navi_chosen_chip;
     card_divs.forEach((div, idx) => {
+        if (found) return; 
         const card_number = player1.hand[idx][0].padStart(3, 0);
         div.style.backgroundImage =
             `url('sprites/cards_bn1/card${card_number}.gif')`;
+        if (player1.hand[idx] == chosen_chip) {
+            div.parentElement.classList.add("chosen");
+            if (player1.operator_chosen_chip)
+                div.parentElement.classList.add("operator-choice");
+            found = true;
+        } else {
+            div.parentElement.classList.remove("chosen", "operator-choice");
+        }
     });
 }
 
@@ -363,6 +373,8 @@ function animate_message(message) {
         repaint_panel_control();
         repaint_battle_chip_cards();
         repaint_barriers();
+    } else if (message == "Game started.") {
+        repaint_battle_chip_cards();
     } else if (message.endsWith("raises a barrier.")
         || message.endsWith("and is broken.")) {
         repaint_barriers();
@@ -383,7 +395,9 @@ function animate_message(message) {
         move_navi_to_space(navi, space);
     } else if (message.includes(" damage to ")) {
         const navi = get_navi_by_name(words[0]);
-        const target = get_occupant_by_name(words[5] + (words[6] || ""));
+        const target_name = (words.length == 7) ? `${words[5]} ${words[6]}`
+            : words[5];
+        const target = get_occupant_by_name(target_name);
         paint_navi_uses_chip_type_on_target(navi, "Shot", target, true);
         if (is_navi(target)) {
             const target_sprite = get_sprite_by_navi(target);
@@ -394,7 +408,8 @@ function animate_message(message) {
         const navi = get_navi_by_name(words[0]);
         paint_navi_uses_chip_type_on_target(navi, "Shot", undefined, false);
     } else if (message.includes(" cannot line up ")
-        || (message.includes(" uses ") && words.length == 3))
+        || (message.includes(" uses ") && words.length == 3)
+        || message.endsWith("negates all damage."))
     {
         ; // nothing to do
     }  else if (message.includes(" steals control ")) {
