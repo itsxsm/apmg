@@ -35,12 +35,11 @@ sprites = [
     // east offsets can be calculated from west offsets, or,
     // east offsets can be implemented by using right instead of left.
     {
-        id: "protoman",
         navi: player1,
-        div: document.getElementById("protoman"),
-        hp_div: document.getElementById("protoman-hp"),
-        barrier_div: document.getElementById("protoman-barrier"),
-        effect_div: document.getElementById("protoman-effect"),
+        div: document.getElementById("navi-1"),
+        hp_div: document.getElementById("navi-1-hp"),
+        barrier_div: document.getElementById("navi-1-barrier"),
+        effect_div: document.getElementById("navi-1-effect"),
         left_offset_0s_by_side_and_pose: {
             "west": {
                 "standing": 2,
@@ -56,12 +55,11 @@ sprites = [
         pose: "standing"
     },
     {
-        id: "magicman",
         navi: player2,
-        div: document.getElementById("magicman"),
-        hp_div: document.getElementById("magicman-hp"),
-        barrier_div: document.getElementById("magicman-barrier"),
-        effect_div: document.getElementById("magicman-effect"),
+        div: document.getElementById("navi-2"),
+        hp_div: document.getElementById("navi-2-hp"),
+        barrier_div: document.getElementById("navi-2-barrier"),
+        effect_div: document.getElementById("navi-2-effect"),
         left_offset_0s_by_side_and_pose: {
             "west": {
                 "standing": 3,
@@ -344,7 +342,7 @@ function repaint_obstacles() {
             left_offset_west_0: 0,
             left_offset_east_0: 0
         });
-        document.getElementById("minigame").insertBefore(div, obstacle_anchor);
+        document.getElementById("battlefield").insertBefore(div, obstacle_anchor);
     });
 }
 
