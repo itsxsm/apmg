@@ -205,6 +205,8 @@ const player1 = {
         losses: 0,
         matches: 0
     },
+    navi_chosen_chip_slot: -1,
+    operator_chosen_chip_slot: -1
 };
 
 const player2 = {
@@ -228,7 +230,9 @@ const player2 = {
         ties: 0,
         losses: 0,
         matches: 0
-    }
+    },
+    navi_chosen_chip_slot: -1,
+    operator_chosen_chip_slot: -1
 };
 
 var last_to_act = player2;
@@ -624,6 +628,14 @@ function is_space_damaged(space) {
     return ["Cracked", "Broken"].includes(terrain[space[0]][space[1]]);
 }
 
+function get_chip_slot_and_chooser(navi) {
+    var slot = navi.operator_chosen_chip_slot;
+    if (slot > -1) return [slot, "Operator"];
+    slot = navi.navi_chosen_chip_slot;
+    if (slot > -1) return [slot, "Navi"]
+    return [-1, "None"];
+}
+
 // TODO: this method is currently not called,
 // but should be used for better automatic chip selections
 function is_chip_useful_to_navi(battle_chip, navi) {
@@ -908,15 +920,15 @@ function i_use_this_battle_chip(player, battle_chip) {
 }
 
 function i_start_my_turn(player) {
-    player.navi_chosen_chip = random_item(player.hand);
+    player.navi_chosen_chip_slot = Math.floor(Math.random() * 5);
 }
 
 function i_end_my_turn(player) {
-    const my_battle_chip = player.operator_chosen_chip
-        || player.navi_chosen_chip;
-    if (!my_battle_chip) return; // expected once per battle at the start
-    player.operator_chosen_chip = null;
-    player.navi_chosen_chip = null;
+    const [my_slot, chooser] = get_chip_slot_and_chooser(player);
+    if (chooser == "None") return; // expected once per battle at the start
+    player.operator_chosen_chip_slot = -1;
+    player.navi_chosen_chip_slot = -1;
+    const my_battle_chip = player.hand[my_slot];
     i_use_this_battle_chip(player, my_battle_chip);
 }
 

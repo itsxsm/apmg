@@ -35,12 +35,11 @@ sprites = [
     // east offsets can be calculated from west offsets, or,
     // east offsets can be implemented by using right instead of left.
     {
-        id: "protoman",
         navi: player1,
-        div: document.getElementById("protoman"),
-        hp_div: document.getElementById("protoman-hp"),
-        barrier_div: document.getElementById("protoman-barrier"),
-        effect_div: document.getElementById("protoman-effect"),
+        div: document.getElementById("navi-1"),
+        hp_div: document.getElementById("navi-1-hp"),
+        barrier_div: document.getElementById("navi-1-barrier"),
+        effect_div: document.getElementById("navi-1-effect"),
         left_offset_0s_by_side_and_pose: {
             "west": {
                 "standing": 2,
@@ -56,12 +55,11 @@ sprites = [
         pose: "standing"
     },
     {
-        id: "magicman",
         navi: player2,
-        div: document.getElementById("magicman"),
-        hp_div: document.getElementById("magicman-hp"),
-        barrier_div: document.getElementById("magicman-barrier"),
-        effect_div: document.getElementById("magicman-effect"),
+        div: document.getElementById("navi-2"),
+        hp_div: document.getElementById("navi-2-hp"),
+        barrier_div: document.getElementById("navi-2-barrier"),
+        effect_div: document.getElementById("navi-2-effect"),
         left_offset_0s_by_side_and_pose: {
             "west": {
                 "standing": 3,
@@ -249,22 +247,22 @@ function move_navi_to_space(navi, space) {
 }
 
 function repaint_battle_chip_cards() {
-    var found = false;
-    const chosen_chip = player1.operator_chosen_chip ||
-        player1.navi_chosen_chip;
+    const [slot, chooser] = get_chip_slot_and_chooser(player1);
     card_divs.forEach((div, idx) => {
-        if (found) return; 
         const card_number = player1.hand[idx][0].padStart(3, 0);
         div.style.backgroundImage =
             `url('sprites/cards_bn1/card${card_number}.gif')`;
-        if (player1.hand[idx] == chosen_chip) {
+        if (idx == slot) {
             div.parentElement.classList.add("chosen");
-            if (player1.operator_chosen_chip)
+            if (chooser == "Operator")
                 div.parentElement.classList.add("operator-choice");
-            found = true;
         } else {
             div.parentElement.classList.remove("chosen", "operator-choice");
         }
+
+        // TODO: collect divs once at start instead
+        document.getElementById(`chip-name-${idx}`).innerHTML
+            = name_of(player1.hand[idx]);
     });
 }
 
@@ -344,7 +342,7 @@ function repaint_obstacles() {
             left_offset_west_0: 0,
             left_offset_east_0: 0
         });
-        document.getElementById("minigame").insertBefore(div, obstacle_anchor);
+        document.getElementById("battlefield").insertBefore(div, obstacle_anchor);
     });
 }
 
