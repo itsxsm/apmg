@@ -128,10 +128,8 @@ const battle_chip_data_from_bn1 = [
     ["125", "FireAura", "BGINT", "Fire", "", "Null<40dmg Weak vs. [Aqua]", "***", "Guard Barrier Aura 40"],
     ["126", "WoodAura", "CFJOQ", "Wood", "", "Null<80dmg Weak vs. [Fire]", "****", "Guard Barrier Aura 80"],
     ["127", "LifeAura", "AHKMP", "None", "", "Negate all attacks w/ damage<100", "*****", "Guard Barrier Aura 100"]
-]
-
+];
 // TEST CHANGES: Steal Rarity *** => *
-
 
 const NAME_INDEX = 1;
 const CODES_INDEX = 2;
@@ -183,16 +181,19 @@ const terrain = [
 ];
 const obstacles = [];
 
-const STARTING_HP = 600;
+const STARTING_HP = 500;
 
 const player1 = {
     kind: 'Navi',
     name: 'ProtoMan.nav',
-    hp: STARTING_HP,
-    max_hp: STARTING_HP,
     space: [0, 0],
     is_east: false,
     hand: [],
+    // NOTE: these are not the real Challenger values for ProtoMan.EXE
+    hp: STARTING_HP,
+    max_hp: STARTING_HP,
+    accuracy: "B",
+    dodging: "B",
     records: {
         chip_ids_used_this_match: [],
         chip_uses_by_id: [],
@@ -204,16 +205,21 @@ const player1 = {
         losses: 0,
         matches: 0
     },
+    navi_chosen_chip_slot: -1,
+    operator_chosen_chip_slot: -1
 };
 
 const player2 = {
     kind: 'Navi',
     name: 'MagicMan.nav',
-    hp: STARTING_HP,
-    max_hp: STARTING_HP,
     space: [5, 2],
     is_east: true,
     hand: [],
+    // NOTE: these are not the real Challenger values for MagicMan.EXE
+    accuracy: "B",
+    dodging: "B",
+    hp: STARTING_HP,
+    max_hp: STARTING_HP,
     records: {
         chip_ids_used_this_match: [],
         chip_uses_by_id: [],
@@ -224,12 +230,12 @@ const player2 = {
         ties: 0,
         losses: 0,
         matches: 0
-    }
+    },
+    navi_chosen_chip_slot: -1,
+    operator_chosen_chip_slot: -1
 };
 
 var last_to_act = player2;
-
-const BASE_HITRATE = 0.9;
 
 const reporter = { interpreters: [] };
 
@@ -373,6 +379,10 @@ function is_space_gap(space) { return terrain[space[0]][space[1]] == "Broken"; }
 function is_the_game_over() { return is_kod(player1) || is_kod(player2); }
 
 function name_of(x) {
+    if (x?.kind == "Obstacle") {
+        if (obstacles.filter(o => o.name == x.name).length > 1)
+            return `${x.name} ${x.unique_id}`;
+    }
     return (Array.isArray(x) ? x[NAME_INDEX] : x?.name ) || "Anonymous";
 }
 
@@ -604,6 +614,129 @@ function nearest_space_where_player_can_hit_space_with_chip(
     ));
 }
 
+function occupants_of_spaces(spaces) {
+    // TODO: refactor for better efficiency
+    return spaces.map(space => get_occupant(space)).filter(x => x);
+}
+
+function is_space_open(space, hit_spaces = [], air_shoes = false) {
+    if (!is_space_valid(space) || is_space_occupied(space)) return false;
+    return air_shoes || !is_space_gap(space);
+}
+
+function is_space_damaged(space) {
+    return ["Cracked", "Broken"].includes(terrain[space[0]][space[1]]);
+}
+
+function get_chip_slot_and_chooser(navi) {
+    var slot = navi.operator_chosen_chip_slot;
+    if (slot > -1) return [slot, "Operator"];
+    slot = navi.navi_chosen_chip_slot;
+    if (slot > -1) return [slot, "Navi"]
+    return [-1, "None"];
+}
+
+// TODO: this method is currently not called,
+// but should be used for better automatic chip selections
+function is_chip_useful_to_navi(battle_chip, navi) {
+    if (battle_chip[DAMAGE_INDEX] != "") {
+        // TODO: this should check whether the navi can line up to use the chip
+        return true;
+    }
+
+    const name = name_of(battle_chip);
+    if (name.startsWith("Recover")) return navi.hp < navi.max_hp;
+    if (name == "Repair") {
+        return !!ALL_SPACES.find(space => {
+            return is_space_damaged(space)
+            && does_player_control_space(navi, space);
+        });
+    }
+
+    if (battle_chip[TYPES_INDEX].split(" ").includes("Barrier")) {
+        // a navi with a barrier shouldn't overwrite it with another
+        return !navi.barrier_chip;
+    }
+
+    return true; // if no specific check, assume useful by default
+}
+
+function get_hitcheck_modifier(player, target) {
+    if (!is_navi(player)) {
+        console.log("ERROR: get_hitcheck_modifier for non-navi attacker");
+        return 1.0;
+    }
+    if (!is_navi(target)) {
+        console.log("ERROR: get_hitcheck_modifier for non-navi target");
+        return 1.0;
+    }
+    const hit_class_values = {"S": 5, "A": 4, "B": 3, "C": 2};
+    var aim_num = hit_class_values[player.accuracy];
+    var dodge_num = hit_class_values[target.dodging];
+    if (isNaN(aim_num) || isNaN(dodge_num)) {
+        console.log("ERROR: hitcheck class invalid");
+        return 1.0;
+    }
+
+    // the balancing here is based on the median MaxHP of Challenger Navis
+    // being 500 and the class increment being 50;
+    // a boost of 1 class should give the same advantage in any stat.
+    if (aim_num >= dodge_num) return 1.0 + (aim_num - dodge_num) * 0.1;
+
+    // dodge > aim needs to be calculated a little differently
+    // consider that "effective survivability advantage" = 1 / hitrate, e.g...
+    // 90% hit =>  1.1111x advantage for target (vs 100% hit)
+    // 50% hit =>  2.0000x advantage for target
+    // 10% hit => 10.0000x advantage for target
+    //  0% hit => Infinite advantage for target
+    // so we solve to make the dodge advantage = aim advantage above
+    // (1.0 / (base_hit * mod)) = (1.0 / base_hit) * (1.0 + 0.1 * num_diff)
+    // factor out (1.0 / base_hit)
+    // 1.0 / mod = 1.0 + 0.1 * num_diff
+    // mod = 1.0 / (1.0 + 0.1 * num_diff);
+    return 1.0 / (1.0 + 0.1 * (dodge_num - aim_num));
+}
+
+function where_does_navi_dodge_chip_from_attacker_striking_spaces(
+    target, battle_chip, attacker, hit_spaces)
+{
+    if (!is_navi(attacker)) {
+        console.log("ERROR: dodge check called with non-navi attacker");
+        return undefined;
+    }
+    if (!is_navi(target)) {
+        console.log("ERROR: dodge check called with non-navi target");
+        return null;
+    }
+    if (!hit_spaces.find(space => are_spaces_equal(space, target.space))) {
+        console.log("ERROR: dodge check called on chip not lined up");
+        return undefined;
+    }
+    dodge_spaces = [
+        [target.space[0] - 1, target.space[1]],
+        [target.space[0] + 1, target.space[1]],
+        [target.space[0], target.space[1] - 1],
+        [target.space[0], target.space[1] + 1]
+    ].filter(space => {
+        return is_space_open(space)
+            && does_player_control_space(target, space)
+            && !hit_spaces.find(hit_space => {
+                return are_spaces_equal(space, hit_space);
+            });
+    });
+    var dodge_rate = dodge_spaces.length * 0.1;
+    var hit_rate = (1.0 - dodge_rate) * get_hitcheck_modifier(attacker, target);
+    if (hit_rate < 0.25) {
+        console.log("ERROR: calculated hit rate < 0.25");
+        hit_rate = 0.25;
+    } else if (hit_rate > 0.95) {
+        hit_rate = 0.95;
+    }
+
+    if (Math.random() > hit_rate) return random_item(dodge_spaces);
+    return null;
+}
+
 // *** mutating functions on simple objects ************************************
 
 function shuffle(list) {
@@ -619,10 +752,13 @@ function shuffle(list) {
 
 // *** navi action methods *****************************************************
 
-function i_move_to_space(player, space) {
+function i_move_to_space(player, space, is_dodge = false) {
     // TODO: pathing
 
-    if (are_spaces_equal(player.space, space)) return;
+    if (are_spaces_equal(player.space, space)) {
+        if (is_dodge) console.log("ERROR: navi dodge to same space");
+        return;
+    }
 
     if (is_space_occupied(space)) {
         console.log("ERROR: move called on occupied space");
@@ -633,15 +769,26 @@ function i_move_to_space(player, space) {
     if (terrain[old_loc[0]][old_loc[1]] == "Cracked") { 
         terrain[old_loc[0]][old_loc[1]] = "Broken";
     }
-    report(`${name_of(player)} moves to ${space[0]}, ${space[1]}.`)
     player.space[0] = space[0];
     player.space[1] = space[1];
+    const verb = is_dodge ? "dodges" : "moves";
+    report(`${name_of(player)} ${verb} to ${space[0]}, ${space[1]}.`)
+}
+
+function i_dodge_to_space(navi, space) {
+    i_move_to_space(navi, space, true);
 }
 
 function i_use_this_attack(player, battle_chip) {
-    var target = get_opponent(player);
+    const has_damage = battle_chip[DAMAGE_INDEX] != "";
+    if (!has_damage) {
+        console.log("ERROR: i_use_this_attack called for non-attack chip");
+        return;
+    }
+
+    var opponent = get_opponent(player);
     var nearest_space = nearest_space_where_player_can_hit_space_with_chip(
-        player, target.space, battle_chip
+        player, opponent.space, battle_chip
     );
 
     if (!nearest_space) {
@@ -652,7 +799,6 @@ function i_use_this_attack(player, battle_chip) {
             );
             return nearest_space;
         });
-        if (nearest_space) target = hittable_obstacle;
     }
 
     if (!nearest_space) {
@@ -666,23 +812,48 @@ function i_use_this_attack(player, battle_chip) {
         i_move_to_space(player, nearest_space);
     };
 
+    // First, we determine the targets hit by the navi assuming no dodging. 
+    var hit_spaces = spaces_struck_by_player_with_chip_from_space(
+        player, battle_chip, player.space
+    );
+    var hit_targets = occupants_of_spaces(hit_spaces);
+    if (hit_targets.length == 0) {
+        console.log("ERROR: hit_targets is null when nearest_space is not");
+        return;
+    }
 
-    // TODO: currently, a chip hits at most one target, the one lined up for.
-    // chips should hit every panel in the strike zone.
-    if (Math.random() < BASE_HITRATE) { 
-        var damage = parseInt(battle_chip[DAMAGE_INDEX], 10);
-        if (battle_chip[DAMAGE_INDEX] == "???") {
-            damage = get_special_damage(player, battle_chip);
-        }
-        deal_damage_amount_from_player_to_target_with_chip(
-            damage, player, target, battle_chip
+    // TODO: this will need revision for team battles; written for duels only
+    var dodge_space = null;
+    if (hit_targets.includes(opponent)) {
+        dodge_space =
+            where_does_navi_dodge_chip_from_attacker_striking_spaces(
+                opponent, battle_chip, player, hit_spaces
+            );
+    }
+
+    if (dodge_space) {
+        // move the opponent and then check hit spaces and targets again.
+        i_dodge_to_space(opponent, dodge_space);
+
+        hit_spaces = spaces_struck_by_player_with_chip_from_space(
+            player, battle_chip, player.space
         );
-    } else {
-        // TODO: when attacker misses, target should move to an adjacent panel
-        // MVP: targets with no safe adjacent spaces cannot dodge
-        // FUTURE: allow multi-step dodges for long windups and slow projectiles
+        hit_targets = occupants_of_spaces(hit_spaces);
+        if (hit_targets.indexOf(opponent) != -1) {
+            console.log("ERROR: opponent still hit after dodge");
+        }
+    }
+
+    if (!hit_targets.length) {
         player_misses_with_chip(player, battle_chip);
-    }   
+        return;
+    }
+
+    hit_targets.forEach(target => {
+        deal_damage_from_player_to_target_with_chip(
+            player, target, battle_chip
+        );
+    }); 
 }
 
 function remove_chip_from_players_hand(battle_chip, player) {
@@ -748,19 +919,25 @@ function i_use_this_battle_chip(player, battle_chip) {
     }
 }
 
+function i_start_my_turn(player) {
+    player.navi_chosen_chip_slot = Math.floor(Math.random() * 5);
+}
+
+function i_end_my_turn(player) {
+    const [my_slot, chooser] = get_chip_slot_and_chooser(player);
+    if (chooser == "None") return; // expected once per battle at the start
+    player.operator_chosen_chip_slot = -1;
+    player.navi_chosen_chip_slot = -1;
+    const my_battle_chip = player.hand[my_slot];
+    i_use_this_battle_chip(player, my_battle_chip);
+}
+
 function i_take_my_turn(player) {
     turns += 1;
-    report(`${name_of(player)}'s turn. (${player.hp}/${player.max_hp})`);
+    i_end_my_turn(get_opponent(player)); // needs revision for teams
     before_every_turn();
-
-    var my_battle_chip;
-    if (player.operator_chosen_chip) {
-        my_battle_chip = player.operator_chosen_chip;
-        player.operator_chosen_chip = null;
-    } else {
-        my_battle_chip = random_item(player.hand);
-    }
-    i_use_this_battle_chip(player, my_battle_chip);
+    i_start_my_turn(player);
+    report(`${name_of(player)}'s turn. (${player.hp}/${player.max_hp})`);
 }
 
 // *** world action methods ****************************************************
@@ -851,6 +1028,11 @@ function player_places_obstacle_with_chip(player, battle_chip) {
         battle_chip[TYPES_INDEX].split(' '), "Every_Turn"
     )
     spaces.forEach(space => {
+        const used_ids = new Set(
+            obstacles.filter(o => o.name == chip_name).map(o => o.unique_id)
+        );
+        const unique_id = "ABCDEFGHIJKLMNOPQR".split("")
+            .find(id => !used_ids.has(id));
         const new_obstacle = {
             kind: 'Obstacle',
             hp: max_hp,
@@ -861,6 +1043,7 @@ function player_places_obstacle_with_chip(player, battle_chip) {
             is_east: player.is_east,
             name: chip_name,
             chip: battle_chip,
+            unique_id: unique_id
         };
         obstacles.push(new_obstacle);
     });
@@ -906,6 +1089,7 @@ function player_sets_terrain_with_chip(player, battle_chip) {
             spaces_changed++;
         }
     });
+    if (spaces_changed == 0) return;
     report(`${name_of(player)} changes the terrain of ${spaces_changed} `
         + `to ${new_terrain}.`);
 }
@@ -915,10 +1099,13 @@ function report(message) {
     reporter.interpreters.forEach(interpreter => { interpreter(message); });
 }
 
-function deal_damage_amount_from_player_to_target_with_chip(
-    amount, player, target, battle_chip)
+function deal_damage_from_player_to_target_with_chip(
+    player, target, battle_chip)
 {
-    var damage = amount;
+    var damage = parseInt(battle_chip[DAMAGE_INDEX], 10);
+    if (battle_chip[DAMAGE_INDEX] == "???") {
+        damage = get_special_damage(player, battle_chip);
+    }
     const chip_element = battle_chip[ELEMENT_INDEX] || "None";
     const target_element = target.element || "None";
     const both_elemental = (chip_element != "None" && target_element != "None")
@@ -999,7 +1186,7 @@ function deal_damage_amount_from_player_to_target_with_chip(
     if (damage > 0) {
         target.hp -= damage;
         report(
-            `${name_of(player)} deals ${amount} damage to ${name_of(target)}.`
+            `${name_of(player)} deals ${damage} damage to ${name_of(target)}.`
         );
         if (does_heal_self) heal_player_by_amount(player, damage);
         if (target.kind == "Obstacle" && types.includes("Breaker")) {
@@ -1248,6 +1435,12 @@ function final_report() {
 function run_game(
     use_timer, matches_to_play = 1, turn_time = 1000, await_operator = false)
 {
+    // deal hands from the start to enable quick rerolls
+    // when testing particular chips
+    deal_player_a_hand(player1);
+    deal_player_a_hand(player2);
+    report("Game started.");
+
     if (use_timer) {
         _interval_settings.use = true;
         _interval_settings.matches_to_play = matches_to_play;

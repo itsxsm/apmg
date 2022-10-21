@@ -1,331 +1,165 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<style>
-  #minigame {
-    margin: 0 auto;
-    position: relative;
-    width: 240px;
-    height: 150px;
-    z-index: -1000;
-    border: 1px solid blue;
-  }
-
-  .panel {
-    position: absolute;
-    width: 40px;
-    height: 24px;
-    z-index: 0;
-  }
-  .panel.row_0 {
-    bottom: 56px;
-  }
-  .panel.row_1 {
-    bottom: 32px;
-  }
-  .panel.row_2 {
-    bottom: 0px;
-    height: 32px;
-  }
-  .panel.col_0 {
-    left: 0x;
-  }
-  .panel.col_1 {
-    left: 40px;
-  }
-  .panel.col_2 {
-    left: 80px;
-  }
-  .panel.col_3 {
-    left: 120px;
-  }
-  .panel.col_4 {
-    left: 160px;
-  }
-  .panel.col_5 {
-    left: 200px;
-  }
-  .panel.row_0.west {
-    background: url("sprites/battlefield_exe2.gif") -5px -239px;
-  }
-  .panel.row_1.west {
-    background: url("sprites/battlefield_exe2.gif") -5px -263px;
-  }
-  .panel.row_2.west {
-    background: url("sprites/battlefield_exe2.gif") -5px -287px;
-  }
-  .panel.row_0.east {
-    background: url("sprites/battlefield_exe2.gif") -125px -239px;
-  }
-  .panel.row_1.east {
-    background: url("sprites/battlefield_exe2.gif") -125px -263px;
-  }
-  .panel.row_2.east {
-    background: url("sprites/battlefield_exe2.gif") -125px -287px;
-  }
-
-  .navi {
-    position: absolute;
-  }
-  .navi-hp {
-    position: absolute;
-    font-family: andale mono, monospace;
-    font-size: 14px;
-    color: #f0e8c8;
-    text-shadow:
-      -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-    bottom: -15px;
-    left: 5px;
-    z-index: 1000;
-  }
-  .navi-barrier {
-    position: absolute;
-    opacity:  0.85;
-    bottom: 0px;
-    left: 0px;
-    z-index: 0;
-  }
-  .navi-effect {
-    position: absolute;
-    bottom: 0px;
-    left: 0px;
-    z-index: 1;
-    background: none;
-  }
-
-  /* TODO: for proper handling of pose height changes, set position from bottom */;
-  #protoman {
-    bottom: 62px; /* why does this not apply at start if .west.standing bottom is unset ?? */
-    z-index: 110;
-  }
-  #protoman.west.standing {
-    bottom: 62px; /* why does this have to be set here and not on #protoman ?? */
-    left: 2px;
-    width: 50px;
-    height: 55px;
-    background: url("sprites/ProtoMan_west.gif") -183px -182px;
-  }
-  #protoman.west.attacking {
-    width: 51px;
-    height: 68px;
-    background: url("sprites/ProtoMan_west.gif") -8px -244px;
-  }
-  #protoman.west.struck {
-    width: 38px;
-    height: 57px;
-    background: url("sprites/ProtoMan_west.gif") -261px -394px;    
-  }
-
-  #magicman {
-    bottom: 2px;
-    z-index: 310;
-  }
-  #magicman.east.standing {
-    left: 203px;
-    width: 38px;
-    height: 67px;
-    background: url("sprites/MagicMan_east.gif") -131px -317px;
-  }
-  #magicman.east.attacking {
-    width: 49px;
-    height: 70px;
-    background: url("sprites/MagicMan_east.gif") -253px -123px;    
-  }
-  #magicman.east.struck {
-    /* MagicMan has no struck sprite so teleport is used as a stand-in */
-    width: 35px;
-    height: 81px;
-    background: url("sprites/MagicMan_east.gif") -257px -305px;
-  }
-
-  /* TODO: these barriers are all the same, replace with proper sprites */
-
-  /* TODO: resize barrier width/height depending on the navi sprite so that
-     the absolute clearance above is the same as MegaMan.EXE
-     and the clearance on the sides is at least 2px */
-  .barrier-Barrier {
-    /*opacity: 0.9;*/
-    margin-left: -7px;
-    width: 59px;
-    height: 54px;
-    background: url("sprites/barrier_anim.gif");
-  }
-
-  .effect-Recover {
-    width: 31px;
-    height: 61px;
-    margin-left: 5px;
-  }
-
-  /* Sprites Inc. oddly does not have the obstacle sprites from BN1 */
-  /* Various placeholders are used for now until they can be grabbed */
-
-  .obstacle-RockCube {
-    width: 34px;
-    height: 45px;
-    margin-left: 3px;
-    background: url("sprites/battlefield_exe2.gif") -306px -186px;
-  }
-  .obstacle-IceCube {
-    /* TODO: this is just RockCube again, replace with IceMan's IceCube */;
-    width: 36px;
-    height: 39px;
-    margin-left: 2px;
-    background: url("sprites/IceMan.png") -315px -357px;
-  }
-  .obstacle-Candle {
-    width: 28px;
-    height: 62px;
-    margin-left: 6px;
-    background: url("sprites/candle_anim.gif");
-  }
-  .obstacle-Anubis {
-    width: 19px;
-    height: 54px;
-    margin-left: 10px;
-    background: url("sprites/battlefield_exe2.gif") -425px -179px;
-  }
-
-  .terrain {
-    position: absolute;
-    left: 0px;
-    bottom: 0px;
-  }
-
-  .terrain-Normal {
-    margin-left: 3px;
-    margin-bottom: 3px;
-    width: 34px;
-    height: 17px;
-    background: url("sprites/battlefield_exe2.gif") -18px -337px;
-  }
-
-  .terrain-Cracked {
-    margin-left: 3px;
-    margin-bottom: 3px;
-    width: 34px;
-    height: 17px;
-    background: url("sprites/battlefield_exe2.gif") -58px -337px;
-  }
-
-  .terrain-Broken {
-    margin-left: 3px;
-    margin-bottom: 3px;
-    width: 34px;
-    height: 17px;
-    background: url("sprites/battlefield_exe2.gif") -98px -337px;    
-  }
-
-  .row_2 .terrain-Normal {
-    margin-bottom: 11px;
-  }
-  .row_2 .terrain-Cracked {
-    margin-bottom: 11px;
-  }
-  .row_2 .terrain-Broken {
-    margin-bottom: 11px;
-  }
-
-  #hand {
-    max-width: 350px;
-    margin-top: 20px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  .battle-chip-card {
-    width: 64px;
-    height: 56px;
-    border: 1px solid green;
-    display: inline-block;
-  }
-  
-</style>
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./navi_sprite_styles.css">
 </head>
 <body>
   <br>
   <div id="minigame">
-    <div id="panel_0_0" class="panel row_0 col_0 west">
-      <div id="terrain_0_0" class="terrain terrain-Normal"></div>
-    </div>
-    <div id="panel_0_1" class="panel row_1 col_0 west">
-      <div id="terrain_0_1" class="terrain terrain-Normal"></div>      
-    </div>
-    <div id="panel_0_2" class="panel row_2 col_0 west">
-      <div id="terrain_0_2" class="terrain terrain-Normal"></div>
-    </div>
-    <div id="panel_1_0" class="panel row_0 col_1 west">
-      <div id="terrain_1_0" class="terrain terrain-Normal"></div>
-    </div>
-    <div id="panel_1_1" class="panel row_1 col_1 west">
-      <div id="terrain_1_1" class="terrain terrain-Normal"></div>
-    </div>
-    <div id="panel_1_2" class="panel row_2 col_1 west">
-      <div id="terrain_1_2" class="terrain terrain-Normal"></div>
-    </div>
-    <div id="panel_2_0" class="panel row_0 col_2 west">
-      <div id="terrain_2_0" class="terrain terrain-Normal"></div>
-    </div>
-    <div id="panel_2_1" class="panel row_1 col_2 west">
-      <div id="terrain_2_1" class="terrain terrain-Normal"></div>
-    </div>
-    <div id="panel_2_2" class="panel row_2 col_2 west">
-      <div id="terrain_2_2" class="terrain terrain-Normal"></div>
-    </div>
-    <div id="panel_3_0" class="panel row_0 col_3 east">
-      <div id="terrain_3_0" class="terrain terrain-Normal"></div>
-    </div>
-    <div id="panel_3_1" class="panel row_1 col_3 east">
-      <div id="terrain_3_1" class="terrain terrain-Normal"></div>
-    </div>
-    <div id="panel_3_2" class="panel row_2 col_3 east">
-      <div id="terrain_3_2" class="terrain terrain-Normal"></div>
-    </div>
-    <div id="panel_4_0" class="panel row_0 col_4 east">
-      <div id="terrain_4_0" class="terrain terrain-Normal"></div>
-    </div>
-    <div id="panel_4_1" class="panel row_1 col_4 east">
-      <div id="terrain_4_1" class="terrain terrain-Normal"></div>
-    </div>
-    <div id="panel_4_2" class="panel row_2 col_4 east">
-      <div id="terrain_4_2" class="terrain terrain-Normal"></div>
-    </div>
-    <div id="panel_5_0" class="panel row_0 col_5 east">
-      <div id="terrain_5_0" class="terrain terrain-Normal"></div>
-    </div>
-    <div id="panel_5_1" class="panel row_1 col_5 east">
-      <div id="terrain_5_1" class="terrain terrain-Normal"></div>
-    </div>
-    <div id="panel_5_2" class="panel row_2 col_5 east">
-      <div id="terrain_5_2" class="terrain terrain-Normal"></div>
-    </div>
+    <div id="battlefield">
+      <div id="panel_0_0" class="panel row_0 col_0 west">
+        <div id="terrain_0_0" class="terrain terrain-Normal"></div>
+      </div>
+      <div id="panel_0_1" class="panel row_1 col_0 west">
+        <div id="terrain_0_1" class="terrain terrain-Normal"></div>      
+      </div>
+      <div id="panel_0_2" class="panel row_2 col_0 west">
+        <div id="terrain_0_2" class="terrain terrain-Normal"></div>
+      </div>
+      <div id="panel_1_0" class="panel row_0 col_1 west">
+        <div id="terrain_1_0" class="terrain terrain-Normal"></div>
+      </div>
+      <div id="panel_1_1" class="panel row_1 col_1 west">
+        <div id="terrain_1_1" class="terrain terrain-Normal"></div>
+      </div>
+      <div id="panel_1_2" class="panel row_2 col_1 west">
+        <div id="terrain_1_2" class="terrain terrain-Normal"></div>
+      </div>
+      <div id="panel_2_0" class="panel row_0 col_2 west">
+        <div id="terrain_2_0" class="terrain terrain-Normal"></div>
+      </div>
+      <div id="panel_2_1" class="panel row_1 col_2 west">
+        <div id="terrain_2_1" class="terrain terrain-Normal"></div>
+      </div>
+      <div id="panel_2_2" class="panel row_2 col_2 west">
+        <div id="terrain_2_2" class="terrain terrain-Normal"></div>
+      </div>
+      <div id="panel_3_0" class="panel row_0 col_3 east">
+        <div id="terrain_3_0" class="terrain terrain-Normal"></div>
+      </div>
+      <div id="panel_3_1" class="panel row_1 col_3 east">
+        <div id="terrain_3_1" class="terrain terrain-Normal"></div>
+      </div>
+      <div id="panel_3_2" class="panel row_2 col_3 east">
+        <div id="terrain_3_2" class="terrain terrain-Normal"></div>
+      </div>
+      <div id="panel_4_0" class="panel row_0 col_4 east">
+        <div id="terrain_4_0" class="terrain terrain-Normal"></div>
+      </div>
+      <div id="panel_4_1" class="panel row_1 col_4 east">
+        <div id="terrain_4_1" class="terrain terrain-Normal"></div>
+      </div>
+      <div id="panel_4_2" class="panel row_2 col_4 east">
+        <div id="terrain_4_2" class="terrain terrain-Normal"></div>
+      </div>
+      <div id="panel_5_0" class="panel row_0 col_5 east">
+        <div id="terrain_5_0" class="terrain terrain-Normal"></div>
+      </div>
+      <div id="panel_5_1" class="panel row_1 col_5 east">
+        <div id="terrain_5_1" class="terrain terrain-Normal"></div>
+      </div>
+      <div id="panel_5_2" class="panel row_2 col_5 east">
+        <div id="terrain_5_2" class="terrain terrain-Normal"></div>
+      </div>
 
-    <div id="protoman" class="navi west standing">
-      <div id="protoman-hp" class="navi-hp">600</div>
-      <div id="protoman-barrier" class="navi-barrier"></div>
-      <div id="protoman-effect" class="navi-effect"></div>
-    </div>
-    <div id="magicman" class="navi east standing">
-      <div id="magicman-hp" class="navi-hp">600</div>
-      <div id="magicman-barrier" class="navi-barrier"></div>
-      <div id="magicman-effect" class="navi-effect"></div>
-    </div>
+      <div id="navi-1" class="navi west standing">
+        <div id="navi-1-hp" class="navi-hp">600</div>
+        <div id="navi-1-barrier" class="navi-barrier"></div>
+        <div id="navi-1-effect" class="navi-effect"></div>
+      </div>
+      <div id="navi-2" class="navi east standing">
+        <div id="navi-2-hp" class="navi-hp">600</div>
+        <div id="navi-2-barrier" class="navi-barrier"></div>
+        <div id="navi-2-effect" class="navi-effect"></div>
+      </div>
 
-    <div id="obstacle-anchor"></div>
-  </div>
-  <div id="hand">
-    <!-- this works for MVP, may need to refactor later 
-         for smooth sliding animations -->
+      <div id="obstacle-anchor"></div>
+    </div>
+    <div id="hand">
+      <!-- this works for MVP, may need to refactor later 
+           for smooth sliding animations -->
 
-    <!-- onclick handlers are for initial pre-Firebase prototyping only -->
-    <div id="battle-chip-card-0"
-      class="battle-chip-card" onclick="operator_chooses_chip_idx(0)"></div>
-    <div id="battle-chip-card-1"
-      class="battle-chip-card" onclick="operator_chooses_chip_idx(1)"></div>
-    <div id="battle-chip-card-2"
-      class="battle-chip-card" onclick="operator_chooses_chip_idx(2)"></div>
-    <div id="battle-chip-card-3"
-      class="battle-chip-card" onclick="operator_chooses_chip_idx(3)"></div>
-    <div id="battle-chip-card-4"
-      class="battle-chip-card" onclick="operator_chooses_chip_idx(4)"></div>
+      <!-- onclick handlers are for initial prototyping only -->
+      <div id="chip-card-and-name-box-0"
+        class="card-and-name-box"
+        onclick="operator_chooses_chip_idx(0)">
+        <div id="chip-card-and-border-box-0" class="card-and-border-box">
+          <!-- borders are implemented as divs so that we can animate the
+            shortening of each segment as time ticks down -->
+          <div id="chip-card-border-top-0"
+            class="card-border card-border-top"></div>
+          <div id="chip-card-border-right-0"
+            class="card-border card-border-right"></div>
+          <div id="chip-card-border-bottom-0"
+            class="card-border card-border-bottom"></div>
+          <div id="chip-card-border-left-0"
+            class="card-border card-border-left"></div>
+          <div id="battle-chip-card-0" class="battle-chip-card"></div>
+        </div>
+        <div id="chip-name-0" class="chip-name"></div>
+      </div><div id="chip-card-and-name-box-1"
+        onclick="operator_chooses_chip_idx(1)"
+        class="card-and-name-box">
+        <div id="chip-card-and-border-box-1" class="card-and-border-box">
+          <div id="chip-card-border-top-1"
+            class="card-border card-border-top"></div>
+          <div id="chip-card-border-right-1"
+            class="card-border card-border-right"></div>
+          <div id="chip-card-border-bottom-1"
+            class="card-border card-border-bottom"></div>
+          <div id="chip-card-border-left-1"
+            class="card-border card-border-left"></div>
+          <div id="battle-chip-card-1" class="battle-chip-card"></div>
+        </div>
+        <div id="chip-name-1" class="chip-name"></div>
+      </div><div id="chip-card-and-name-box-2"
+        onclick="operator_chooses_chip_idx(2)"
+        class="card-and-name-box">
+        <div id="chip-card-and-border-box-2" class="card-and-border-box">
+          <div id="chip-card-border-top-2"
+            class="card-border card-border-top"></div>
+          <div id="chip-card-border-right-2"
+            class="card-border card-border-right"></div>
+          <div id="chip-card-border-bottom-2"
+            class="card-border card-border-bottom"></div>
+          <div id="chip-card-border-left-2"
+            class="card-border card-border-left"></div>
+          <div id="battle-chip-card-2" class="battle-chip-card"></div>
+        </div>
+        <div id="chip-name-2" class="chip-name"></div>
+      </div><div id="chip-card-and-name-box-3"
+        onclick="operator_chooses_chip_idx(3)"
+        class="card-and-name-box">
+        <div id="chip-card-and-border-box-3" class="card-and-border-box">
+          <div id="chip-card-border-top-3"
+            class="card-border card-border-top"></div>
+          <div id="chip-card-border-right-3"
+            class="card-border card-border-right"></div>
+          <div id="chip-card-border-bottom-3"
+            class="card-border card-border-bottom"></div>
+          <div id="chip-card-border-left-3"
+            class="card-border card-border-left"></div>
+          <div id="battle-chip-card-3" class="battle-chip-card"></div>
+        </div>
+        <div id="chip-name-3" class="chip-name"></div>
+      </div><div id="chip-card-and-name-box-4"
+        onclick="operator_chooses_chip_idx(4)"
+        class="card-and-name-box">
+        <div id="chip-card-and-border-box-4" class="card-and-border-box">
+          <div id="chip-card-border-top-4"
+            class="card-border card-border-top"></div>
+          <div id="chip-card-border-right-4"
+            class="card-border card-border-right"></div>
+          <div id="chip-card-border-bottom-4"
+            class="card-border card-border-bottom"></div>
+          <div id="chip-card-border-left-4"
+            class="card-border card-border-left"></div>
+          <div id="battle-chip-card-4" class="battle-chip-card"></div>
+        </div>
+        <div id="chip-name-4" class="chip-name"></div>
+      </div>
+    </div>
   </div>
 
   <script src="mechanics.js" type="text/javascript"></script>
@@ -333,53 +167,3 @@
   <script src="operation.js" type="text/javascript"></script>
   <script src="runner.js" type="text/javascript"></script>
 </body></html>
-
-<!--
-// stage graphics -- battlefield_exe2.gif
-// red_row_0: 5:239 -> 44:262  inclusive border / h=24 w=40 / includes top outline only
-// red_row_1: 5:263 -> 44:286  inclusive border / h=24 w=40 / includes top outline only
-// red_row_2: 5:287 -> 44:318  inclusive border / h=32 w=40 / includes top AND bottom outlines
-
-// blue_row_0: 125:239 -> 164:262
-// blue_row_1: 125:263 -> 164:286
-// blue_row_2: 125:287 -> 164:318
-
-// these are EXCLUSIVE BOXES
-// protoman_standing: 247:182 -> 296:236 (Blues_EXE1.gif, exclusive border)
-// magicman_standing: 131:317 -> 168:383 (MagicMan.png, exclusive border)
-
-
-TERRAIN
-NORMAL
-  18,337 -> 51,353 ; 
-
-CRACKED
-  58,337
-
-BROKEN
-  98, 337
-
-EMPTY
-  138
-
-ICE
-  178
-
-LAVA
-  218
-
-GRASS
-  258
-
-HOLY
-  298
-
-POISON
-  338
-
-MAGNET
-  378
-
--->
-
-

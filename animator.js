@@ -9,6 +9,7 @@ if (!reporter || !player1) {
     throw new Error("script loading order error");
 }
 
+let turn_start_absolute_ms = Date.now();
 const ALL_POSES = ["standing", "attacking", "struck"];
 const ALL_STANDARD_CHIP_TYPES = ["Shot", "Sword", "Toss"];
 const SPECIAL_CHIP_ANIMATIONS = {};
@@ -35,12 +36,11 @@ sprites = [
     // east offsets can be calculated from west offsets, or,
     // east offsets can be implemented by using right instead of left.
     {
-        id: "protoman",
         navi: player1,
-        div: document.getElementById("protoman"),
-        hp_div: document.getElementById("protoman-hp"),
-        barrier_div: document.getElementById("protoman-barrier"),
-        effect_div: document.getElementById("protoman-effect"),
+        div: document.getElementById("navi-1"),
+        hp_div: document.getElementById("navi-1-hp"),
+        barrier_div: document.getElementById("navi-1-barrier"),
+        effect_div: document.getElementById("navi-1-effect"),
         left_offset_0s_by_side_and_pose: {
             "west": {
                 "standing": 2,
@@ -56,12 +56,11 @@ sprites = [
         pose: "standing"
     },
     {
-        id: "magicman",
         navi: player2,
-        div: document.getElementById("magicman"),
-        hp_div: document.getElementById("magicman-hp"),
-        barrier_div: document.getElementById("magicman-barrier"),
-        effect_div: document.getElementById("magicman-effect"),
+        div: document.getElementById("navi-2"),
+        hp_div: document.getElementById("navi-2-hp"),
+        barrier_div: document.getElementById("navi-2-barrier"),
+        effect_div: document.getElementById("navi-2-effect"),
         left_offset_0s_by_side_and_pose: {
             "west": {
                 "standing": 3,
@@ -121,6 +120,24 @@ function get_navi_by_name(navi_name) {
     return null;
 }
 
+function get_occupant_by_name(name) {
+    if (name.endsWith(".nav")) return get_navi_by_name(name);
+
+    var obstacle = null;
+    if (!name.includes(" ")) {
+        obstacle = obstacles.find(o => o.name == name);
+    } else {
+        const [o_name, unique_id] = name.split(" ");
+        obstacle = obstacles.find(o => {
+            return o.name == o_name && o.unique_id == unique_id;
+        });
+    }
+
+    if (obstacle) return obstacle;
+    console.log(`ERROR: no occupant found for name: ${name}`);
+    return undefined;
+}
+
 function get_sprite_by_navi(navi) {
     if (navi == player1) return sprites[0];
     if (navi == player2) return sprites[1];
@@ -172,8 +189,8 @@ function set_sprite_hp(sprite, hp) {
 }
 
 function repaint_for_turn_start() {
+    repaint_battle_chip_cards();
     [player1, player2].forEach(p => {
-        if (p == player1) repaint_battle_chip_cards();
         const sprite = get_sprite_by_navi(p);
         set_sprite_pose(sprite, "standing");
         set_sprite_hp(sprite, p.hp);
@@ -186,24 +203,17 @@ function paint_navi_uses_chip_type_on_target(
     navi, chip_type, target, does_hit = true)
 {
     const sprite = get_sprite_by_navi(navi);
-
-    // TODO: fix for obstacle targets
-    const target_sprite =
-        target ? get_sprite_by_navi(target) : null;
+    const target_sprite = (target && is_navi(target))
+        ? get_sprite_by_navi(target) : null;
 
     // for now fixed attacking pose stands in for all chip uses
     set_sprite_pose(sprite, "attacking");
     if (target_sprite && does_hit) { set_sprite_pose(target_sprite, "struck"); }
 }
 
-function repaint_barriers(for_move_only = false) {
+function repaint_barriers() {
     [sprites[0], sprites[1]].forEach(sprite => {
         const div = sprite.barrier_div;
-
-        // there's nothing to do on move with the semitransparent child div
-        // barrier, but for barrier behind we'll need to move the barrier div
-        // whenever the navi moves.
-        if (for_move_only) return;
 
         var old_class = grab_after_dash(div.className, "barrier");
         if (old_class) old_class = `barrier-${old_class}`;
@@ -223,8 +233,6 @@ function repaint_barriers(for_move_only = false) {
     });
 }
 
-function repaint_barriers_for_move() { repaint_barriers(true) }
-
 function move_navi_to_space(navi, space) {
     if (!are_spaces_equal(space, navi.space))
         log_error("animator got move message out of sync with navi");
@@ -240,10 +248,22 @@ function move_navi_to_space(navi, space) {
 }
 
 function repaint_battle_chip_cards() {
+    const [slot, chooser] = get_chip_slot_and_chooser(player1);
     card_divs.forEach((div, idx) => {
         const card_number = player1.hand[idx][0].padStart(3, 0);
         div.style.backgroundImage =
             `url('sprites/cards_bn1/card${card_number}.gif')`;
+        if (idx == slot) {
+            div.parentElement.classList.add("chosen");
+            if (chooser == "Operator")
+                div.parentElement.classList.add("operator-choice");
+        } else {
+            div.parentElement.classList.remove("chosen", "operator-choice");
+        }
+
+        // TODO: collect divs once at start instead
+        document.getElementById(`chip-name-${idx}`).innerHTML
+            = name_of(player1.hand[idx]);
     });
 }
 
@@ -323,7 +343,7 @@ function repaint_obstacles() {
             left_offset_west_0: 0,
             left_offset_east_0: 0
         });
-        document.getElementById("minigame").insertBefore(div, obstacle_anchor);
+        document.getElementById("battlefield").insertBefore(div, obstacle_anchor);
     });
 }
 
@@ -340,53 +360,64 @@ function animate_message(message) {
     words[words.length - 1] = last_word.slice(0, -1);
     last_word = last_value(words);
 
+    // this if-else should be ordered to exit as early as possible, using
+    // faster checks (==, startsWith, endsWith) before slower (includes)
+
     if (last_char == ')' && message.includes("'s turn")) {
         repaint_for_turn_start();
-    } else if (message.includes(" moves to ")) {
-        if (words.length != 5) {
-            log_error("animator got unexpected 'moves to' report");
-            return;
-        }
-        const navi = get_navi_by_name(words[0]);
-        const space = [parseInt(words[3], 10), parseInt(words[4], 10)];
-        move_navi_to_space(navi, space);
-        repaint_barriers_for_move();
-    } else if (message.includes(" steals control ")) {
-        repaint_panel_control();
-    } else if (message == "Game reset.") {
+    }  else if (message == "Game reset.") {
         repaint_obstacles();
         move_navi_to_space(player1, [0, 0]);
         move_navi_to_space(player2, [5, 2]);
         repaint_panel_control();
         repaint_battle_chip_cards();
         repaint_barriers();
+    } else if (message == "Game started.") {
+        repaint_battle_chip_cards();
+    } else if (message.endsWith("raises a barrier.")
+        || message.endsWith("and is broken.")) {
+        repaint_barriers();
+    } else if (message.endsWith(" is deleted.")
+        || message.endsWith(" has burned out.")
+        || message.includes(" places "))
+    {
+        repaint_obstacles();
+    }   else if (message.includes(" moves to ")
+        || message.includes( "dodges to "))
+    {
+        if (words.length != 5) {
+            log_error("animator got unexpected move/dodge report");
+            return;
+        }
+        const navi = get_navi_by_name(words[0]);
+        const space = [parseInt(words[3], 10), parseInt(words[4], 10)];
+        move_navi_to_space(navi, space);
     } else if (message.includes(" damage to ")) {
         const navi = get_navi_by_name(words[0]);
-        const target = get_navi_by_name(words[5]);
+        const target_name = (words.length == 7) ? `${words[5]} ${words[6]}`
+            : words[5];
+        const target = get_occupant_by_name(target_name);
         paint_navi_uses_chip_type_on_target(navi, "Shot", target, true);
         if (is_navi(target)) {
             const target_sprite = get_sprite_by_navi(target);
             set_sprite_hp(target_sprite, target.hp);
         }
     } else if (message.includes(" misses")) {
+        // TODO: this report is awkward; paint attack pose on chip use instead
         const navi = get_navi_by_name(words[0]);
         paint_navi_uses_chip_type_on_target(navi, "Shot", undefined, false);
-    } else if (message.includes(" places ")
-        || message.endsWith(" is deleted.")
-        || message.endsWith(" has burned out."))
-    {
-        repaint_obstacles();
-    } else if (message.endsWith("raises a barrier.")
-        || message.endsWith("and is broken.")) {
-        repaint_barriers();
-    } else if (message.includes( " recovers " )) {
-        const navi = get_navi_by_name(words[0]);
-        if (navi) paint_recover_effect_on_navi(navi);
     } else if (message.includes(" cannot line up ")
         || (message.includes(" uses ") && words.length == 3)
-        || message.includes(" is already at max HP"))
+        || message.endsWith("negates all damage."))
     {
         ; // nothing to do
+    }  else if (message.includes(" steals control ")) {
+        repaint_panel_control();
+    } else if (message.includes( " recovers " )
+        || message.includes(" is already at max HP"))
+    {
+        const navi = get_navi_by_name(words[0]);
+        if (navi) paint_recover_effect_on_navi(navi);
     } else if (message.includes(" changes the terrain ")) {
         repaint_terrain();
     } else {
@@ -395,6 +426,13 @@ function animate_message(message) {
 }
 
 reporter.interpreters.push(animate_message);
+
+// TODO: move this to begin on interpreter gets game start
+// const countdown_interval = setInterval(() => {
+//     const elapsed_time_ms = Date.now() - turn_start_absolute_ms;
+//     const elapsed_ratio = elapsed_time_ms / _interval_settings.interval_time;
+//     repaint_turn_countdown(elapsed_ratio);
+// }, 50);
 
 // TODO: hands are not yet assigned at load time, change for faster testing
 // repaint_battle_chip_cards();
