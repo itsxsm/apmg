@@ -176,23 +176,25 @@ function print_sprite_boxes_json(sprite_boxes) {
 }
 
 function print_sprite_boxes_css(sprite_boxes) {
-  const my_url = `sprites/whatever.gif`
+  const my_url = `./sprites/whatever.gif`
   var prior_row = -1;
+  var out_str = "\n";
   sprite_boxes.forEach((sprite_box, box_idx) => {
     const s_width = sprite_box.iRange[1] - sprite_box.iRange[0] + 1;
     const s_height = sprite_box.jRange[1] - sprite_box.jRange[0] + 1;
     const min_i = sprite_box.iRange[0];
     const min_j = sprite_box.jRange[1];
     if (sprite_box.row != prior_row) {
-      console.log(`/*    row ${sprite_box.row}   */`);
+      out_str += `/*    row ${sprite_box.row}   */\n`;
       prior_row = sprite_box.row;
     }
-    console.log(`#sprite-${box_idx} {`);
-    console.log(`  width: ${s_width}`);
-    console.log(`  height: ${s_height}`);
-    console.log(`  background: url(${my_url}) -${min_i}px -${min_j}px;`);
-    console.log(`}`);
+    out_str += `#sprite-${box_idx} {\n`;
+    out_str += `  width: ${s_width};\n`;
+    out_str += `  height: ${s_height};\n`;
+    out_str += `  background: url(${my_url}) -${min_i}px -${min_j}px;\n`;
+    out_str += `}\n`;
   });
+  console.log(out_str);
 }
 
 runSpriteFinder();

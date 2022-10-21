@@ -1,0 +1,69 @@
+
+.navi.navi.navi-gutsman.standing {
+  width: 60;
+  height: 52;
+  background: url(sprites/navi_shoot.gif) -21px -59px;
+}
+.navi.navi-gutsman.shooting1 {
+  width: 66;
+  height: 48;
+  background: url(sprites/navi_shoot.gif) -99px -60px;
+}
+.navi.navi-gutsman.shooting2 {
+  width: 64;
+  height: 48;
+  background: url(sprites/navi_shoot.gif) -166px -60px;
+}
+/*    row 1   */
+.navi.navi-roll.standing {
+  width: 35;
+  height: 61;
+  background: url(sprites/navi_shoot.gif) -25px -138px;
+}
+.navi.navi-roll.shooting-1 {
+  width: 47;
+  height: 60;
+  background: url(sprites/navi_shoot.gif) -78px -136px;
+}
+.navi.navi-roll.shooting-2 {
+  width: 45;
+  height: 60;
+  background: url(sprites/navi_shoot.gif) -132px -136px;
+}
+/*    row 2   */
+.navi.navi-protoman.standing {
+  width: 54;
+  height: 51;
+  background: url(sprites/navi_shoot.gif) -36px -207px;
+}
+.navi.navi-protoman.shooting-1 {
+  width: 41;
+  height: 50;
+  background: url(sprites/navi_shoot.gif) -111px -207px;
+}
+.navi.navi-protoman.shooting-2 {
+  width: 51;
+  height: 50;
+  background: url(sprites/navi_shoot.gif) -162px -207px;
+}
+/*    row 3   */
+.navi.navi-megaman.standing {
+  width: 36;
+  height: 44;
+  background: url(sprites/navi_shoot.gif) -30px -276px;
+}
+.navi.navi-megaman.shooting-windup {
+  width: 39;
+  height: 40;
+  background: url(sprites/navi_shoot.gif) -74px -276px;
+}
+.navi.navi-megaman.shooting-1 {
+  width: 39;
+  height: 43;
+  background: url(sprites/navi_shoot.gif) -119px -276px;
+}
+.navi.navi-megaman.shooting-2 {
+  width: 39;
+  height: 43;
+  background: url(sprites/navi_shoot.gif) -163px -276px;
+}
