@@ -2,10 +2,6 @@ const img = document.getElementById('image-1');
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d', {willReadFrequently: true});
 
-const bounding = canvas.getBoundingClientRect();
-let b_width = bounding.width;
-let b_height = bounding.height;
-
 function getPixel(i, j) {
   // reading pixels could be made much more inefficient,
   // using getImageData with larger ranges than 1:1, but: meh
@@ -13,7 +9,13 @@ function getPixel(i, j) {
 }
 
 function runSpriteFinder() {
+  canvas.width = img.width;
+  canvas.height = img.height;
   ctx.drawImage(img, 0, 0);
+  img.style.display = "none";
+
+  const b_width = img.width;
+  const b_height = img.height;
 
   // step 1: find which rows have non-empty pixels
 
@@ -65,7 +67,7 @@ function runSpriteFinder() {
   }
 
   // step 3: within each row block, group column blocks
-  // by repeating steps 1 and 2 over j within the block
+  // by repeating steps 1 and 2 for columns within the block
 
   var col_bounds_by_row_block = [];
   var col_blocks_by_row_block = [];
@@ -125,9 +127,7 @@ function runSpriteFinder() {
     col_blocks_by_row_block.push(col_blocks);
   });
 
-  // step 4: we now have a box for every sprite,
-  // but the j range of all sprites is the same within a row.
-  // Pull in each sprite to its real j range.
+  // step 4: Pull in each sprite to its real individual j range.
 
   const sprite_boxes = [];
   row_blocks.forEach((row_block, row_block_idx) => {
@@ -137,6 +137,7 @@ function runSpriteFinder() {
       const min_i = col_block[0];
       const max_i = col_block[1];
       const sprite_box = {
+        row: row_block_idx,
         iRange: [min_i, max_i],
         jRange: [undefined, undefined]
       };
@@ -165,8 +166,32 @@ function runSpriteFinder() {
     })
   });
 
+  print_sprite_boxes_css(sprite_boxes);
+}
+
+function print_sprite_boxes_json(sprite_boxes) {
   sprite_boxes.forEach(sprite_box => {
     console.log(JSON.stringify(sprite_box));
+  });
+}
+
+function print_sprite_boxes_css(sprite_boxes) {
+  const my_url = `sprites/whatever.gif`
+  var prior_row = -1;
+  sprite_boxes.forEach((sprite_box, box_idx) => {
+    const s_width = sprite_box.iRange[1] - sprite_box.iRange[0] + 1;
+    const s_height = sprite_box.jRange[1] - sprite_box.jRange[0] + 1;
+    const min_i = sprite_box.iRange[0];
+    const min_j = sprite_box.jRange[1];
+    if (sprite_box.row != prior_row) {
+      console.log(`/*    row ${sprite_box.row}   */`);
+      prior_row = sprite_box.row;
+    }
+    console.log(`#sprite-${box_idx} {`);
+    console.log(`  width: ${s_width}`);
+    console.log(`  height: ${s_height}`);
+    console.log(`  background: url(${my_url}) -${min_i}px -${min_j}px;`);
+    console.log(`}`);
   });
 }
 

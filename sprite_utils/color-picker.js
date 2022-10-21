@@ -1,3 +1,6 @@
+// Original Source:
+// https://github.com/mdn/dom-examples/blob/main/canvas/pixel-manipulation/color-picker.js
+
 const img = document.getElementById('image-1');
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
