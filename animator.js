@@ -9,6 +9,7 @@ if (!reporter || !player1) {
     throw new Error("script loading order error");
 }
 
+let turn_start_absolute_ms = Date.now();
 const ALL_POSES = ["standing", "attacking", "struck"];
 const ALL_STANDARD_CHIP_TYPES = ["Shot", "Sword", "Toss"];
 const SPECIAL_CHIP_ANIMATIONS = {};
@@ -425,6 +426,13 @@ function animate_message(message) {
 }
 
 reporter.interpreters.push(animate_message);
+
+// TODO: move this to begin on interpreter gets game start
+// const countdown_interval = setInterval(() => {
+//     const elapsed_time_ms = Date.now() - turn_start_absolute_ms;
+//     const elapsed_ratio = elapsed_time_ms / _interval_settings.interval_time;
+//     repaint_turn_countdown(elapsed_ratio);
+// }, 50);
 
 // TODO: hands are not yet assigned at load time, change for faster testing
 // repaint_battle_chip_cards();
