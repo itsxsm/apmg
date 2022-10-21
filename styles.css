@@ -1,7 +1,6 @@
 #minigame {
   margin: 0 auto;
   position: relative;
-  z-index: -1000;
   border: 1px solid blue;
 }
 
@@ -10,7 +9,6 @@
   position: relative;
   width: 240px;
   height: 150px;
-  z-index: -1000;
   border: 1px solid blue;
 }
 
