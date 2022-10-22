@@ -9,7 +9,30 @@
   position: relative;
   width: 240px;
   height: 150px;
-  border: 1px solid blue;
+  /*border: 1px solid blue;*/
+}
+
+#turn-timer-box {
+  position: relative;
+  margin: 0 auto;
+  width: 240px;
+  height: 18px;
+  /*border: 1px solid purple;*/
+}
+
+#turn-timer-fill {
+  display: inline-block;
+  width: 0px;
+  height: 14px;
+  background-color: darkcyan;
+  border: 2px solid steelblue;
+}
+#turn-timer-nofill {
+  display: inline-block;
+  width: 232px;
+  height: 14px;
+  background-color: lightcyan;
+  border: 2px solid steelblue;
 }
 
 .panel {
@@ -235,79 +258,26 @@
   margin-left: auto;
   margin-right: auto;
 }
-.card-and-border-box {
-  position: relative;
-  padding: 0 0 0 0;
-  margin: 0 0 0 0;
-  width: 70px;
-  height: 62px;
-  display: inline-block;
-  border: none;
-}
+
 .battle-chip-card {
-  position: absolute;
-  top: 3px;
-  left: 3px;
   width: 64px;
   height: 56px;
+  margin: 5px 5px 5px 5px;
 }
-.card-border {
-  position: absolute;
-}
-.card-border-top {
-  top: 0px;
-  left: 0px;
-  width: 70px;
-  height: 3px;
-}
-.card-border-bottom {
-  bottom: 0px;
-  right: 0px;
-  width: 70px;
-  height: 3px;
-}
-.card-border-left {
-  top: 3px;
-  left: 0px;
-  width: 3px;
-  height: 56px;
-}
-.card-border-right {
-  top: 3px;
-  right: 0px;
-  width: 3px;
-  height: 56px;
-}
-
 .card-and-name-box {
   position: relative;
   display: inline-block;
+  height: 90px; /* why doesn't this grow to fit contents? */
 }
-
-.chosen > .card-border {
-  background-color: yellow;
-  box-sizing: border-box;
+.battle-chip-card.chosen {
+  margin: 0px 0px 0px 0px;
+  border: 5px solid yellow;
+  border-radius: 8px;
 }
-
-.chosen > .card-border-top {
-  border-top: 1px solid brown;
-  border-left: 1px solid brown;
-  border-right: 1px solid brown;
-}
-.chosen > .card-border-right {
-  border-right: 1px solid brown;
-}
-.chosen > .card-border-left {
-  border-left: 1px solid brown;
-}
-.chosen > .card-border-bottom {
-  border-bottom: 1px solid brown;
-  border-left: 1px solid brown;
-  border-right: 1px solid brown;
-}
-
-.chosen.operator-choice > .card-border {
-  background-color: green;
+.battle-chip-card.chosen.operator-choice {
+  margin: 0px 0px 0px 0px;
+  border: 5px solid green;
+  border-radius: 12px;
 }
 
 .chip-name {

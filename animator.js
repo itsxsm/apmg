@@ -29,7 +29,7 @@ function grab_after_dash(space_delim_string, word) {
     return null;
 }
 
-sprites = [
+const sprites = [
     // TODO: use document.onload so scripts don't have to be after structure?
 
     // TODO: check if, instead of specifying both sides directly,
@@ -78,9 +78,12 @@ sprites = [
     }
 ];
 
-card_divs = [0, 1, 2, 3, 4].map(idx => {
+const card_divs = [0, 1, 2, 3, 4].map(idx => {
     return document.getElementById(`battle-chip-card-${idx}`);
 });
+
+const fill_div = document.getElementById("turn-timer-fill");
+const nofill_div = document.getElementById("turn-timer-nofill");
 
 // for some reason, cannot assign navi references as keys?
 // this results in an object with only one key...
@@ -195,6 +198,16 @@ function repaint_for_turn_start() {
         set_sprite_pose(sprite, "standing");
         set_sprite_hp(sprite, p.hp);
     });
+
+    if (last_to_act == player2) {
+        fill_div.style.backgroundColor = "maroon";
+        nofill_div.style.backgroundColor = "pink";
+    } else {
+        // player's fill is red because the player is on red panels by default
+        // maybe change to look more like CustomGauge in the future?
+        fill_div.style.backgroundColor = "darkcyan";
+        nofill_div.style.backgroundColor = "lightcyan";
+    }
 }
 
 // TODO: when this function is updated for true animation,
@@ -254,11 +267,10 @@ function repaint_battle_chip_cards() {
         div.style.backgroundImage =
             `url('sprites/cards_bn1/card${card_number}.gif')`;
         if (idx == slot) {
-            div.parentElement.classList.add("chosen");
-            if (chooser == "Operator")
-                div.parentElement.classList.add("operator-choice");
+            div.classList.add("chosen");
+            if (chooser == "Operator") div.classList.add("operator-choice");
         } else {
-            div.parentElement.classList.remove("chosen", "operator-choice");
+            div.classList.remove("chosen", "operator-choice");
         }
 
         // TODO: collect divs once at start instead
@@ -347,6 +359,25 @@ function repaint_obstacles() {
     });
 }
 
+function repaint_turn_countdown(elapsed_ratio) {
+    const total_width = 232;
+    const fill_width = Math.round(elapsed_ratio * total_width, 0);
+    const nofill_width = total_width - fill_width;
+    fill_div.style.width = fill_width + "px";
+    nofill_div.style.width = nofill_width + "px";
+}
+
+function start_turn_countdown_painter() {
+    // TODO: this looks jittery at high FPS; maybe try using
+    // requestAnimationFrame or CSS animation/transation
+    setInterval(() => {
+        const elapsed_time_ms = Date.now() - turn_start_absolute_ms;
+        let elapsed_ratio = elapsed_time_ms / _interval_settings.interval_time;
+        if (elapsed_ratio > 1.0) elapsed_ratio = 1.0;
+        repaint_turn_countdown(elapsed_ratio);
+    }, 200);
+}
+
 function animate_message(message) {
     // console.log(`-> animator received message: ${message}`);
     const words = message.split(' ');
@@ -364,6 +395,7 @@ function animate_message(message) {
     // faster checks (==, startsWith, endsWith) before slower (includes)
 
     if (last_char == ')' && message.includes("'s turn")) {
+        turn_start_absolute_ms = Date.now();
         repaint_for_turn_start();
     }  else if (message == "Game reset.") {
         repaint_obstacles();
@@ -373,6 +405,7 @@ function animate_message(message) {
         repaint_battle_chip_cards();
         repaint_barriers();
     } else if (message == "Game started.") {
+        start_turn_countdown_painter();
         repaint_battle_chip_cards();
     } else if (message.endsWith("raises a barrier.")
         || message.endsWith("and is broken.")) {
@@ -426,13 +459,6 @@ function animate_message(message) {
 }
 
 reporter.interpreters.push(animate_message);
-
-// TODO: move this to begin on interpreter gets game start
-// const countdown_interval = setInterval(() => {
-//     const elapsed_time_ms = Date.now() - turn_start_absolute_ms;
-//     const elapsed_ratio = elapsed_time_ms / _interval_settings.interval_time;
-//     repaint_turn_countdown(elapsed_ratio);
-// }, 50);
 
 // TODO: hands are not yet assigned at load time, change for faster testing
 // repaint_battle_chip_cards();

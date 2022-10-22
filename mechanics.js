@@ -1448,6 +1448,8 @@ function run_game(
         _interval_settings.await_operator = await_operator;
         _interval_settings.active_interval =
             setInterval(() => game_turn(), turn_time);
+        
+        game_turn();
     } else {
         while (matches_played < matches_to_play) game_turn();
         final_report();
