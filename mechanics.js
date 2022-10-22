@@ -39,9 +39,9 @@ const battle_chip_data_from_bn1 = [
     ["36", "TriArrow", "ABCDE", "None", "40", "Fires a 3-arrow burst", "*", "Shot x3 Metal"],
     ["37", "TriSpear", "FGHIJ", "None", "50", "Fires a 3-spear burst", "**", "Shot x3 Metal"],
     ["38", "TriLance", "KLMNO", "None", "60", "Fires a 3-lance burst", "****", "Shot x3 Metal"],
-    ["39", "Ratton1", "ABCDE", "None", "80", "Missile that can turn once", "*", "Drone Ground"],
-    ["40", "Ratton2", "FGHIJ", "None", "100", "Missile that can turn once", "**", "Drone Ground"],
-    ["41", "Ratton3", "KLMNO", "None", "120", "Missile that can turn once", "***", "Drone Ground"],
+    // ["39", "Ratton1", "ABCDE", "None", "80", "Missile that can turn once", "*", "Drone Ground"],
+    // ["40", "Ratton2", "FGHIJ", "None", "100", "Missile that can turn once", "**", "Drone Ground"],
+    // ["41", "Ratton3", "KLMNO", "None", "120", "Missile that can turn once", "***", "Drone Ground"],
     ["42", "Wave", "ADILM", "Aqua", "80", "3-row wave! [Aqua]", "***", "Shot Ground"],
     ["43", "RedWave", "BEJNP", "Fire", "100", "3-row lava wave! [Fire]", "***", "Shot Ground"],
     ["44", "BigWave", "CHKLQ", "Aqua", "160", "3-row giant wave [Aqua]", "****", "Shot Ground"],
@@ -392,7 +392,7 @@ function spaces_where_player_could_hit_space_with_chip(
     const types = battle_chip[TYPES_INDEX].split(" ");
     const hit_type = types[0];
     const all_spaces_hit_types = [
-        "Both_Areas", "Recover", "Guard", "Drone"
+        "Both_Areas", "Recover", "Guard", "Drone", "Autohit"
     ]
     if (all_spaces_hit_types.includes(hit_type)) return ALL_SPACES;
     var spaces = [];
@@ -490,6 +490,7 @@ function spaces_struck_by_player_with_chip_from_space(
     switch (hit_type) {
         case "Both_Areas": return ALL_SPACES;
         case "Recover": case "Guard": return [from_space];
+        case "Autohit": return [get_opponent(player).space];
         case "Sword": case "Close":
             range = 1;
             break;
@@ -724,6 +725,9 @@ function where_does_navi_dodge_chip_from_attacker_striking_spaces(
                 return are_spaces_equal(space, hit_space);
             });
     });
+
+    if (!dodge_spaces.length) return null;
+
     var dodge_rate = dodge_spaces.length * 0.1;
     var hit_rate = (1.0 - dodge_rate) * get_hitcheck_modifier(attacker, target);
     if (hit_rate < 0.25) {

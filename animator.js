@@ -273,9 +273,20 @@ function repaint_battle_chip_cards() {
             div.classList.remove("chosen", "operator-choice");
         }
 
+        const battle_chip = player1.hand[idx];
         // TODO: collect divs once at start instead
         document.getElementById(`chip-name-${idx}`).innerHTML
-            = name_of(player1.hand[idx]);
+         = name_of(battle_chip);
+        var damage_str = battle_chip[DAMAGE_INDEX];
+        if (damage_str == "") damage_str = "-";
+        const info_div = document.getElementById(`chip-info-${idx}`);
+        if (parseInt(damage_str, 10) < 0) {
+            info_div.classList.add("recover");
+            damage_str = damage_str.slice(1);
+        } else {
+            info_div.classList.remove("recover");
+        };
+        info_div.innerHTML = damage_str;
     });
 }
 
@@ -359,6 +370,10 @@ function repaint_obstacles() {
     });
 }
 
+function paint_navi_kos_target(navi, koed_navi) {
+    get_sprite_by_navi(koed_navi).div.style.display = "none";
+}
+
 function repaint_turn_countdown(elapsed_ratio) {
     const total_width = 232;
     const fill_width = Math.round(elapsed_ratio * total_width, 0);
@@ -398,6 +413,8 @@ function animate_message(message) {
         turn_start_absolute_ms = Date.now();
         repaint_for_turn_start();
     }  else if (message == "Game reset.") {
+        sprites[0].div.style.display = "initial";
+        sprites[1].div.style.display = "initial";
         repaint_obstacles();
         move_navi_to_space(player1, [0, 0]);
         move_navi_to_space(player2, [5, 2]);
@@ -453,6 +470,10 @@ function animate_message(message) {
         if (navi) paint_recover_effect_on_navi(navi);
     } else if (message.includes(" changes the terrain ")) {
         repaint_terrain();
+    } else if (message.includes(" has defeated ")) {
+        const navi = get_navi_by_name(words[0]);
+        const koed_navi = get_navi_by_name(last_word);
+        paint_navi_kos_target(navi, koed_navi);
     } else {
         console.log(`-> no animation interpreter for message: ${message}`);
     }

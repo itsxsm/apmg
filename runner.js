@@ -25,6 +25,6 @@ if (!reporter || !player1) {
 //   1: matches_to_play (int) default 1
 //   2: turn_time (int) milliseconds default 1000
 //   3: await_operator (bool) default false
-run_game(true, 1, 5000);
+run_game(true, 1, 30000);
 
 console.log("Runner loaded.");
