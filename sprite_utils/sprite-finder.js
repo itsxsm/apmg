@@ -183,15 +183,15 @@ function print_sprite_boxes_css(sprite_boxes) {
     const s_width = sprite_box.iRange[1] - sprite_box.iRange[0] + 1;
     const s_height = sprite_box.jRange[1] - sprite_box.jRange[0] + 1;
     const min_i = sprite_box.iRange[0];
-    const min_j = sprite_box.jRange[1];
+    const min_j = sprite_box.jRange[0];
     if (sprite_box.row != prior_row) {
       out_str += `/*    row ${sprite_box.row}   */\n`;
       prior_row = sprite_box.row;
     }
     out_str += `#sprite-${box_idx} {\n`;
-    out_str += `  width: ${s_width};\n`;
-    out_str += `  height: ${s_height};\n`;
-    out_str += `  background: url(${my_url}) -${min_i}px -${min_j}px;\n`;
+    out_str += `  width: ${s_width}px;\n`;
+    out_str += `  height: ${s_height}px;\n`;
+    out_str += `  background: url("${my_url}") -${min_i}px -${min_j}px;\n`;
     out_str += `}\n`;
   });
   console.log(out_str);

@@ -10,7 +10,7 @@ if (!reporter || !player1) {
 }
 
 let turn_start_absolute_ms = Date.now();
-const ALL_POSES = ["standing", "attacking", "struck"];
+const ALL_POSES = ["standing", "attacking", "struck", "shooting"];
 const ALL_STANDARD_CHIP_TYPES = ["Shot", "Sword", "Toss"];
 const SPECIAL_CHIP_ANIMATIONS = {};
 var _cache_buster = 0;
@@ -157,30 +157,50 @@ function check_and_rescue_sprite(sprite) {
 }
 
 // TODO: this works for static poses, may need refactor for true animations
-function set_sprite_pose(sprite, pose) {
+function set_sprite_pose(sprite, pose, frame = -1) {
     sprite = check_and_rescue_sprite(sprite);
+    console.log("@@@@@@@@@@@@@@@@@@ 162 sprite = " + sprite);
     if (!sprite) return;
 
-    if (sprite.div.classList.contains(pose)) return;
     if (!ALL_POSES.includes(pose)) {
         log_error(`set_sprite_pose got unrecognized pose: ${pose}`);
         return;
     }
-    sprite.div.classList.replace(sprite.pose, pose);
-    sprite.pose = pose;
+    if (sprite.div.classList.contains(pose)) {
+        if (frame == -1) return;
+    } else {
+        sprite.div.classList.replace(sprite.pose, pose);
+        sprite.pose = pose;
+    }
+
+    console.log("@@@@@@@@@@@@@@@@@@ 176")
+    if (frame != -1) {
+        console.log("@@@@@@@@@@@@@@ 178")
+        old_frame = grab_after_dash(sprite.div.className, "frame");
+        if (old_frame != null) {
+            old_frame = `frame-${old_frame}`;
+            console.log("@@@@@@ old_frame => " + old_frame)
+            console.log("@@@@@ new_frame => " + frame)
+            console.log("@@@@@@@@@@@@@@@@ 181")
+            sprite.div.classList.replace(old_frame, `frame-${frame}`);
+        } else {
+            console.log("@@@@@@@@@@@@@@@@ 184")
+            sprite.div.classList.add("frame-0");
+        }
+    }
 
     // TODO: obstacle left offsets were replaced with margin-left settings,
     // see if the same can be done for navi poses
 
-    const navi = sprite.navi;
-    const side = navi.is_east ? "east" : "west";
-    const left_offset_0 =
-        sprite.left_offset_0s_by_side_and_pose[side][sprite.pose];
+    // const navi = sprite.navi;
+    // const side = navi.is_east ? "east" : "west";
+    // const left_offset_0 =
+    //     sprite.left_offset_0s_by_side_and_pose[side][sprite.pose];
 
-    const space = navi.space;
+    const space = sprite.navi.space;
     var bottom_px = get_bottom_line_px_for_j(space[1]) + 2;
 
-    sprite.div.style.left = (space[0] * 40 + left_offset_0) + "px";
+    sprite.div.style.left = (space[0] * 40) + "px";
     sprite.div.style.bottom = bottom_px + "px";
     sprite.div.style.zIndex = get_z_index_for_j(space[1]) + 10;
 }
@@ -210,6 +230,23 @@ function repaint_for_turn_start() {
     }
 }
 
+function run_sprite_frame_animation(
+    sprite, pose, total_ms, next_frame, last_frame)
+{
+    console.log("@@@@@@@@@@@@@@@");
+    set_sprite_pose(sprite, pose, next_frame);
+    if (next_frame >= last_frame) return;
+
+    const delay = Math.round(total_ms / (last_frame + 1), 0);
+    console.log("delay =" + delay);
+    setTimeout(() => {
+        console.log("Triggered timeout");
+        run_sprite_frame_animation(
+            sprite, pose, total_ms, next_frame + 1, last_frame
+        );
+    }, delay);
+}
+
 function animate_move() {
     if (!anim_data.moves_to) return 'skip'; 
     const navi_sprite = get_sprite_by_navi(anim_data.enactor);
@@ -217,7 +254,8 @@ function animate_move() {
 }
 function animate_windup() {
     const navi_sprite = get_sprite_by_navi(anim_data.enactor); 
-    set_sprite_pose(navi_sprite, "attacking");
+    // set_sprite_pose(navi_sprite, "attacking");
+    run_sprite_frame_animation(navi_sprite, "shooting", 490, 0, 4);
 }
 function animate_shoot() { ; }
 function animate_wave() { ; }

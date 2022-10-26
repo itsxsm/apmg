@@ -155,13 +155,7 @@
   bottom: 62px; /* why does this not apply at start if .west.standing bottom is unset ?? */
   z-index: 110;
 }
-#navi-1.west.standing {
-  bottom: 62px; /* why does this have to be set here and not on #navi-1 ?? */
-  left: 2px;
-  width: 50px;
-  height: 55px;
-  background: url("sprites/ProtoMan_west.gif") -183px -182px;
-}
+
 #navi-1.west.attacking {
   width: 51px;
   height: 68px;
@@ -194,6 +188,60 @@
   height: 81px;
   background: url("sprites/MagicMan_east.gif") -257px -305px;
 }
+
+.navi.protoman.west {
+  bottom: 62px; /* why does this not apply at start if .west.standing bottom is unset ?? */
+  z-index: 110;
+}
+.navi.protoman.west.standing {
+  bottom: 62px; /* why does this have to be set here and not on .navi.protoman ?? */
+  margin-left: 2px;
+  width: 50px;
+  height: 55px;
+  background: url("./sprites/ProtoMan_west.gif") -183px -182px;
+}
+.navi.protoman.west.attacking {
+  width: 51px;
+  height: 68px;
+  background: url("./sprites/ProtoMan_west.gif") -8px -244px;
+}
+.navi.protoman.west.struck {
+  width: 38px;
+  height: 57px;
+  background: url("./sprites/ProtoMan_west.gif") -261px -394px;
+}
+
+.navi.protoman.west.shooting.frame-0 {
+  width: 53px;
+  height: 51px;
+  margin-left: 2px;
+  background: url("./sprites/ProtoMan_west.gif") -70px -115px;
+}
+.navi.protoman.west.shooting.frame-1 {
+  width: 53px;
+  height: 51px;
+  margin-left: 2px;
+  background: url("./sprites/ProtoMan_west.gif") -128px -115px;
+}
+.navi.protoman.west.shooting.frame-2 {
+  width: 80px;
+  height: 51px;
+  margin-left: 1px;
+  background: url("./sprites/ProtoMan_west.gif") -184px -115px;
+}
+.navi.protoman.west.shooting.frame-3 {
+  width: 80px;
+  height: 51px;
+  margin-left: 1px;
+  background: url("./sprites/ProtoMan_west.gif") -269px -115px;
+}
+.navi.protoman.west.shooting.frame-4 {
+  width: 72px;
+  height: 51px;
+  margin-left: 2px;
+  background: url("./sprites/ProtoMan_west.gif") -351px -115px;
+}
+
 
 /* TODO: these barriers are all the same, replace with proper sprites */
 
