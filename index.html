@@ -1,11 +1,26 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <link rel="stylesheet" href="./styles.css">
   <link rel="stylesheet" href="./navi_sprite_styles.css">
 </head>
 <body>
   <br>
+  <div id="navi-select">
+    <div id="portrait-megaman" class="navi-select-portrait"></div>
+    <div id="portrait-roll" class="navi-select-portrait"></div>
+    <div id="portrait-protoman" class="navi-select-portrait"></div>
+    <div id="portrait-ring" class="navi-select-portrait"></div>
+    <div id="portrait-gutsman" class="navi-select-portrait"></div>
+    <div id="portrait-turboman" class="navi-select-portrait"></div>
+  </div>
+  <br>
+  <br>
   <div id="minigame">
+    <div id="turn-timer-box">
+      <div id="turn-timer-fill"></div><div id="turn-timer-nofill"></div>
+    </div>
+
     <div id="battlefield">
       <div id="panel_0_0" class="panel row_0 col_0 west">
         <div id="terrain_0_0" class="terrain terrain-Normal"></div>
@@ -72,6 +87,7 @@
         <div id="navi-2-barrier" class="navi-barrier"></div>
         <div id="navi-2-effect" class="navi-effect"></div>
       </div>
+
       <div id="obstacle-anchor"></div>
     </div>
     <div id="hand">
@@ -82,79 +98,32 @@
       <div id="chip-card-and-name-box-0"
         class="card-and-name-box"
         onclick="operator_chooses_chip_idx(0)">
-        <div id="chip-card-and-border-box-0" class="card-and-border-box">
-          <!-- borders are implemented as divs so that we can animate the
-            shortening of each segment as time ticks down -->
-          <div id="chip-card-border-top-0"
-            class="card-border card-border-top"></div>
-          <div id="chip-card-border-right-0"
-            class="card-border card-border-right"></div>
-          <div id="chip-card-border-bottom-0"
-            class="card-border card-border-bottom"></div>
-          <div id="chip-card-border-left-0"
-            class="card-border card-border-left"></div>
-          <div id="battle-chip-card-0" class="battle-chip-card"></div>
-        </div>
+        <div id="battle-chip-card-0" class="battle-chip-card"></div>
+        <div id="chip-info-0" class="chip-info"></div>
         <div id="chip-name-0" class="chip-name"></div>
       </div><div id="chip-card-and-name-box-1"
         onclick="operator_chooses_chip_idx(1)"
         class="card-and-name-box">
-        <div id="chip-card-and-border-box-1" class="card-and-border-box">
-          <div id="chip-card-border-top-1"
-            class="card-border card-border-top"></div>
-          <div id="chip-card-border-right-1"
-            class="card-border card-border-right"></div>
-          <div id="chip-card-border-bottom-1"
-            class="card-border card-border-bottom"></div>
-          <div id="chip-card-border-left-1"
-            class="card-border card-border-left"></div>
-          <div id="battle-chip-card-1" class="battle-chip-card"></div>
-        </div>
+        <div id="battle-chip-card-1" class="battle-chip-card"></div>
+        <div id="chip-info-1" class="chip-info"></div>
         <div id="chip-name-1" class="chip-name"></div>
       </div><div id="chip-card-and-name-box-2"
         onclick="operator_chooses_chip_idx(2)"
         class="card-and-name-box">
-        <div id="chip-card-and-border-box-2" class="card-and-border-box">
-          <div id="chip-card-border-top-2"
-            class="card-border card-border-top"></div>
-          <div id="chip-card-border-right-2"
-            class="card-border card-border-right"></div>
-          <div id="chip-card-border-bottom-2"
-            class="card-border card-border-bottom"></div>
-          <div id="chip-card-border-left-2"
-            class="card-border card-border-left"></div>
-          <div id="battle-chip-card-2" class="battle-chip-card"></div>
-        </div>
+        <div id="battle-chip-card-2" class="battle-chip-card"></div>
+        <div id="chip-info-2" class="chip-info"></div>
         <div id="chip-name-2" class="chip-name"></div>
       </div><div id="chip-card-and-name-box-3"
         onclick="operator_chooses_chip_idx(3)"
         class="card-and-name-box">
-        <div id="chip-card-and-border-box-3" class="card-and-border-box">
-          <div id="chip-card-border-top-3"
-            class="card-border card-border-top"></div>
-          <div id="chip-card-border-right-3"
-            class="card-border card-border-right"></div>
-          <div id="chip-card-border-bottom-3"
-            class="card-border card-border-bottom"></div>
-          <div id="chip-card-border-left-3"
-            class="card-border card-border-left"></div>
-          <div id="battle-chip-card-3" class="battle-chip-card"></div>
-        </div>
+        <div id="battle-chip-card-3" class="battle-chip-card"></div>
+        <div id="chip-info-3" class="chip-info"></div>
         <div id="chip-name-3" class="chip-name"></div>
       </div><div id="chip-card-and-name-box-4"
         onclick="operator_chooses_chip_idx(4)"
         class="card-and-name-box">
-        <div id="chip-card-and-border-box-4" class="card-and-border-box">
-          <div id="chip-card-border-top-4"
-            class="card-border card-border-top"></div>
-          <div id="chip-card-border-right-4"
-            class="card-border card-border-right"></div>
-          <div id="chip-card-border-bottom-4"
-            class="card-border card-border-bottom"></div>
-          <div id="chip-card-border-left-4"
-            class="card-border card-border-left"></div>
-          <div id="battle-chip-card-4" class="battle-chip-card"></div>
-        </div>
+        <div id="battle-chip-card-4" class="battle-chip-card"></div>
+        <div id="chip-info-4" class="chip-info"></div>
         <div id="chip-name-4" class="chip-name"></div>
       </div>
     </div>
