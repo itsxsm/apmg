@@ -210,18 +210,88 @@ function repaint_for_turn_start() {
     }
 }
 
-// TODO: when this function is updated for true animation,
-// rename paint -> animate
-function paint_navi_uses_chip_type_on_target(
+function animate_move() {
+    if (!anim_data.moves_to) return 'skip'; 
+    const navi_sprite = get_sprite_by_navi(anim_data.enactor);
+    move_sprite_to_space(navi_sprite, anim_data.moves_to);
+}
+function animate_windup() {
+    const navi_sprite = get_sprite_by_navi(anim_data.enactor); 
+    set_sprite_pose(navi_sprite, "attacking");
+}
+function animate_shoot() { ; }
+function animate_wave() { ; }
+function animate_result() {
+    if (anim_data.dodges_to) {
+        const dodger_sprite = get_sprite_by_navi(
+            get_opponent(anim_data.enactor)
+        );
+        move_sprite_to_space(dodger_sprite, anim_data.dodges_to);
+    };
+
+    anim_data.strikes.forEach(target => {
+        if (!is_navi(target)) return;
+        const target_sprite = get_sprite_by_navi(target);
+        set_sprite_pose(target_sprite, "struck");
+    });
+}
+function reset_standing_poses() {
+    anim_data.enactor = null;
+    anim_data.moves_to = null;
+    anim_data.dodges_to = null;
+    anim_data.strikes.length = 0;
+    set_sprite_pose(sprites[0], "standing");
+    set_sprite_pose(sprites[1], "standing");
+}
+
+const animation_queue = [];
+
+function run_animation() {
+    if (animation_queue.length == 0) {
+        if (!is_the_game_over()) {
+            _interval_settings.active_interval = setInterval(
+                () => game_turn(), _interval_settings.interval_time
+            );
+        }
+        return;
+    }
+
+    [start_animation, end_animation, timeout_ms] = animation_queue[0];
+    animation_queue.shift();
+
+    var skip = false;
+    if (start_animation) skip = start_animation() == 'skip';
+
+    if (timeout_ms == 0 || skip) {
+        if (end_animation) end_animation();
+        run_animation();
+        return;
+    }
+    setTimeout(() => {
+        if (end_animation) end_animation();
+        run_animation();
+    }, timeout_ms);
+}
+
+function animate_navi_uses_chip_type_on_target(
     navi, chip_type, target, does_hit = true)
 {
-    const sprite = get_sprite_by_navi(navi);
-    const target_sprite = (target && is_navi(target))
-        ? get_sprite_by_navi(target) : null;
+    clearInterval(_interval_settings.active_interval);
 
-    // for now fixed attacking pose stands in for all chip uses
-    set_sprite_pose(sprite, "attacking");
-    if (target_sprite && does_hit) { set_sprite_pose(target_sprite, "struck"); }
+    anim_data.enactor = navi;
+    if (target && does_hit) anim_data.strikes = [target];
+
+    const animations = [
+        [animate_move, null, 500], 
+        [animate_windup, null, 500],
+        [animate_shoot, null, 0],
+        [animate_wave, null, 0],
+        [animate_result, reset_standing_poses, 500],
+    ]
+    animations.forEach(animation => {
+        animation_queue.push(animation);
+    });
+    run_animation();
 }
 
 function repaint_barriers() {
@@ -246,11 +316,10 @@ function repaint_barriers() {
     });
 }
 
-function move_navi_to_space(navi, space) {
-    if (!are_spaces_equal(space, navi.space))
+function move_sprite_to_space(sprite, space) {
+    if (!are_spaces_equal(sprite.navi.space, space))
         log_error("animator got move message out of sync with navi");
-    const sprite = get_sprite_by_navi(navi);
-    const side = navi.is_east ? "east" : "west";
+    const side = sprite.navi.is_east ? "east" : "west";
     const left_offset_0 =
         sprite.left_offset_0s_by_side_and_pose[side][sprite.pose];
     var bottom_px = get_bottom_line_px_for_j(space[1]) + 2;
@@ -271,6 +340,11 @@ function repaint_battle_chip_cards() {
             if (chooser == "Operator") div.classList.add("operator-choice");
         } else {
             div.classList.remove("chosen", "operator-choice");
+        }
+        if (!player1.are_chips_useful[idx]) {
+            div.classList.add("not-useful");
+        } else {
+            div.classList.remove("not-useful");
         }
 
         const battle_chip = player1.hand[idx];
@@ -390,7 +464,15 @@ function start_turn_countdown_painter() {
         let elapsed_ratio = elapsed_time_ms / _interval_settings.interval_time;
         if (elapsed_ratio > 1.0) elapsed_ratio = 1.0;
         repaint_turn_countdown(elapsed_ratio);
-    }, 200);
+    }, 150);
+}
+
+const anim_data = {
+    enactor: null,
+    moves_to: null,
+    battle_chip: null,
+    dodges_to: null,
+    strikes: [],
 }
 
 function animate_message(message) {
@@ -416,8 +498,8 @@ function animate_message(message) {
         sprites[0].div.style.display = "initial";
         sprites[1].div.style.display = "initial";
         repaint_obstacles();
-        move_navi_to_space(player1, [0, 0]);
-        move_navi_to_space(player2, [5, 2]);
+        move_sprite_to_space(get_sprite_by_navi(player1), [0, 0]);
+        move_sprite_to_space(get_sprite_by_navi(player2), [5, 2]);
         repaint_panel_control();
         repaint_battle_chip_cards();
         repaint_barriers();
@@ -427,6 +509,12 @@ function animate_message(message) {
     } else if (message.endsWith("raises a barrier.")
         || message.endsWith("and is broken.")) {
         repaint_barriers();
+
+        if (message.includes(" blocks the hit ")) {
+            const target = get_navi_by_name(words[0].split("'")[0]);
+            const navi = get_opponent(target);
+            animate_navi_uses_chip_type_on_target(navi, "Shot", target, false);
+        }
     } else if (message.endsWith(" is deleted.")
         || message.endsWith(" has burned out.")
         || message.includes(" places "))
@@ -441,13 +529,18 @@ function animate_message(message) {
         }
         const navi = get_navi_by_name(words[0]);
         const space = [parseInt(words[3], 10), parseInt(words[4], 10)];
-        move_navi_to_space(navi, space);
+        if (message.includes(" moves to ")) {
+            anim_data.enactor = navi;
+            anim_data.moves_to = space;
+            return;
+        }
+        anim_data.dodges_to = space;
     } else if (message.includes(" damage to ")) {
         const navi = get_navi_by_name(words[0]);
         const target_name = (words.length == 7) ? `${words[5]} ${words[6]}`
             : words[5];
         const target = get_occupant_by_name(target_name);
-        paint_navi_uses_chip_type_on_target(navi, "Shot", target, true);
+        animate_navi_uses_chip_type_on_target(navi, "Shot", target, true);
         if (is_navi(target)) {
             const target_sprite = get_sprite_by_navi(target);
             set_sprite_hp(target_sprite, target.hp);
@@ -455,7 +548,8 @@ function animate_message(message) {
     } else if (message.includes(" misses")) {
         // TODO: this report is awkward; paint attack pose on chip use instead
         const navi = get_navi_by_name(words[0]);
-        paint_navi_uses_chip_type_on_target(navi, "Shot", undefined, false);
+        anim_data.enactor = navi;
+        animate_navi_uses_chip_type_on_target(navi, "Shot", undefined, false);
     } else if (message.includes(" cannot line up ")
         || (message.includes(" uses ") && words.length == 3)
         || message.endsWith("negates all damage."))

@@ -1,15 +1,47 @@
+.navi-select-portrait {
+  display: inline-block;
+  width: 49px;
+  height: 52px;
+}
+
+#portrait-ring {
+  background: url("./sprites/navi_faces/bcc__ring_exe.png");
+}
+#portrait-roll {
+  background: url("./sprites/navi_faces/bcc__roll_exe.png");
+}
+#portrait-megaman {
+  background: url("./sprites/navi_faces/bcc__megaman_exe.png");
+}
+#portrait-protoman {
+  background: url("./sprites/navi_faces/bcc__protoman_exe.png");
+}
+#portrait-turboman {
+  background: url("./sprites/navi_faces/bcc__turboman_exe.png");
+}
+#portrait-gutsman {
+  background: url("./sprites/navi_faces/bcc__gutsman_exe.png");
+}
+
 #minigame {
   margin: 0 auto;
+  padding-top: 8px;
+  padding-bottom: 8px;
   position: relative;
-  border: 1px solid blue;
+  min-width: 240px;
+  max-width: 480px;
+  background-color: powderblue;
+  border-radius: 16px;
+  border: 2px solid blue;
+  /*border: 1px solid blue;*/
 }
 
 #battlefield {
   margin: 0 auto;
   position: relative;
   width: 240px;
-  height: 150px;
-  /*border: 1px solid blue;*/
+  height: 160px;
+  background: url("./sprites/static_background.gif");
 }
 
 #turn-timer-box {
@@ -263,6 +295,8 @@
   width: 64px;
   height: 56px;
   margin: 5px 5px 5px 5px;
+  border: none;
+  border-radius: 12px;
 }
 .card-and-name-box {
   position: relative;
@@ -272,12 +306,16 @@
 .battle-chip-card.chosen {
   margin: 0px 0px 0px 0px;
   border: 5px solid yellow;
-  border-radius: 8px;
+  border-radius: 12px;
 }
 .battle-chip-card.chosen.operator-choice {
   margin: 0px 0px 0px 0px;
   border: 5px solid green;
   border-radius: 12px;
+}
+
+.battle-chip-card.not-useful {
+  filter: grayscale(1);
 }
 
 .chip-name {
@@ -294,5 +332,5 @@
   font-weight: bold;
 }
 .chip-info.recover {
-  color: #9ACD32;
+  color: limegreen;
 }

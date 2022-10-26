@@ -206,7 +206,9 @@ const player1 = {
         matches: 0
     },
     navi_chosen_chip_slot: -1,
-    operator_chosen_chip_slot: -1
+    operator_chosen_chip_slot: -1,
+    line_up_spaces_by_chip: {},
+    are_chips_useful: [true, true, true, true, true]
 };
 
 const player2 = {
@@ -232,7 +234,9 @@ const player2 = {
         matches: 0
     },
     navi_chosen_chip_slot: -1,
-    operator_chosen_chip_slot: -1
+    operator_chosen_chip_slot: -1,
+    line_up_spaces_by_chip: {},
+    are_chips_useful: [true, true, true, true, true]
 };
 
 var last_to_act = player2;
@@ -290,6 +294,10 @@ function min_item_by_method(list, method) {
         }
     });
     return min_item;
+}
+
+function unique_items(list) {
+    return [...new Set(list)];
 }
 
 function unique_spaces(spaces) {
@@ -637,12 +645,11 @@ function get_chip_slot_and_chooser(navi) {
     return [-1, "None"];
 }
 
-// TODO: this method is currently not called,
-// but should be used for better automatic chip selections
 function is_chip_useful_to_navi(battle_chip, navi) {
     if (battle_chip[DAMAGE_INDEX] != "") {
-        // TODO: this should check whether the navi can line up to use the chip
-        return true;
+        // line_up_spaces_by_chip should be set for each unique attack chip
+        // at the start of the navi's turn
+        return !!navi.line_up_spaces_by_chip[battle_chip].length;
     }
 
     const name = name_of(battle_chip);
@@ -656,7 +663,7 @@ function is_chip_useful_to_navi(battle_chip, navi) {
 
     if (battle_chip[TYPES_INDEX].split(" ").includes("Barrier")) {
         // a navi with a barrier shouldn't overwrite it with another
-        return !navi.barrier_chip;
+        return !has_barrier(navi);
     }
 
     return true; // if no specific check, assume useful by default
@@ -924,7 +931,29 @@ function i_use_this_battle_chip(player, battle_chip) {
 }
 
 function i_start_my_turn(player) {
-    player.navi_chosen_chip_slot = Math.floor(Math.random() * 5);
+    update_players = [player];
+    if (player !== player1) update_players.push(player1);
+
+    update_players.forEach(u_player => {
+        unique_items(u_player.hand).forEach(battle_chip => {
+            if (battle_chip[DAMAGE_INDEX] == "") return;
+            // TODO: allow for hitting obstacles
+            u_player.line_up_spaces_by_chip[battle_chip] =
+                spaces_where_player_could_hit_space_with_chip(
+                    u_player, get_opponent(u_player).space, battle_chip
+                ).filter(space => can_player_move_to_space(u_player, space));
+        });
+        [0, 1, 2, 3, 4].forEach(idx => {
+            u_player.are_chips_useful[idx] =
+                is_chip_useful_to_navi(u_player.hand[idx], u_player);
+        });
+    });
+
+    var choice_slots = [0, 1, 2, 3, 4].filter(idx => {
+        return player.are_chips_useful[idx];
+    });
+    if (!choice_slots.length) choice_slots = [0, 1, 2, 3, 4];
+    player.navi_chosen_chip_slot = random_item(choice_slots);
 }
 
 function i_end_my_turn(player) {
@@ -1312,7 +1341,7 @@ function conjure_a_random_battle_chip() {
 
 function game_tied() {
     report(`It's a tie!`);
-    [player1, player2].forEach(p => { p.records.ties++; p.record.matches++; });
+    [player1, player2].forEach(p => { p.records.ties++; p.records.matches++; });
 }
 
 function player_defeats_player(winner, loser) {

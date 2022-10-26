@@ -1,0 +1,5 @@
+
+
+221025
+250p
+  setting up animation-at-turn-end using just Standing, Attack, and Struck sprites with ProtoMan and MagicMan
