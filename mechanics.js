@@ -131,6 +131,42 @@ const battle_chip_data_from_bn1 = [
 ];
 // TEST CHANGES: Steal Rarity *** => *
 
+const navi_data_from_bcc = [
+    ["195", "MegaMan.EXE", "None", 500, 170, "A", "B", "E", "ChargeShot"],
+    ["196", "Roll.EXE", "None", 400, 140, "C", "A", "E", "HeartFlash"],
+    ["197", "GutsMan.EXE", "None", 600, 130, "C", "C", "E", "GutsHammer"],
+    ["198", "ProtoMan.EXE", "None", 500, 160, "B", "B", "D", "SonicBoom"],
+    ["199", "TurboMan.EXE", "None", 550, 160, "A", "C", "E", "TurboWheel"],
+    ["200", "Ring.EXE", "None", 450, 150, "B", "A", "E", "RingRang"],
+    ["202", "Bass.EXE", "None", 700, 140, "A", "B", "D", "AirBurst"],
+    ["203", "IceMan.EXE", "Aqua", 500, 130, "B", "A", "E", "FreezeTower"],
+    ["204", "FireMan.EXE", "Fire", 500, 130, "B", "C", "D", "FireArm"],
+    ["205", "ElecMan.EXE", "Elec", 450, 130, "B", "B", "A", "SparkStrike"],
+    ["206", "WoodMan.EXE", "Wood", 600, 130, "B", "C", "E", "WoodTower"],
+    ["207", "SkullMan.EXE", "None", 650, 150, "B", "B", "C", "BoneCrush"],
+    ["208", "NumberMan.EXE", "None", 400, 120, "B", "C", "E", "DiceBomb"],
+    ["209", "AirMan.EXE", "None", 550, 140, "C", "B", "E", "AirShot"],
+    ["210", "QuickMan.EXE", "None", 450, 150, "A", "S", "S", "QuickBoomerang"],
+    ["211", "ThunderMan.EXE", "Elec", 550, 120, "C", "C", "E", "ThunderBolt"],
+    ["212", "GateMan.EXE", "None", 600, 130, "B", "B", "E", "GateCannon"],
+    ["213", "SharkMan.EXE", "Aqua", 400, 120, "C", "A", "E", "Fin"],
+    ["214", "ShadowMan.EXE", "None", 450, 130, "S", "S", "D", "Shuriken"],
+    ["215", "KnightMan.EXE", "None", 700, 140, "B", "C", "E", "RoyalWreckingBall"],
+    ["216", "MagnetMan.EXE", "Elec", 600, 120, "S", "C", "E", "MagnetMissile"],
+    ["217", "FreezeMan.EXE", "Aqua", 500, 120, "A", "B", "E", "IceTower"],
+    ["218", "SnakeMan.EXE", "Wood", 450, 120, "B", "A", "D", "SnakeArrow"],
+    ["219", "ToadMan.EXE", "Aqua", 400, 130, "S", "S", "E", "Melody"],
+    ["220", "HeatMan.EXE", "Fire", 650, 120, "B", "B", "E", "FlameTower"],
+    ["221", "ColorMan.EXE", "None", 450, 130, "B", "C", "E", "FireAquaTower"],
+    ["222", "MagicMan.EXE", "Fire", 350, 180, "A", "A", "E", "MagicFire"],
+    ["223", "FlashMan.EXE", "Elec", 550, 110, "A", "B", "E", "NeonLight"],
+    ["224", "BeastMan.EXE", "None", 500, 130, "B", "S", "E", "WildRush"],
+    ["225", "PlantMan.EXE", "Wood", 550, 110, "A", "C", "E", "YellowFlower"],
+    ["226", "FlameMan.EXE", "Fire", 600, 110, "B", "C", "E", "FireBreath"],
+    ["227", "MetalMan.EXE", "None", 650, 140, "B", "B", "E", "MetalFist"],
+    ["228", "KingMan.EXE", "None", 500, 150, "A", "C", "E", "Checkmate"]
+]
+
 const NAME_INDEX = 1;
 const CODES_INDEX = 2;
 const ELEMENT_INDEX = 3;
@@ -138,6 +174,15 @@ const DAMAGE_INDEX = 4;
 const DESCRIPTION_INDEX = 5;
 const RARITY_INDEX = 6;
 const TYPES_INDEX = 7;
+
+const NAVI_NAME_INDEX = 1;
+const NAVI_ELEMENT_INDEX = 2;
+const NAVI_MAX_HP_INDEX = 3;
+const NAVI_POWER_INDEX = 4;
+const NAVI_ACCURACY_INDEX = 5;
+const NAVI_DODGING_INDEX = 6;
+const NAVI_PRIORITY_INDEX = 7;
+const NAVI_ATTACK_NAME_INDEX = 8;
 
 const red = "\x1b[31m";
 const blue = "\x1b[34m";
@@ -181,81 +226,20 @@ const terrain = [
 ];
 const obstacles = [];
 
-const STARTING_HP = 500;
-
-const player1 = {
-    kind: 'Navi',
-    name: 'ProtoMan.nav',
-    space: [0, 0],
-    is_east: false,
-    hand: [],
-    // NOTE: these are not the real Challenger values for ProtoMan.EXE
-    hp: STARTING_HP,
-    max_hp: STARTING_HP,
-    accuracy: "B",
-    dodging: "B",
-    records: {
-        chip_ids_used_this_match: [],
-        chip_uses_by_id: [],
-        chip_wins_by_id: [],
-        chip_kos_by_id: [],
-        chip_losses_by_id: [],
-        wins: 0,
-        ties: 0,
-        losses: 0,
-        matches: 0
-    },
-    navi_chosen_chip_slot: -1,
-    operator_chosen_chip_slot: -1,
-    line_up_spaces_by_chip: {},
-    are_chips_useful: [true, true, true, true, true]
-};
-
-const player2 = {
-    kind: 'Navi',
-    name: 'MagicMan.nav',
-    space: [5, 2],
-    is_east: true,
-    hand: [],
-    // NOTE: these are not the real Challenger values for MagicMan.EXE
-    accuracy: "B",
-    dodging: "B",
-    hp: STARTING_HP,
-    max_hp: STARTING_HP,
-    records: {
-        chip_ids_used_this_match: [],
-        chip_uses_by_id: [],
-        chip_wins_by_id: [],
-        chip_kos_by_id: [],
-        chip_losses_by_id: [],
-        wins: 0,
-        ties: 0,
-        losses: 0,
-        matches: 0
-    },
-    navi_chosen_chip_slot: -1,
-    operator_chosen_chip_slot: -1,
-    line_up_spaces_by_chip: {},
-    are_chips_useful: [true, true, true, true, true]
-};
-
+const player1 = {};
+const player2 = {};
 var last_to_act = player2;
 
 const reporter = { interpreters: [] };
 
-// *** stateless calculation functions on simple objects ***********************
+// *** start stateless calculation functions on generic objects ****************
 
 function random_item(list) {
     return list.length ? list[Math.floor(Math.random() * list.length)] : list;
 }
 
-function are_spaces_equal(a, b) { return a[0] == b[0] && a[1] == b[1]; }
-
-function edges_distance_between_spaces(a, b) {
-    return Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]);
-}
-
 function grab_after_equals(list, word) {
+    if (!list || list.length < 1) return null;
     for (var i = 0; i < list.length; i++) {
         var parts = list[i].split('=');
         if (parts.length == 2 && parts[0] == word) return parts[1];
@@ -263,29 +247,14 @@ function grab_after_equals(list, word) {
     return null;
 }
 
-
 function a_or_an(word) {
     return "AEIOUaeiou".split('').includes(word[0]) ? "an" : "a";
 }
 
-function is_space_valid(space) { 
-    return space[0] >= 0 && space[0] <= 5 && space[1] >= 0 && space[1] <= 2;
-}
-
-function is_weak_to(a, b) {
-    const weaknesses = [
-        "Fire is weak to Aqua", "Aqua is weak to Elec", "Elec is weak to Wood",
-        "Wood is weak to Fire"
-    ];
-    return weaknesses.includes(
-        `${a.element || a} is weak to ${b.element || b}`
-    );
-}
-
 function min_item_by_method(list, method) {
     if (!list || list.length < 1) return null;
-    var min = method(list[0]);
-    var min_item = list[0];
+    var min_item = null;
+    var min = Infinity;
     list.forEach(item => {
         var test_value = method(item);
         if (test_value < min) {
@@ -300,6 +269,33 @@ function unique_items(list) {
     return [...new Set(list)];
 }
 
+// *** end stateless calculation functions on simple objects *******************
+// *** start mutating functions on simple objects ******************************
+
+function shuffle(list) {
+  var m = list.length, t, i;
+  while (m) {
+    i = Math.floor(Math.random() * m--);
+    t = list[m];
+    list[m] = list[i];
+    list[i] = t;
+  }
+  return list;
+}
+
+// *** end mutating functions on simple objects ********************************
+// *** from here on are game-specific functions ********************************
+
+function are_spaces_equal(a, b) { return a[0] == b[0] && a[1] == b[1]; }
+
+function edges_distance_between_spaces(a, b) {
+    return Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]);
+}
+
+function is_space_valid(space) { 
+    return space[0] >= 0 && space[0] <= 5 && space[1] >= 0 && space[1] <= 2;
+}
+
 function unique_spaces(spaces) {
     if (spaces.length <= 1) return spaces;
     // here we are turning every spaces into one larger number and back
@@ -309,7 +305,15 @@ function unique_spaces(spaces) {
     return [...new Set(spaces_ints)].map(x => [x >> 2, x & 3]);
 }
 
-// *** calculation functions on complex objects ********************************
+function is_weak_to(a, b) {
+    const weaknesses = [
+        "Fire is weak to Aqua", "Aqua is weak to Elec", "Elec is weak to Wood",
+        "Wood is weak to Fire"
+    ];
+    return weaknesses.includes(
+        `${a.element || a} is weak to ${b.element || b}`
+    );
+}
 
 const _chips_by_rarity = [[], [], [], [], [], []];
 
@@ -686,7 +690,7 @@ function get_hitcheck_modifier(player, target) {
         return 1.0;
     }
 
-    // the balancing here is based on the median MaxHP of Challenger Navis
+    // the balancing here is based on the median Max_HP of Challenger Navis
     // being 500 and the class increment being 50;
     // a boost of 1 class should give the same advantage in any stat.
     if (aim_num >= dodge_num) return 1.0 + (aim_num - dodge_num) * 0.1;
@@ -747,21 +751,6 @@ function where_does_navi_dodge_chip_from_attacker_striking_spaces(
     if (Math.random() > hit_rate) return random_item(dodge_spaces);
     return null;
 }
-
-// *** mutating functions on simple objects ************************************
-
-function shuffle(list) {
-  var m = list.length, t, i;
-  while (m) {
-    i = Math.floor(Math.random() * m--);
-    t = list[m];
-    list[m] = list[i];
-    list[i] = t;
-  }
-  return list;
-}
-
-// *** navi action methods *****************************************************
 
 function i_move_to_space(player, space, is_dodge = false) {
     // TODO: pathing
@@ -972,8 +961,6 @@ function i_take_my_turn(player) {
     i_start_my_turn(player);
     report(`${name_of(player)}'s turn. (${player.hp}/${player.max_hp})`);
 }
-
-// *** world action methods ****************************************************
 
 function before_every_full_round() { return; }
 
@@ -1461,6 +1448,53 @@ function final_report() {
     console.log(
         `Average turns per match: ${(turns/matches_played).toFixed(1)}`
     );
+}
+
+function set_player_navi_by_name(navi_name) {
+    const exe_name = `${navi_name.split('.')[0]}.EXE`;
+    const navi_data = navi_data_from_bcc.find(x => {
+        return x[NAVI_NAME_INDEX] == exe_name;
+    });
+    initialize_player_navi(player1, navi_data, false);
+}
+
+function set_opponent_navi_by_name(navi_name) {
+    const exe_name = `${navi_name.split('.')[0]}.EXE`;
+    const navi_data = navi_data_from_bcc.find(x => {
+        return x[NAVI_NAME_INDEX] == exe_name;
+    });
+    initialize_player_navi(player2, navi_data, true);
+}
+
+function initialize_player_navi(player, navi_data, is_east) {
+    const navi_name = `${navi_data[NAVI_NAME_INDEX].split('.')[0]}.nav`;
+    player.kind = 'Navi';
+    player.name = navi_name;
+    player.space = is_east ? [5, 2] : [0, 0];
+    player.is_east = is_east;
+    player.hp = navi_data[NAVI_MAX_HP_INDEX];
+    player.max_hp = navi_data[NAVI_MAX_HP_INDEX];
+    player.accuracy = navi_data[NAVI_ACCURACY_INDEX];
+    player.dodging =  navi_data[NAVI_DODGING_INDEX];
+    player.power = navi_data[NAVI_POWER_INDEX];
+    player.priority = navi_data[NAVI_PRIORITY_INDEX];
+    player.hand = [],
+    player.records = {
+        chip_ids_used_this_match: [],
+        chip_uses_by_id: [],
+        chip_wins_by_id: [],
+        chip_kos_by_id: [],
+        chip_losses_by_id: [],
+        wins: 0,
+        ties: 0,
+        losses: 0,
+        matches: 0
+    };
+    player.navi_chosen_chip_slot = -1;
+    player.operator_chosen_chip_slot = -1;
+    player.line_up_spaces_by_chip = {};
+    player.are_chips_useful = [true, true, true, true, true];
+    return player;
 }
 
 // top level execution

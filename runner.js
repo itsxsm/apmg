@@ -1,9 +1,13 @@
-console.log("Runner is loading.");
+console.log(
+    "runner.js is commented out. Game started by navi select in operation.js."
+)
 
-if (!reporter || !player1) {
-    console.log("ERROR: load Mechanics before Runner");
-    throw new Error("script loading order error");
-}
+// console.log("Runner is loading.");
+
+// if (!reporter || !player1) {
+//     console.log("ERROR: load Mechanics before Runner");
+//     throw new Error("script loading order error");
+// }
 
 // const battle_chip_data_for_memory_calibration = [
 //     ["128", "Damg_0", "ABCDE", "None", "0", "calibration only", "**", "Autohit"],
@@ -25,6 +29,6 @@ if (!reporter || !player1) {
 //   1: matches_to_play (int) default 1
 //   2: turn_time (int) milliseconds default 1000
 //   3: await_operator (bool) default false
-run_game(true, 1, 4000);
+// run_game(true, 1, 4000);
 
-console.log("Runner loaded.");
+// console.log("Runner loaded.");

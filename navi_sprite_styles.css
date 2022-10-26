@@ -1,69 +1,189 @@
+.navi.protoman.standing {
+  bottom: 62px; /* why does this have to be set here and not on .navi.protoman ?? */
+  margin-left: 2px;
+  width: 50px;
+  height: 55px;
+  background: url("./sprites/ProtoMan_west.gif") -183px -182px;
+}
+.navi.protoman.attacking {
+  width: 51px;
+  height: 68px;
+  background: url("./sprites/ProtoMan_west.gif") -8px -244px;
+}
+.navi.protoman.struck {
+  width: 38px;
+  height: 57px;
+  background: url("./sprites/ProtoMan_west.gif") -261px -394px;
+}
 
-.navi.navi.navi-gutsman.standing {
-  width: 60;
-  height: 52;
-  background: url(sprites/navi_shoot.gif) -21px -59px;
+.navi.protoman.shooting.frame-0 {
+  width: 53px;
+  height: 51px;
+  margin-left: 2px;
+  background: url("./sprites/ProtoMan_west.gif") -70px -115px;
 }
-.navi.navi-gutsman.shooting1 {
-  width: 66;
-  height: 48;
-  background: url(sprites/navi_shoot.gif) -99px -60px;
+.navi.protoman.shooting.frame-1 {
+  width: 53px;
+  height: 51px;
+  margin-left: 2px;
+  background: url("./sprites/ProtoMan_west.gif") -128px -115px;
 }
-.navi.navi-gutsman.shooting2 {
-  width: 64;
-  height: 48;
-  background: url(sprites/navi_shoot.gif) -166px -60px;
+.navi.protoman.shooting.frame-2 {
+  width: 80px;
+  height: 51px;
+  margin-left: 1px;
+  background: url("./sprites/ProtoMan_west.gif") -184px -115px;
 }
-/*    row 1   */
-.navi.navi-roll.standing {
-  width: 35;
-  height: 61;
-  background: url(sprites/navi_shoot.gif) -25px -138px;
+.navi.protoman.shooting.frame-3 {
+  width: 80px;
+  height: 51px;
+  margin-left: 1px;
+  background: url("./sprites/ProtoMan_west.gif") -269px -115px;
 }
-.navi.navi-roll.shooting-1 {
-  width: 47;
-  height: 60;
-  background: url(sprites/navi_shoot.gif) -78px -136px;
+.navi.protoman.shooting.frame-4 {
+  width: 72px;
+  height: 51px;
+  margin-left: 2px;
+  background: url("./sprites/ProtoMan_west.gif") -351px -115px;
 }
-.navi.navi-roll.shooting-2 {
-  width: 45;
-  height: 60;
-  background: url(sprites/navi_shoot.gif) -132px -136px;
+
+.navi.roll.standing {
+  width: 35px;
+  height: 61px;
+  background: url("./sprites/Roll_west.gif") -315px -161px;
 }
-/*    row 2   */
-.navi.navi-protoman.standing {
-  width: 54;
-  height: 51;
-  background: url(sprites/navi_shoot.gif) -36px -207px;
+.navi.roll.attacking {
+  width: 48px;
+  height: 56px;
+  background: url("./sprites/Roll_west.gif") -24px -640px;
 }
-.navi.navi-protoman.shooting-1 {
-  width: 41;
-  height: 50;
-  background: url(sprites/navi_shoot.gif) -111px -207px;
+.navi.roll.struck {
+  width: 33px;
+  height: 45px;
+  background: url("./sprites/Roll_west.gif") -194px -63px;
 }
-.navi.navi-protoman.shooting-2 {
-  width: 51;
-  height: 50;
-  background: url(sprites/navi_shoot.gif) -162px -207px;
+
+.navi.roll.shooting.frame-0 {
+  width: 47px;
+  height: 60px;
+  background: url("./sprites/Roll_west.gif") -16px -568px;
 }
-/*    row 3   */
-.navi.navi-megaman.standing {
-  width: 36;
-  height: 44;
-  background: url(sprites/navi_shoot.gif) -30px -276px;
+.navi.roll.shooting.frame-1 {
+  width: 45px;
+  height: 60px;
+  background: url("./sprites/Roll_west.gif") -70px -568px;
 }
-.navi.navi-megaman.shooting-windup {
-  width: 39;
-  height: 40;
-  background: url(sprites/navi_shoot.gif) -74px -276px;
+.navi.roll.shooting.frame-2 {
+  width: 72px;
+  height: 60px;
+  background: url("./sprites/Roll_west.gif") -128px -568px;
 }
-.navi.navi-megaman.shooting-1 {
-  width: 39;
-  height: 43;
-  background: url(sprites/navi_shoot.gif) -119px -276px;
+.navi.roll.shooting.frame-3 {
+  width: 72px;
+  height: 60px;
+  background: url("./sprites/Roll_west.gif") -207px -570px;
 }
-.navi.navi-megaman.shooting-2 {
-  width: 39;
-  height: 43;
-  background: url(sprites/navi_shoot.gif) -163px -276px;
+.navi.roll.shooting.frame-4 {
+  width: 65px;
+  height: 60px;
+  background: url("./sprites/Roll_west.gif") -283px -571px;
+}
+
+.navi.gutsman.standing {
+  width: 60px;
+  height: 52px;
+  background: url("./sprites/GutsMan_west.gif") -38px -380px;
+}
+.navi.gutsman.attacking {
+  width: 81px;
+  height: 52px;
+  background: url("./sprites/GutsMan_west.gif") -326px -446px;
+}
+.navi.gutsman.struck {
+  width: 49px;
+  height: 64px;
+  background: url("./sprites/GutsMan_west.gif") -358px -827px;
+}
+
+.navi.gutsman.shooting.frame-0 {
+  width: 66px;
+  height: 48px;
+  background: url("./sprites/GutsMan_west.gif") -33px -596px;
+}
+.navi.gutsman.shooting.frame-1 {
+  width: 64px;
+  height: 48px;
+  background: url("./sprites/GutsMan_west.gif") -103px -596px;
+}
+.navi.gutsman.shooting.frame-2 {
+  width: 88px;
+  height: 48px;
+  background: url("./sprites/GutsMan_west.gif") -175px -596px;
+}
+.navi.gutsman.shooting.frame-3 {
+  width: 88px;
+  height: 48px;
+  background: url("./sprites/GutsMan_west.gif") -265px -596px;
+}
+.navi.gutsman.shooting.frame-4 {
+  width: 81px;
+  height: 48px;
+  background: url("./sprites/GutsMan_west.gif") -356px -596px;
+}
+
+.navi.megaman.standing {
+  width: 35px;
+  height: 44px;
+  background: url("./sprites/MegaMan_west.gif") -64px -9px;
+}
+.navi.megaman.attacking {
+  width: 50px;
+  height: 44px;
+  background: url("./sprites/MegaMan_west.gif") -4px -62px;
+}
+.navi.megaman.struck {
+  width: 26px;
+  height: 47px;
+  background: url("./sprites/MegaMan_west.gif") -51px -255px;
+}
+
+.navi.megaman.shooting.frame-0 {
+  width: 50px;
+  height: 44px;
+  background: url("./sprites/MegaMan_west.gif") -4px -62px;
+}
+.navi.megaman.shooting.frame-1 {
+  width: 46px;
+  height: 44px;
+  background: url("./sprites/MegaMan_west.gif") -58px -62px;
+}
+.navi.megaman.shooting.frame-2 {
+  width: 73px;
+  height: 44px;
+  background: url("./sprites/MegaMan_west.gif") -111px -61px;
+}
+.navi.megaman.shooting.frame-3 {
+  width: 73px;
+  height: 44px;
+  background: url("./sprites/MegaMan_west.gif") -186px -57px;
+}
+.navi.megaman.shooting.frame-4 {
+  width: 66px;
+  height: 44px;
+  background: url("./sprites/MegaMan_west.gif") -261px -57px;
+}
+
+
+
+/* TODO: it's inefficient to use these transforms,
+   use _east sprite sheets instead */
+.navi.east {
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+}
+.navi.east > .navi-hp {
+  /* when using transform hack, this has to be pre-flipped
+  or it will render backwards */
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
 }

@@ -29,4 +29,14 @@ function operator_chooses_chip_idx(idx) {
     }
 }
 
+function operator_chooses_navi(navi_name) {
+    const ALL_NAVI_NAMES = [
+        'MegaMan.nav', 'ProtoMan.nav', 'GutsMan.nav', 'Roll.nav'
+    ];
+    const remaining_navi_names = ALL_NAVI_NAMES.filter(x => x != navi_name);
+    set_player_navi_by_name(navi_name);
+    set_opponent_navi_by_name(random_item(remaining_navi_names));
+    run_game(true, 1, 3000);
+}
+
 console.log("Operation loaded.");

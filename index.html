@@ -6,14 +6,21 @@
 </head>
 <body>
   <br>
-  <div id="navi-select">
-    <div id="portrait-megaman" class="navi-select-portrait"></div>
-    <div id="portrait-roll" class="navi-select-portrait"></div>
-    <div id="portrait-protoman" class="navi-select-portrait"></div>
-    <div id="portrait-ring" class="navi-select-portrait"></div>
-    <div id="portrait-gutsman" class="navi-select-portrait"></div>
-    <div id="portrait-turboman" class="navi-select-portrait"></div>
-  </div>
+  <center>
+    <div id="navi-select">
+      <h1 id="choose-navi-header">Choose your navi</h1>
+      <div id="portrait-megaman" class="navi-select-portrait"
+        onclick="operator_chooses_navi('MegaMan.nav')"></div>
+      <div id="portrait-roll" class="navi-select-portrait"
+        onclick="operator_chooses_navi('Roll.nav')"></div>
+      <div id="portrait-protoman" class="navi-select-portrait"
+        onclick="operator_chooses_navi('ProtoMan.nav')"></div>
+      <div id="portrait-gutsman" class="navi-select-portrait"
+        onclick="operator_chooses_navi('GutsMan.nav')"></div>
+  <!--     <div id="portrait-ring" class="navi-select-portrait"></div>
+      <div id="portrait-turboman" class="navi-select-portrait"></div> -->
+    </div>
+  </center>
   <br>
   <br>
   <div id="minigame">
@@ -77,12 +84,12 @@
         <div id="terrain_5_2" class="terrain terrain-Normal"></div>
       </div>
 
-      <div id="navi-1" class="navi protoman west standing">
+      <div id="navi-1" class="navi west standing">
         <div id="navi-1-hp" class="navi-hp">600</div>
         <div id="navi-1-barrier" class="navi-barrier"></div>
         <div id="navi-1-effect" class="navi-effect"></div>
       </div>
-      <div id="navi-2" class="navi magicman east standing">
+      <div id="navi-2" class="navi east standing">
         <div id="navi-2-hp" class="navi-hp">600</div>
         <div id="navi-2-barrier" class="navi-barrier"></div>
         <div id="navi-2-effect" class="navi-effect"></div>

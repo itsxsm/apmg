@@ -41,18 +41,6 @@ const sprites = [
         hp_div: document.getElementById("navi-1-hp"),
         barrier_div: document.getElementById("navi-1-barrier"),
         effect_div: document.getElementById("navi-1-effect"),
-        left_offset_0s_by_side_and_pose: {
-            "west": {
-                "standing": 2,
-                "attacking": -4,
-                "struck": 2
-            },
-            "east": {
-                "standing": -12,
-                "attacking": -12,
-                "struck": -12
-            }
-        },
         pose: "standing"
     },
     {
@@ -61,19 +49,6 @@ const sprites = [
         hp_div: document.getElementById("navi-2-hp"),
         barrier_div: document.getElementById("navi-2-barrier"),
         effect_div: document.getElementById("navi-2-effect"),
-        left_offset_0s_by_side_and_pose: {
-            "west": {
-                "standing": 3,
-                "attacking": 3,
-                "struck": 3
-            },
-            "east": {
-                "standing": 3,
-                "attacking": -12,
-                "struck": 3
-            }
-        },
-        is_east: true,
         pose: "standing"
     }
 ];
@@ -159,7 +134,6 @@ function check_and_rescue_sprite(sprite) {
 // TODO: this works for static poses, may need refactor for true animations
 function set_sprite_pose(sprite, pose, frame = -1) {
     sprite = check_and_rescue_sprite(sprite);
-    console.log("@@@@@@@@@@@@@@@@@@ 162 sprite = " + sprite);
     if (!sprite) return;
 
     if (!ALL_POSES.includes(pose)) {
@@ -173,36 +147,15 @@ function set_sprite_pose(sprite, pose, frame = -1) {
         sprite.pose = pose;
     }
 
-    console.log("@@@@@@@@@@@@@@@@@@ 176")
     if (frame != -1) {
-        console.log("@@@@@@@@@@@@@@ 178")
         old_frame = grab_after_dash(sprite.div.className, "frame");
         if (old_frame != null) {
             old_frame = `frame-${old_frame}`;
-            console.log("@@@@@@ old_frame => " + old_frame)
-            console.log("@@@@@ new_frame => " + frame)
-            console.log("@@@@@@@@@@@@@@@@ 181")
             sprite.div.classList.replace(old_frame, `frame-${frame}`);
         } else {
-            console.log("@@@@@@@@@@@@@@@@ 184")
             sprite.div.classList.add("frame-0");
         }
     }
-
-    // TODO: obstacle left offsets were replaced with margin-left settings,
-    // see if the same can be done for navi poses
-
-    // const navi = sprite.navi;
-    // const side = navi.is_east ? "east" : "west";
-    // const left_offset_0 =
-    //     sprite.left_offset_0s_by_side_and_pose[side][sprite.pose];
-
-    const space = sprite.navi.space;
-    var bottom_px = get_bottom_line_px_for_j(space[1]) + 2;
-
-    sprite.div.style.left = (space[0] * 40) + "px";
-    sprite.div.style.bottom = bottom_px + "px";
-    sprite.div.style.zIndex = get_z_index_for_j(space[1]) + 10;
 }
 
 function set_sprite_hp(sprite, hp) {
@@ -233,14 +186,11 @@ function repaint_for_turn_start() {
 function run_sprite_frame_animation(
     sprite, pose, total_ms, next_frame, last_frame)
 {
-    console.log("@@@@@@@@@@@@@@@");
     set_sprite_pose(sprite, pose, next_frame);
     if (next_frame >= last_frame) return;
 
     const delay = Math.round(total_ms / (last_frame + 1), 0);
-    console.log("delay =" + delay);
     setTimeout(() => {
-        console.log("Triggered timeout");
         run_sprite_frame_animation(
             sprite, pose, total_ms, next_frame + 1, last_frame
         );
@@ -255,7 +205,7 @@ function animate_move() {
 function animate_windup() {
     const navi_sprite = get_sprite_by_navi(anim_data.enactor); 
     // set_sprite_pose(navi_sprite, "attacking");
-    run_sprite_frame_animation(navi_sprite, "shooting", 490, 0, 4);
+    run_sprite_frame_animation(navi_sprite, "shooting", 240, 0, 4);
 }
 function animate_shoot() { ; }
 function animate_wave() { ; }
@@ -321,7 +271,7 @@ function animate_navi_uses_chip_type_on_target(
 
     const animations = [
         [animate_move, null, 500], 
-        [animate_windup, null, 500],
+        [animate_windup, null, 250],
         [animate_shoot, null, 0],
         [animate_wave, null, 0],
         [animate_result, reset_standing_poses, 500],
@@ -357,12 +307,15 @@ function repaint_barriers() {
 function move_sprite_to_space(sprite, space) {
     if (!are_spaces_equal(sprite.navi.space, space))
         log_error("animator got move message out of sync with navi");
-    const side = sprite.navi.is_east ? "east" : "west";
-    const left_offset_0 =
-        sprite.left_offset_0s_by_side_and_pose[side][sprite.pose];
-    var bottom_px = get_bottom_line_px_for_j(space[1]) + 2;
 
-    sprite.div.style.left = (space[0] * 40 + left_offset_0) + "px";
+    if (sprite.navi.is_east) {
+        sprite.div.style.left = "unset";
+        sprite.div.style.right = 40 * (5 - space[0]) + "px";
+    } else {
+        sprite.div.style.left = (space[0] * 40) + "px";
+        sprite.div.style.right = "unset";
+    }
+    var bottom_px = get_bottom_line_px_for_j(space[1]) + 2;
     sprite.div.style.bottom = bottom_px + "px";
     sprite.div.style.zIndex = get_z_index_for_j(space[1]) + 10;
 }
@@ -482,6 +435,22 @@ function repaint_obstacles() {
     });
 }
 
+function navi_name_to_class(navi_name) {
+    return navi_name.split('.')[0].toLowerCase();
+}
+
+function set_navis() {
+    document.getElementById("navi-1").classList.add(
+        navi_name_to_class(player1.name)
+    );
+    document.getElementById("navi-2").classList.add(
+        navi_name_to_class(player2.name)
+    );
+    [sprites[0], sprites[1]].forEach(sprite => {
+        move_sprite_to_space(sprite, sprite.navi.space);
+    });
+}
+
 function paint_navi_kos_target(navi, koed_navi) {
     get_sprite_by_navi(koed_navi).div.style.display = "none";
 }
@@ -542,6 +511,7 @@ function animate_message(message) {
         repaint_battle_chip_cards();
         repaint_barriers();
     } else if (message == "Game started.") {
+        set_navis();
         start_turn_countdown_painter();
         repaint_battle_chip_cards();
     } else if (message.endsWith("raises a barrier.")
