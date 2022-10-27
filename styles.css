@@ -4,14 +4,14 @@
   height: 52px;
 }
 
-#portrait-ring {
-  background: url("./sprites/navi_faces/bcc__ring_exe.png");
+#portrait-megaman {
+  background: url("./sprites/navi_faces/bcc__megaman_exe.png");
 }
 #portrait-roll {
   background: url("./sprites/navi_faces/bcc__roll_exe.png");
 }
-#portrait-megaman {
-  background: url("./sprites/navi_faces/bcc__megaman_exe.png");
+#portrait-gutsman {
+  background: url("./sprites/navi_faces/bcc__gutsman_exe.png");
 }
 #portrait-protoman {
   background: url("./sprites/navi_faces/bcc__protoman_exe.png");
@@ -19,8 +19,8 @@
 #portrait-turboman {
   background: url("./sprites/navi_faces/bcc__turboman_exe.png");
 }
-#portrait-gutsman {
-  background: url("./sprites/navi_faces/bcc__gutsman_exe.png");
+#portrait-ring {
+  background: url("./sprites/navi_faces/bcc__ring_exe.png");
 }
 
 #minigame {
@@ -29,7 +29,7 @@
   padding-bottom: 8px;
   position: relative;
   min-width: 240px;
-  max-width: 380px;
+  max-width: 375px;
   background-color: powderblue;
   border-radius: 16px;
   border: 2px solid blue;
