@@ -198,9 +198,10 @@ function run_sprite_frame_animation(
 }
 
 function animate_move() {
-    if (!anim_data.moves_to) return 'skip'; 
+    if (!anim_data.moves_to) return 'skip';
     const navi_sprite = get_sprite_by_navi(anim_data.enactor);
     move_sprite_to_space(navi_sprite, anim_data.moves_to);
+    anim_data.moves_to = null;
 }
 function animate_windup() {
     const navi_sprite = get_sprite_by_navi(anim_data.enactor); 
@@ -215,6 +216,7 @@ function animate_result() {
             get_opponent(anim_data.enactor)
         );
         move_sprite_to_space(dodger_sprite, anim_data.dodges_to);
+        anim_data.dodges_to = null;
     };
 
     anim_data.strikes.forEach(target => {
@@ -521,6 +523,7 @@ function animate_message(message) {
         if (message.includes(" blocks the hit ")) {
             const target = get_navi_by_name(words[0].split("'")[0]);
             const navi = get_opponent(target);
+            anim_data.enactor = navi;
             animate_navi_uses_chip_type_on_target(navi, "Shot", target, false);
         }
     } else if (message.endsWith(" is deleted.")
