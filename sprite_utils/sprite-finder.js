@@ -1,4 +1,4 @@
-const img = document.getElementById('image-1');
+const img = document.getElementsByTagName("img")[0];
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d', {willReadFrequently: true});
 

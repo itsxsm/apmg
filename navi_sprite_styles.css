@@ -46,89 +46,62 @@
   margin-left: 2px;
   background: url("./sprites/ProtoMan_west.gif") -351px -115px;
 }
-
-.navi.roll.standing {
-  width: 35px;
-  height: 61px;
-  background: url("./sprites/Roll_west.gif") -315px -161px;
+.navi.protoman.shooting.frame-5 { /* repeat of 0 */
+  width: 53px;
+  height: 51px;
+  margin-left: 2px;
+  background: url("./sprites/ProtoMan_west.gif") -70px -115px;
 }
-.navi.roll.attacking {
+
+.navi.protoman.slashing.frame-0 {
+  width: 41px;
+  height: 53px;
+  background: url("./sprites/ProtoMan_west.gif") -345px -184px;
+}
+.navi.protoman.slashing.frame-1 {
   width: 48px;
-  height: 56px;
-  background: url("./sprites/Roll_west.gif") -24px -640px;
-}
-.navi.roll.struck {
-  width: 33px;
-  height: 45px;
-  background: url("./sprites/Roll_west.gif") -194px -63px;
-}
-
-.navi.roll.shooting.frame-0 {
-  width: 47px;
-  height: 60px;
-  background: url("./sprites/Roll_west.gif") -16px -568px;
-}
-.navi.roll.shooting.frame-1 {
-  width: 45px;
-  height: 60px;
-  background: url("./sprites/Roll_west.gif") -70px -568px;
-}
-.navi.roll.shooting.frame-2 {
-  width: 72px;
-  height: 60px;
-  background: url("./sprites/Roll_west.gif") -128px -568px;
-}
-.navi.roll.shooting.frame-3 {
-  width: 72px;
-  height: 60px;
-  background: url("./sprites/Roll_west.gif") -207px -570px;
-}
-.navi.roll.shooting.frame-4 {
-  width: 65px;
-  height: 60px;
-  background: url("./sprites/Roll_west.gif") -283px -571px;
-}
-
-.navi.gutsman.standing {
-  width: 60px;
-  height: 52px;
-  background: url("./sprites/GutsMan_west.gif") -38px -380px;
-}
-.navi.gutsman.attacking {
-  width: 81px;
-  height: 52px;
-  background: url("./sprites/GutsMan_west.gif") -326px -446px;
-}
-.navi.gutsman.struck {
-  width: 49px;
-  height: 64px;
-  background: url("./sprites/GutsMan_west.gif") -358px -827px;
-}
-
-.navi.gutsman.shooting.frame-0 {
-  width: 66px;
   height: 48px;
-  background: url("./sprites/GutsMan_west.gif") -33px -596px;
+  background: url("./sprites/ProtoMan_west.gif") -289px -189px;
 }
-.navi.gutsman.shooting.frame-1 {
+.navi.protoman.slashing.frame-2 {
+  width: 69px;
+  height: 50px;
+  background: url("./sprites/ProtoMan_west.gif") -411px -261px;
+}
+.navi.protoman.slashing.frame-3 {
   width: 64px;
-  height: 48px;
-  background: url("./sprites/GutsMan_west.gif") -103px -596px;
+  height: 49px;
+  background: url("./sprites/ProtoMan_west.gif") -345px -262px;
 }
-.navi.gutsman.shooting.frame-2 {
-  width: 88px;
-  height: 48px;
-  background: url("./sprites/GutsMan_west.gif") -175px -596px;
+.navi.protoman.slashing.frame-4 {
+  width: 60px;
+  height: 66px;
+  background: url("./sprites/ProtoMan_west.gif") -282px -245px;
 }
-.navi.gutsman.shooting.frame-3 {
-  width: 88px;
-  height: 48px;
-  background: url("./sprites/GutsMan_west.gif") -265px -596px;
+.navi.protoman.slashing.frame-5 {
+  width: 50px;
+  height: 66px;
+  background: url("./sprites/ProtoMan_west.gif") -228px -245px;
 }
-.navi.gutsman.shooting.frame-4 {
-  width: 81px;
-  height: 48px;
-  background: url("./sprites/GutsMan_west.gif") -356px -596px;
+.navi.protoman.slashing.frame-6 {
+  width: 50px;
+  height: 66px;
+  background: url("./sprites/ProtoMan_west.gif") -174px -245px;
+}
+.navi.protoman.slashing.frame-7 {
+  width: 50px;
+  height: 66px;
+  background: url("./sprites/ProtoMan_west.gif") -118px -245px;
+}
+.navi.protoman.slashing.frame-8 {
+  width: 50px;
+  height: 66px;
+  background: url("./sprites/ProtoMan_west.gif") -63px -245px;
+}
+.navi.protoman.slashing.frame-9 {
+  width: 50px;
+  height: 66px;
+  background: url("./sprites/ProtoMan_west.gif") -9px -245px;
 }
 
 .navi.megaman.standing {
@@ -172,7 +145,268 @@
   height: 44px;
   background: url("./sprites/MegaMan_west.gif") -261px -57px;
 }
+.navi.megaman.shooting.frame-5 { /* repeat of 0 */
+  width: 50px;
+  height: 44px;
+  background: url("./sprites/MegaMan_west.gif") -4px -62px;
+}
 
+.navi.megaman.slashing.frame-0 {
+  width: 35px;
+  height: 44px;
+  background: url("./sprites/MegaMan_west.gif") -6px -121px;
+}
+.navi.megaman.slashing.frame-1 {
+  width: 64px;
+  height: 44px;
+  background: url("./sprites/MegaMan_west.gif") -52px -121px;
+}
+.navi.megaman.slashing.frame-2 {
+  width: 64px;
+  height: 45px;
+  background: url("./sprites/MegaMan_west.gif") -126px -120px;
+}
+.navi.megaman.slashing.frame-3 {
+  width: 65px;
+  height: 56px;
+  background: url("./sprites/MegaMan_west.gif") -200px -112px;
+}
+.navi.megaman.slashing.frame-4 {
+  width: 48px;
+  height: 56px;
+  background: url("./sprites/MegaMan_west.gif") -274px -113px;
+}
+.navi.megaman.slashing.frame-5 {
+  width: 43px;
+  height: 56px;
+  background: url("./sprites/MegaMan_west.gif") -334px -113px;
+}
+.navi.megaman.slashing.frame-6 {
+  width: 43px;
+  height: 56px;
+  background: url("./sprites/MegaMan_west.gif") -390px -111px;
+}
+
+.navi.megaman.throwing.frame-0 {
+  width: 39px;
+  height: 49px;
+  background: url("./sprites/MegaMan_west.gif") -7px -188px;
+}
+.navi.megaman.throwing.frame-1 {
+  width: 43px;
+  height: 49px;
+  background: url("./sprites/MegaMan_west.gif") -53px -188px;
+}
+.navi.megaman.throwing.frame-2 {
+  width: 41px;
+  height: 51px;
+  background: url("./sprites/MegaMan_west.gif") -103px -186px;
+}
+.navi.megaman.throwing.frame-3 {
+  width: 49px;
+  height: 43px;
+  background: url("./sprites/MegaMan_west.gif") -148px -194px;
+}
+.navi.megaman.throwing.frame-4 {
+  width: 42px;
+  height: 42px;
+  background: url("./sprites/MegaMan_west.gif") -205px -195px;
+}
+
+.navi.roll.standing {
+  width: 35px;
+  height: 61px;
+  background: url("./sprites/Roll_west.gif") -315px -161px;
+}
+.navi.roll.attacking {
+  width: 48px;
+  height: 56px;
+  background: url("./sprites/Roll_west.gif") -24px -640px;
+}
+.navi.roll.struck {
+  width: 33px;
+  height: 45px;
+  background: url("./sprites/Roll_west.gif") -194px -63px;
+}
+
+.navi.roll.shooting.frame-0 {
+  width: 47px;
+  height: 60px;
+  background: url("./sprites/Roll_west.gif") -16px -568px;
+}
+.navi.roll.shooting.frame-1 {
+  width: 45px;
+  height: 60px;
+  background: url("./sprites/Roll_west.gif") -70px -568px;
+}
+.navi.roll.shooting.frame-2 {
+  width: 72px;
+  height: 60px;
+  background: url("./sprites/Roll_west.gif") -128px -568px;
+}
+.navi.roll.shooting.frame-3 {
+  width: 72px;
+  height: 60px;
+  background: url("./sprites/Roll_west.gif") -207px -570px;
+}
+.navi.roll.shooting.frame-4 {
+  width: 65px;
+  height: 60px;
+  background: url("./sprites/Roll_west.gif") -283px -571px;
+}
+.navi.roll.shooting.frame-5 { /* repeat of 0 */
+  width: 47px;
+  height: 60px;
+  background: url("./sprites/Roll_west.gif") -16px -568px;
+}
+
+.navi.gutsman.standing {
+  width: 60px;
+  height: 52px;
+  background: url("./sprites/GutsMan_west.gif") -38px -380px;
+}
+.navi.gutsman.attacking {
+  width: 81px;
+  height: 52px;
+  background: url("./sprites/GutsMan_west.gif") -326px -446px;
+}
+.navi.gutsman.struck {
+  width: 49px;
+  height: 64px;
+  background: url("./sprites/GutsMan_west.gif") -358px -827px;
+}
+
+.navi.gutsman.shooting.frame-0 {
+  width: 66px;
+  height: 48px;
+  background: url("./sprites/GutsMan_west.gif") -33px -596px;
+}
+.navi.gutsman.shooting.frame-1 {
+  width: 64px;
+  height: 48px;
+  background: url("./sprites/GutsMan_west.gif") -103px -596px;
+}
+.navi.gutsman.shooting.frame-2 {
+  width: 88px;
+  height: 48px;
+  background: url("./sprites/GutsMan_west.gif") -175px -596px;
+}
+.navi.gutsman.shooting.frame-3 {
+  width: 88px;
+  height: 48px;
+  background: url("./sprites/GutsMan_west.gif") -265px -596px;
+}
+.navi.gutsman.shooting.frame-4 {
+  width: 81px;
+  height: 48px;
+  background: url("./sprites/GutsMan_west.gif") -356px -596px;
+}
+.navi.gutsman.shooting.frame-5 { /* repeat of 0 */
+  width: 66px;
+  height: 48px;
+  background: url("./sprites/GutsMan_west.gif") -33px -596px;
+}
+
+.navi.ring.standing {
+  width: 62px;
+  height: 68px;
+  background: url("./sprites/Ring_west.gif") -10px -64px;
+  margin-left: -14px;
+}
+.navi.ring.attacking {
+  width: 64px;
+  height: 63px;
+  background: url("./sprites/Ring_west.gif") -96px -464px;
+  margin-left: -14px;
+}
+.navi.ring.struck {
+  width: 48px;
+  height: 63px;
+  background: url("./sprites/Ring_west.gif") -190px -537px;
+  margin-left: -10px;
+}
+.navi.ring.shooting {
+  width: 64px;
+  height: 63px;
+  background: url("./sprites/Ring_west.gif") -96px -464px;
+  margin-left: -14px;
+}
+
+.navi.ring.slashing.frame-0 {
+  width: 51px;
+  height: 68px;
+  background: url("./sprites/Ring_west.gif") -216px -64px;
+}
+.navi.ring.slashing.frame-1 {
+  width: 53px;
+  height: 68px;
+  background: url("./sprites/Ring_west.gif") -278px -64px;
+}
+.navi.ring.slashing.frame-2 {
+  width: 48px;
+  height: 71px;
+  background: url("./sprites/Ring_west.gif") -338px -61px;
+}
+.navi.ring.slashing.frame-3 {
+  width: 94px;
+  height: 56px;
+  background: url("./sprites/Ring_west.gif") -396px -76px;
+}
+/*    row 2   */
+.navi.ring.slashing.frame-4 {
+  width: 94px;
+  height: 56px;
+  background: url("./sprites/Ring_west.gif") -7px -153px;
+}
+.navi.ring.slashing.frame-5 {
+  width: 85px;
+  height: 56px;
+  background: url("./sprites/Ring_west.gif") -108px -153px;
+}
+.navi.ring.slashing.frame-6 {
+  width: 59px;
+  height: 50px;
+  background: url("./sprites/Ring_west.gif") -206px -159px;
+}
+
+.navi.elecman.standing {
+  width: 40px;
+  height: 68px;
+  background: url("./sprites/ElecMan_west.gif") -16px -4px;
+  margin-left: 2px;
+}
+.navi.elecman.attacking {
+  width: 48px;
+  height: 82px;
+  background: url("./sprites/ElecMan_west.gif") -169px -562px;
+}
+.navi.elecman.struck {
+  width: 38px;
+  height: 64px;
+  background: url("./sprites/ElecMan_west.gif") -202px -9px;
+  margin-left: -2px;
+}
+
+.navi.elecman.shooting.frame-0 {
+  width: 49px;
+  height: 69px;
+  background: url("./sprites/ElecMan_west.gif") -63px -655px;
+}
+.navi.elecman.shooting.frame-1 {
+  width: 63px;
+  height: 55px;
+  background: url("./sprites/ElecMan_west.gif") -121px -669px;
+}
+.navi.elecman.shooting.frame-2 {
+  width: 61px;
+  height: 55px;
+  background: url("./sprites/ElecMan_west.gif") -192px -669px;
+}
+.navi.elecman.shooting.frame-3 { /* repeat of 1 */
+  width: 63px;
+  height: 55px;
+  background: url("./sprites/ElecMan_west.gif") -121px -669px;
+}
 
 
 /* TODO: it's inefficient to use these transforms,
@@ -184,6 +418,11 @@
 .navi.east > .navi-hp {
   /* when using transform hack, this has to be pre-flipped
   or it will render backwards */
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+}
+
+.sword-swoosh.east {
   -webkit-transform: scaleX(-1);
   transform: scaleX(-1);
 }

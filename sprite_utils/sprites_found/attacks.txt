@@ -1,0 +1,13 @@
+auras
+8:7 -> 63:59  (56, 53)
+8:71 -> 63:123
+8:135 -> 63:187
+8:199 -> 63:251
+
+### personality notes from anime -- move these
+
+GutsMan always uses proper names in place of 'I' or 'you'
+
+### personality notes from games -- move these
+
+ProtoMan address his operator as Master <name>
