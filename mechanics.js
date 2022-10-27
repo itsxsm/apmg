@@ -857,21 +857,24 @@ function i_use_this_attack(player, battle_chip) {
     }); 
 }
 
-function remove_chip_from_players_hand(battle_chip, player) {
-    const chip_index = player.hand.indexOf(battle_chip);
-    if (chip_index == -1) {
-        console.log("ERROR: chip to remove not found");
-        return;
-    }
-    player.hand.splice(chip_index, 1);
+// function remove_chip_from_players_hand(battle_chip, player) {
+//     const chip_index = player.hand.indexOf(battle_chip);
+//     if (chip_index == -1) {
+//         console.log("ERROR: chip to remove not found");
+//         return;
+//     }
+//     player.hand.splice(chip_index, 1);
+// };
 
-};
+function replace_players_chip_in_slot(player, chip_slot) {
+    player.hand[chip_slot] = conjure_a_random_battle_chip();
+}
 
-function i_use_this_battle_chip(player, battle_chip) {
+function i_use_battle_chip_from_slot(player, chip_slot) {
+    const battle_chip = player.hand[chip_slot];
     player.battle_chip = battle_chip;
     report(`${name_of(player)} uses ${name_of(battle_chip)}.`);
-    remove_chip_from_players_hand(battle_chip, player);
-    deal_player_a_new_chip(player);
+    replace_players_chip_in_slot(player, chip_slot);
 
     const chip_id = parseInt(battle_chip[0], 10);
     player.records.chip_ids_used_this_match.push(chip_id);
@@ -934,7 +937,7 @@ function i_start_my_turn(player) {
                     u_player, get_opponent(u_player).space, battle_chip
                 ).filter(space => can_player_move_to_space(u_player, space));
         });
-        [0, 1, 2, 3, 4].forEach(idx => {
+        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].forEach(idx => {
             u_player.are_chips_useful[idx] =
                 is_chip_useful_to_navi(u_player.hand[idx], u_player);
         });
@@ -952,8 +955,7 @@ function i_end_my_turn(player) {
     if (chooser == "None") return; // expected once per battle at the start
     player.operator_chosen_chip_slot = -1;
     player.navi_chosen_chip_slot = -1;
-    const my_battle_chip = player.hand[my_slot];
-    i_use_this_battle_chip(player, my_battle_chip);
+    i_use_battle_chip_from_slot(player, my_slot);
 }
 
 function i_take_my_turn(player) {
@@ -1359,13 +1361,11 @@ function player_defeats_player(winner, loser) {
 }
 
 function deal_player_a_hand(player) {
-    [0, 1, 2, 3, 4].forEach((idx) => {
+    // TODO: in the future there will need to be more distinction between
+    // navi and operator chips; for new they can be in the same hand
+    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].forEach((idx) => {
         player.hand[idx] = conjure_a_random_battle_chip();
     });
-}
-
-function deal_player_a_new_chip(player) {
-    player.hand.push(conjure_a_random_battle_chip());   
 }
 
 function reset_game() {
