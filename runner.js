@@ -1,5 +1,5 @@
 console.log(
-    "runner.js is commented out. Game started by navi select in operation.js."
+    "runner.js is commented out. Select your navi to start the game."
 )
 
 // console.log("Runner is loading.");

@@ -1,0 +1,23 @@
+const instructions_texts = [
+	"Greetings, Operator. My name is GateMan.nav.",
+	"Welcome to the NetBattle minigame!",
+	"This is the single player demo.",
+	"Online Multiplayer is scheduled for release on Thursday Nov 17th.",
+	"For now, this demo is the only version. So, let me explain...",
+	"The top 5 chips are your navi's battle chip.",
+	"Your navi will select a battle chip to use at the start of their turn.",
+	"Your navi's choice is highlighted in yellow.",
+	"You can choose a different battle chip while the turn gauge is filling.",
+	"Your choice will replace your navi's and be highlighted in green.",
+	"Choose wisely to help your navi!",
+	"The bottom 5 chips are your operator battle chips.",
+	"Your navi cannot use these automatically.",
+	"However, as an operator, you can select any chip.",
+	"Select the best chip to achieve victory!",
+	"Sometimes a chip has no benefit on that turn.",
+	"For example, a Sword chip has no benefit when it can't reach any target.",
+	"These chips are displayed in black and white.",
+	"You can choose them if you really want, but it's not recommended.",
+	"The minigame continues until one navi's HP reaches zero.",
+	"That's all for the instructions. Good luck!"
+]

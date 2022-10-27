@@ -30,12 +30,18 @@ function operator_chooses_chip_idx(idx) {
 }
 
 function operator_chooses_navi(navi_name) {
+    if (player1.name) {
+        console.log("ERROR: cannot re-select a navi once game has started.")
+        return;
+    }
+
     const ALL_NAVI_NAMES = [
         'MegaMan.nav', 'ProtoMan.nav', 'GutsMan.nav', 'Roll.nav'
     ];
     const remaining_navi_names = ALL_NAVI_NAMES.filter(x => x != navi_name);
     set_player_navi_by_name(navi_name);
     set_opponent_navi_by_name(random_item(remaining_navi_names));
+    document.getElementById("navi-select").style.display = "none";
     run_game(true, 1, 3000);
 }
 
