@@ -10,7 +10,7 @@ if (!reporter || !player1) {
 }
 
 let turn_start_absolute_ms = Date.now();
-const ALL_POSES = ["standing", "attacking", "struck", "shooting"];
+const ALL_POSES = ["standing", "attacking", "struck", "shooting", "slashing"];
 const ALL_STANDARD_CHIP_TYPES = ["Shot", "Sword", "Toss"];
 const SPECIAL_CHIP_ANIMATIONS = {};
 var _cache_buster = 0;
@@ -52,6 +52,43 @@ const sprites = [
         pose: "standing"
     }
 ];
+
+const navi_sprite_settings_by_name = {
+    // TODO: any simple way to infer these from defined CSS classes?
+    'ProtoMan.nav': {
+        max_frame_for_pose: {
+            'shooting': 5,
+            'slashing': 9
+        }
+    },
+    'MegaMan.nav': {
+        max_frame_for_pose: {
+            'shooting': 5,
+            'slashing': 6,
+            'throwing': 4
+        }
+    },
+    'Roll.nav': {
+        max_frame_for_pose: {
+            'shooting': 5
+        }
+    },
+    'GutsMan.nav': {
+        max_frame_for_pose: {
+            'shooting': 5
+        }
+    },
+    'Ring.nav': {
+        max_frame_or_pose: {
+            'slashing': 6 
+        }
+    },
+    'ElecMan.nav': {
+        max_frame_for_pose: {
+            'shooting': 3
+        },
+    }
+}
 
 const card_divs = [0, 1, 2, 3, 4].map(idx => {
     return document.getElementById(`battle-chip-card-${idx}`);
@@ -183,31 +220,84 @@ function repaint_for_turn_start() {
     }
 }
 
+function max_frame_for_sprite_animation(sprite, pose_name) {
+    const settings = navi_sprite_settings_by_name[sprite.navi.name];
+    if (!(pose_name in settings.max_frame_for_pose)) return 0;
+    return settings.max_frame_for_pose[pose_name];
+}
+
+function place_swoosh(swoosh_div) {
+    const navi = anim_data.enactor;
+    var [swoosh_i, swoosh_j] = navi.space;
+    if (is_battle_chip_wide(navi.battle_chip)) {
+        swoosh_j--;
+        swoosh_div.classList.add("hits-Wide");
+    } else {
+        swoosh_div.classList.remove("hits-Wide");
+    }
+
+    swoosh_div.style.top = `${70 + swoosh_j * 36}px`;
+    if (swoosh_div.classList.contains("east")) {
+        swoosh_i--;
+        swoosh_div.style.left = "unset";
+        swoosh_div.style.right = `${(5 - swoosh_i) * 40}px`;
+    } else {
+        swoosh_i++;
+        swoosh_div.style.left = `${swoosh_i * 40}px`;
+        swoosh_div.style.right = "unset";
+    }
+}
+
+function run_swoosh_animation(total_ms, frame) {
+    var swoosh_div_id = anim_data.enactor == player1 ? "swoosh-1" : "swoosh-2";
+    var swoosh_div = document.getElementById(swoosh_div_id);
+    if (frame == 4) {
+        swoosh_div.classList.remove("frame-3");
+        return;
+    }
+    if (frame == 0) {
+        place_swoosh(swoosh_div);
+        swoosh_div.classList.add("frame-0");
+    } else {
+        swoosh_div.classList.replace(`frame-${frame - 1}`, `frame-${frame}`);
+    }
+    const delay = Math.round(total_ms / 4, 0);
+    setTimeout(() => run_swoosh_animation(total_ms, frame + 1), delay);
+}
+
 function run_sprite_frame_animation(
-    sprite, pose, total_ms, next_frame, last_frame)
+    sprite, pose, total_ms, frame, last_frame)
 {
-    set_sprite_pose(sprite, pose, next_frame);
-    if (next_frame >= last_frame) return;
+    set_sprite_pose(sprite, pose, frame);
+    if (frame >= last_frame) return;
 
     const delay = Math.round(total_ms / (last_frame + 1), 0);
     setTimeout(() => {
         run_sprite_frame_animation(
-            sprite, pose, total_ms, next_frame + 1, last_frame
+            sprite, pose, total_ms, frame + 1, last_frame
         );
     }, delay);
 }
 
 function animate_move() {
-    if (!anim_data.moves_to) return 'skip'; 
+    if (!anim_data.moves_to) return 'skip';
     const navi_sprite = get_sprite_by_navi(anim_data.enactor);
     move_sprite_to_space(navi_sprite, anim_data.moves_to);
+    anim_data.moves_to = null;
 }
 function animate_windup() {
+    const pose = anim_data.attack_pose || "attacking";
     const navi_sprite = get_sprite_by_navi(anim_data.enactor); 
     // set_sprite_pose(navi_sprite, "attacking");
-    run_sprite_frame_animation(navi_sprite, "shooting", 240, 0, 4);
+    max_frame = max_frame_for_sprite_animation(navi_sprite, pose);
+    if (max_frame == 0) {
+        set_sprite_pose(navi_sprite, pose);
+    } else {
+        run_sprite_frame_animation(navi_sprite, pose, 240, 0, max_frame);
+    }
+
+    if (pose == "slashing") run_swoosh_animation(240, 0);
 }
-function animate_shoot() { ; }
 function animate_wave() { ; }
 function animate_result() {
     if (anim_data.dodges_to) {
@@ -215,6 +305,7 @@ function animate_result() {
             get_opponent(anim_data.enactor)
         );
         move_sprite_to_space(dodger_sprite, anim_data.dodges_to);
+        anim_data.dodges_to = null;
     };
 
     anim_data.strikes.forEach(target => {
@@ -225,6 +316,8 @@ function animate_result() {
 }
 function reset_standing_poses() {
     anim_data.enactor = null;
+    anim_data.attack_pose = null;
+    anim_data.spaces_hit = [];
     anim_data.moves_to = null;
     anim_data.dodges_to = null;
     anim_data.strikes.length = 0;
@@ -261,18 +354,21 @@ function run_animation() {
     }, timeout_ms);
 }
 
-function animate_navi_uses_chip_type_on_target(
-    navi, chip_type, target, does_hit = true)
+function animate_navi_uses_chip_on_target(
+    navi, target, does_hit = true)
 {
     clearInterval(_interval_settings.active_interval);
 
     anim_data.enactor = navi;
     if (target && does_hit) anim_data.strikes = [target];
 
+    const battle_chip = anim_data.enactor.battle_chip;
+    const is_sword = battle_chip[TYPES_INDEX].split(' ')[0] == "Sword";
+    anim_data.attack_pose = is_sword ? "slashing" : "shooting";
+
     const animations = [
         [animate_move, null, 500], 
         [animate_windup, null, 250],
-        [animate_shoot, null, 0],
         [animate_wave, null, 0],
         [animate_result, reset_standing_poses, 500],
     ]
@@ -285,16 +381,21 @@ function animate_navi_uses_chip_type_on_target(
 function repaint_barriers() {
     [sprites[0], sprites[1]].forEach(sprite => {
         const div = sprite.barrier_div;
+        const barrier_chip = sprite.navi.barrier_chip;
 
         var old_class = grab_after_dash(div.className, "barrier");
         if (old_class) old_class = `barrier-${old_class}`;
-        if (!sprite.navi.barrier_chip) {
+        if (!barrier_chip) {
             if (old_class) div.classList.remove(old_class);
             return;
         }
 
-        //const new_class = `barrier-${p.barrier_chip}`;
-        const new_class = "barrier-Barrier";
+        var new_class = "barrier-Barrier";
+        const barriers_with_sprites = [
+            "AquaAura", "WoodAura", "FireAura", "LifeAura"
+        ];
+        if (barriers_with_sprites.includes(name_of(barrier_chip)))
+            new_class = `barrier-${name_of(barrier_chip)}`;
 
         if (old_class) {
             div.classList.replace(old_class, new_class);
@@ -501,7 +602,7 @@ function animate_message(message) {
     if (last_char == ')' && message.includes("'s turn")) {
         turn_start_absolute_ms = Date.now();
         repaint_for_turn_start();
-    }  else if (message == "Game reset.") {
+    } else if (message == "Game reset.") {
         sprites[0].div.style.display = "initial";
         sprites[1].div.style.display = "initial";
         repaint_obstacles();
@@ -521,14 +622,15 @@ function animate_message(message) {
         if (message.includes(" blocks the hit ")) {
             const target = get_navi_by_name(words[0].split("'")[0]);
             const navi = get_opponent(target);
-            animate_navi_uses_chip_type_on_target(navi, "Shot", target, false);
+            anim_data.enactor = navi;
+            animate_navi_uses_chip_on_target(navi, target, false);
         }
     } else if (message.endsWith(" is deleted.")
         || message.endsWith(" has burned out.")
         || message.includes(" places "))
     {
         repaint_obstacles();
-    }   else if (message.includes(" moves to ")
+    } else if (message.includes(" moves to ")
         || message.includes( "dodges to "))
     {
         if (words.length != 5) {
@@ -548,18 +650,19 @@ function animate_message(message) {
         const target_name = (words.length == 7) ? `${words[5]} ${words[6]}`
             : words[5];
         const target = get_occupant_by_name(target_name);
-        animate_navi_uses_chip_type_on_target(navi, "Shot", target, true);
+        animate_navi_uses_chip_on_target(navi, target, true);
         if (is_navi(target)) {
             const target_sprite = get_sprite_by_navi(target);
             set_sprite_hp(target_sprite, target.hp);
         }
-    } else if (message.includes(" misses")) {
-        // TODO: this report is awkward; paint attack pose on chip use instead
+    } else if (message.includes(" cannot line up ")
+        || message.includes(" misses"))
+    {
+        // TODO: these repors is awkward; paint attack pose on chip use instead?
         const navi = get_navi_by_name(words[0]);
         anim_data.enactor = navi;
-        animate_navi_uses_chip_type_on_target(navi, "Shot", undefined, false);
-    } else if (message.includes(" cannot line up ")
-        || (message.includes(" uses ") && words.length == 3)
+        animate_navi_uses_chip_on_target(navi, undefined, false);
+    } else if ((message.includes(" uses ") && words.length == 3)
         || message.endsWith("negates all damage."))
     {
         ; // nothing to do
@@ -576,7 +679,10 @@ function animate_message(message) {
         const navi = get_navi_by_name(words[0]);
         const koed_navi = get_navi_by_name(last_word);
         paint_navi_kos_target(navi, koed_navi);
-    } else {
+    } else if (message.includes(" will operate ")) {
+        document.getElementById("navi-select").style.display = "none";
+        document.getElementById("hand").style.display = "flex";
+    }  else {
         console.log(`-> no animation interpreter for message: ${message}`);
     }
 }

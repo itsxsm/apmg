@@ -41,7 +41,9 @@ function operator_chooses_navi(navi_name) {
     const remaining_navi_names = ALL_NAVI_NAMES.filter(x => x != navi_name);
     set_player_navi_by_name(navi_name);
     set_opponent_navi_by_name(random_item(remaining_navi_names));
-    document.getElementById("navi-select").style.display = "none";
+
+    report(`Player will operate ${navi_name}.`);
+
     run_game(true, 1, 3000);
 }
 

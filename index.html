@@ -5,24 +5,6 @@
   <link rel="stylesheet" href="./navi_sprite_styles.css">
 </head>
 <body>
-  <br>
-  <center>
-    <div id="navi-select">
-      <h1 id="choose-navi-header">Choose your navi</h1>
-      <div id="portrait-megaman" class="navi-select-portrait"
-        onclick="operator_chooses_navi('MegaMan.nav')"></div>
-      <div id="portrait-roll" class="navi-select-portrait"
-        onclick="operator_chooses_navi('Roll.nav')"></div>
-      <div id="portrait-protoman" class="navi-select-portrait"
-        onclick="operator_chooses_navi('ProtoMan.nav')"></div>
-      <div id="portrait-gutsman" class="navi-select-portrait"
-        onclick="operator_chooses_navi('GutsMan.nav')"></div>
-  <!--     <div id="portrait-ring" class="navi-select-portrait"></div>
-      <div id="portrait-turboman" class="navi-select-portrait"></div> -->
-    </div>
-  </center>
-  <br>
-  <br>
   <div id="minigame">
     <div id="turn-timer-box">
       <div id="turn-timer-fill"></div><div id="turn-timer-nofill"></div>
@@ -85,17 +67,36 @@
       </div>
 
       <div id="navi-1" class="navi west standing">
-        <div id="navi-1-hp" class="navi-hp">600</div>
+        <div id="navi-1-hp" class="navi-hp"></div>
         <div id="navi-1-barrier" class="navi-barrier"></div>
         <div id="navi-1-effect" class="navi-effect"></div>
       </div>
       <div id="navi-2" class="navi east standing">
-        <div id="navi-2-hp" class="navi-hp">600</div>
+        <div id="navi-2-hp" class="navi-hp"></div>
         <div id="navi-2-barrier" class="navi-barrier"></div>
         <div id="navi-2-effect" class="navi-effect"></div>
       </div>
-
+      <div id="swoosh-1" class="sword-swoosh"></div>
+      <div id="swoosh-2" class="sword-swoosh"></div>
       <div id="obstacle-anchor"></div>
+    </div>
+    <div id="navi-select">
+      <center>
+        <h1 id="choose-navi-header">Choose your navi</h1>
+        <div id="portrait-megaman" class="navi-select-portrait"
+          onclick="operator_chooses_navi('MegaMan.nav')"></div>
+        <div id="portrait-roll" class="navi-select-portrait"
+          onclick="operator_chooses_navi('Roll.nav')"></div>
+        <div id="portrait-protoman" class="navi-select-portrait"
+          onclick="operator_chooses_navi('ProtoMan.nav')"></div>
+        <div id="portrait-gutsman" class="navi-select-portrait"
+          onclick="operator_chooses_navi('GutsMan.nav')"></div>
+        <div id="portrait-ring" class="navi-select-portrait"
+          onclick="operator_chooses_navi('Ring.nav')"></div>
+        <!-- <div id="portrait-turboman" class="navi-select-portrait"></div> -->
+        <div id="portrait-elecman" class="navi-select-portrait"
+          onclick="operator_chooses_navi('ElecMan.nav')"></div>
+      </center>
     </div>
     <div id="hand">
       <!-- this works for MVP, may need to refactor later 
@@ -134,6 +135,10 @@
         <div id="chip-name-4" class="chip-name"></div>
       </div>
     </div>
+  </div>
+
+  <div id="tutorial"> <!-- this will be chat for online mode -->
+    
   </div>
 
   <script src="mechanics.js" type="text/javascript"></script>

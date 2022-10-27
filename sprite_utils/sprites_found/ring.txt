@@ -1,0 +1,318 @@
+/*    row 0   */
+#sprite-0 {
+  width: 30px;
+  height: 45px;
+  background: url("./sprites/whatever.gif") -171px -5px;
+}
+#sprite-1 {
+  width: 30px;
+  height: 45px;
+  background: url("./sprites/whatever.gif") -209px -5px;
+}
+#sprite-2 {
+  width: 33px;
+  height: 45px;
+  background: url("./sprites/whatever.gif") -248px -5px;
+}
+#sprite-3 {
+  width: 33px;
+  height: 45px;
+  background: url("./sprites/whatever.gif") -285px -5px;
+}
+/*    row 1   */
+#sprite-4 {
+  width: 62px;
+  height: 68px;
+  background: url("./sprites/whatever.gif") -10px -64px;
+}
+#sprite-5 {
+  width: 62px;
+  height: 72px;
+  background: url("./sprites/whatever.gif") -76px -60px;
+}
+#sprite-6 {
+  width: 2px;
+  height: 8px;
+  background: url("./sprites/whatever.gif") -146px -106px;
+}
+#sprite-7 {
+  width: 2px;
+  height: 15px;
+  background: url("./sprites/whatever.gif") -148px -102px;
+}
+#sprite-8 {
+  width: 4px;
+  height: 32px;
+  background: url("./sprites/whatever.gif") -150px -89px;
+}
+#sprite-9 {
+  width: 2px;
+  height: 44px;
+  background: url("./sprites/whatever.gif") -154px -78px;
+}
+#sprite-10 {
+  width: 5px;
+  height: 40px;
+  background: url("./sprites/whatever.gif") -156px -79px;
+}
+#sprite-11 {
+  width: 5px;
+  height: 21px;
+  background: url("./sprites/whatever.gif") -161px -77px;
+}
+#sprite-12 {
+  width: 6px;
+  height: 61px;
+  background: url("./sprites/whatever.gif") -166px -70px;
+}
+#sprite-13 {
+  width: 2px;
+  height: 62px;
+  background: url("./sprites/whatever.gif") -172px -69px;
+}
+#sprite-14 {
+  width: 2px;
+  height: 64px;
+  background: url("./sprites/whatever.gif") -174px -67px;
+}
+#sprite-15 {
+  width: 3px;
+  height: 69px;
+  background: url("./sprites/whatever.gif") -176px -63px;
+}
+#sprite-16 {
+  width: 16px;
+  height: 73px;
+  background: url("./sprites/whatever.gif") -179px -59px;
+}
+#sprite-17 {
+  width: 4px;
+  height: 16px;
+  background: url("./sprites/whatever.gif") -195px -78px;
+}
+#sprite-18 {
+  width: 4px;
+  height: 14px;
+  background: url("./sprites/whatever.gif") -200px -77px;
+}
+#sprite-19 {
+  width: 3px;
+  height: 11px;
+  background: url("./sprites/whatever.gif") -204px -75px;
+}
+#sprite-20 {
+  width: 51px;
+  height: 68px;
+  background: url("./sprites/whatever.gif") -216px -64px;
+}
+#sprite-21 {
+  width: 53px;
+  height: 68px;
+  background: url("./sprites/whatever.gif") -278px -64px;
+}
+#sprite-22 {
+  width: 48px;
+  height: 71px;
+  background: url("./sprites/whatever.gif") -338px -61px;
+}
+#sprite-23 {
+  width: 94px;
+  height: 56px;
+  background: url("./sprites/whatever.gif") -396px -76px;
+}
+/*    row 2   */
+#sprite-24 {
+  width: 94px;
+  height: 56px;
+  background: url("./sprites/whatever.gif") -7px -153px;
+}
+#sprite-25 {
+  width: 85px;
+  height: 56px;
+  background: url("./sprites/whatever.gif") -108px -153px;
+}
+#sprite-26 {
+  width: 59px;
+  height: 50px;
+  background: url("./sprites/whatever.gif") -206px -159px;
+}
+#sprite-27 {
+  width: 79px;
+  height: 68px;
+  background: url("./sprites/whatever.gif") -272px -141px;
+}
+#sprite-28 {
+  width: 59px;
+  height: 68px;
+  background: url("./sprites/whatever.gif") -355px -141px;
+}
+#sprite-29 {
+  width: 63px;
+  height: 68px;
+  background: url("./sprites/whatever.gif") -422px -141px;
+}
+/*    row 3   */
+#sprite-30 {
+  width: 55px;
+  height: 68px;
+  background: url("./sprites/whatever.gif") -80px -220px;
+}
+#sprite-31 {
+  width: 83px;
+  height: 68px;
+  background: url("./sprites/whatever.gif") -141px -220px;
+}
+#sprite-32 {
+  width: 83px;
+  height: 68px;
+  background: url("./sprites/whatever.gif") -233px -220px;
+}
+#sprite-33 {
+  width: 84px;
+  height: 68px;
+  background: url("./sprites/whatever.gif") -327px -220px;
+}
+/*    row 4   */
+#sprite-34 {
+  width: 69px;
+  height: 68px;
+  background: url("./sprites/whatever.gif") -134px -299px;
+}
+#sprite-35 {
+  width: 65px;
+  height: 69px;
+  background: url("./sprites/whatever.gif") -212px -298px;
+}
+#sprite-36 {
+  width: 64px;
+  height: 68px;
+  background: url("./sprites/whatever.gif") -283px -299px;
+}
+/*    row 5   */
+#sprite-37 {
+  width: 48px;
+  height: 69px;
+  background: url("./sprites/whatever.gif") -42px -381px;
+}
+#sprite-38 {
+  width: 53px;
+  height: 68px;
+  background: url("./sprites/whatever.gif") -97px -382px;
+}
+#sprite-39 {
+  width: 45px;
+  height: 70px;
+  background: url("./sprites/whatever.gif") -158px -380px;
+}
+#sprite-40 {
+  width: 46px;
+  height: 72px;
+  background: url("./sprites/whatever.gif") -210px -378px;
+}
+#sprite-41 {
+  width: 68px;
+  height: 71px;
+  background: url("./sprites/whatever.gif") -264px -379px;
+}
+#sprite-42 {
+  width: 47px;
+  height: 69px;
+  background: url("./sprites/whatever.gif") -340px -381px;
+}
+#sprite-43 {
+  width: 61px;
+  height: 68px;
+  background: url("./sprites/whatever.gif") -394px -382px;
+}
+/*    row 6   */
+#sprite-44 {
+  width: 64px;
+  height: 63px;
+  background: url("./sprites/whatever.gif") -96px -464px;
+}
+#sprite-45 {
+  width: 2px;
+  height: 1px;
+  background: url("./sprites/whatever.gif") -172px -490px;
+}
+#sprite-46 {
+  width: 2px;
+  height: 1px;
+  background: url("./sprites/whatever.gif") -177px -491px;
+}
+#sprite-47 {
+  width: 48px;
+  height: 16px;
+  background: url("./sprites/whatever.gif") -180px -483px;
+}
+#sprite-48 {
+  width: 2px;
+  height: 1px;
+  background: url("./sprites/whatever.gif") -233px -489px;
+}
+#sprite-49 {
+  width: 52px;
+  height: 16px;
+  background: url("./sprites/whatever.gif") -235px -483px;
+}
+#sprite-50 {
+  width: 2px;
+  height: 1px;
+  background: url("./sprites/whatever.gif") -291px -492px;
+}
+#sprite-51 {
+  width: 2px;
+  height: 1px;
+  background: url("./sprites/whatever.gif") -294px -490px;
+}
+#sprite-52 {
+  width: 2px;
+  height: 3px;
+  background: url("./sprites/whatever.gif") -297px -490px;
+}
+#sprite-53 {
+  width: 48px;
+  height: 16px;
+  background: url("./sprites/whatever.gif") -299px -483px;
+}
+#sprite-54 {
+  width: 2px;
+  height: 1px;
+  background: url("./sprites/whatever.gif") -351px -492px;
+}
+#sprite-55 {
+  width: 2px;
+  height: 1px;
+  background: url("./sprites/whatever.gif") -353px -487px;
+}
+#sprite-56 {
+  width: 2px;
+  height: 1px;
+  background: url("./sprites/whatever.gif") -359px -492px;
+}
+#sprite-57 {
+  width: 45px;
+  height: 16px;
+  background: url("./sprites/whatever.gif") -361px -483px;
+}
+/*    row 7   */
+#sprite-58 {
+  width: 44px;
+  height: 53px;
+  background: url("./sprites/whatever.gif") -135px -547px;
+}
+#sprite-59 {
+  width: 48px;
+  height: 63px;
+  background: url("./sprites/whatever.gif") -190px -537px;
+}
+#sprite-60 {
+  width: 56px;
+  height: 68px;
+  background: url("./sprites/whatever.gif") -246px -532px;
+}
+#sprite-61 {
+  width: 60px;
+  height: 67px;
+  background: url("./sprites/whatever.gif") -308px -533px;
+}
