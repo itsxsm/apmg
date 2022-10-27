@@ -9,127 +9,163 @@ const battle_chip_data_from_bn1 = [
     ["6", "Spreader", "HIJKL", "None", "30", "Gun with a 1-panel blast", "**", "Shot Splash Pattern=Around"],
     ["7", "Bubbler", "AKLPS", "Aqua", "50", "Bubbles w/ a 1-panel blast", "*", "Shot Splash Pattern=Forward"],
     ["8", "Heater", "CFGKO", "Fire", "70", "Fire with a 1-panel blast", "**", "Shot Splash Patten=Forward"],
-    ["9", "MiniBomb", "CEJLP", "None", "50", "Throw a bomb! Depth=3", "*", "Toss"],
-    ["10", "LilBomb", "BDGOT", "None", "50", "Throw a bomb! Depth=3", "*", "Toss Explode Pattern=Wide"],
-    ["11", "CrosBomb", "BDHJL", "None", "70", "Cross bomb Depth=3", "**", "Toss Explode Pattern=Cross"],
-    ["12", "BigBomb", "BGOST", "None", "90", "Bomb with a big boom Depth=3", "****", "Toss Explode Pattern=Around"],
-    ["13", "Sword", "BKLPS", "None", "80", "Cut down enemies! Range=1", "*", "Sword"],
-    ["14", "WideSwrd", "CKMNS", "None", "80", "Cut down column! Range=1", "*", "Sword"],
-    ["15", "LongSwrd", "DENOS", "None", "80", "Cut down enemies! Range=2", "**", "Sword"],
-    ["16", "FtrSword", "BKLPS", "None", "100", "Warrior's sword Range=3", "***", "Sword"],
-    ["17", "KngtSwrd", "BCEGH", "None", "150", "Knight's sword Range=3", "****", "Sword"],
-    ["18", "HeroSwrd", "BDFIJ", "None", "200", "Legendary sword Range=3", "*****", "Sword"],
-    ["19", "FireSwrd", "BFGNP", "Fire", "100", "Cuts down column Range=1", "**", "Sword"],
-    ["20", "AquaSwrd", "AMNOP", "Aqua", "150", "Cuts down column Range=1", "***", "Sword"],
-    ["21", "ElecSwrd", "EGLOS", "Elec", "120", "Cuts down column Range=1", "***", "Sword"],
-    ["22", "Muramasa", "CEGJK", "None", "???", "Do damage = to your HP loss", "*****", "Sword"],
-    ["23", "ShokWave", "CKLNP", "None", "60", "Piercing ground wave", "*", "Shot Ground Unblockable"],
-    ["24", "SoniWave", "CDJMS", "None", "80", "Piercing ground wave", "**", "Shot Ground Unblockable"],
-    ["25", "DynaWave", "CEMRS", "None", "100", "Piercing ground wave", "***", "Shot Ground Unblockable"],
-    ["26", "FireTowr", "EFLMT", "Fire", "100", "Fire that can move up & down", "**", "Tower Unblockable"],
-    ["27", "AquaTowr", "ACGHR", "Aqua", "120", "Aqua that can move up & down", "**", "Tower Unblockable"],
-    ["28", "WoodTowr", "BCHKN", "Wood", "140", "Log that can move up & down", "**", "Tower Unblockable"],
-    ["29", "Quake1", "AEHKQ", "None", "90", "Cracks a panel Depth=3", "*", "Toss Shatter"],
-    ["30", "Quake2", "BCIKQ", "None", "120", "Cracks a panel Depth=3", "**", "Toss Shatter Explode Pattern=Wide"],
-    ["31", "Quake3", "CDHMQ", "None", "150", "Cracks a panel Depth=3", "***", "Toss Shatter Explode Pattern=Cross"],
-    ["32", "GutsPnch", "BHMNT", "None", "60", "Knocks stuff over Range=1", "*", "Close Push_Max"],
-    ["33", "IcePunch", "BHMNT", "Aqua", "80", "Knocks stuff over Range=1", "**", "Close Push_Max"],
-    ["34", "Dash", "BDGLO", "None", "50", "Knock over all in your path!", "*", "Dash"],
-    ["35", "Howitzer", "ACGHO", "None", "150", "Breaks panels Depth=3", "****", "Toss Shatter2"],
-    ["36", "TriArrow", "ABCDE", "None", "40", "Fires a 3-arrow burst", "*", "Shot x3 Metal"],
-    ["37", "TriSpear", "FGHIJ", "None", "50", "Fires a 3-spear burst", "**", "Shot x3 Metal"],
-    ["38", "TriLance", "KLMNO", "None", "60", "Fires a 3-lance burst", "****", "Shot x3 Metal"],
-    // ["39", "Ratton1", "ABCDE", "None", "80", "Missile that can turn once", "*", "Drone Ground"],
-    // ["40", "Ratton2", "FGHIJ", "None", "100", "Missile that can turn once", "**", "Drone Ground"],
-    // ["41", "Ratton3", "KLMNO", "None", "120", "Missile that can turn once", "***", "Drone Ground"],
-    ["42", "Wave", "ADILM", "Aqua", "80", "3-row wave! [Aqua]", "***", "Shot Ground"],
-    ["43", "RedWave", "BEJNP", "Fire", "100", "3-row lava wave! [Fire]", "***", "Shot Ground"],
-    ["44", "BigWave", "CHKLQ", "Aqua", "160", "3-row giant wave [Aqua]", "****", "Shot Ground"],
-    ["45", "Gaia1", "CDLOT", "None", "100", "Rolling 3-column explosion!", "***", "Shot Unblockable"],
-    ["46", "Gaia2", "CFKPS", "None", "130", "Rolling 3-column explosion!", "****", "Shot Unblockable"],
-    ["47", "Gaia3", "CGMRT", "None", "160", "Rolling 3-column explosion!", "*****", "Shot Unblockable"],
-    // ["48", "Thunder1", "AEGHS", "Elec", "90", "A rolling lightning attack", "*", "Wave"],
-    // ["49", "Thunder2", "BCFIL", "Elec", "120", "A rolling lightning attack", "**", "Wave"],
-    // ["50", "Thunder3", "DFGKN", "Elec", "150", "A rolling lightning attack", "***", "Wave"],
-    // ["51", "RingZap1", "GHMNP", "Elec", "100", "Lightning circles you once", "*", "Shot Lag Root"],
-    // ["52", "RingZap2", "CEGJL", "Elec", "100", "Lightning circles you twice", "**", "Shot Lag Root"],
-    // ["53", "RingZap3", "ABORT", "Elec", "100", "Lightning circles you thrice", "***", "Shot Lag Root"],
-    ["54", "Typhoon", "ABDEG", "None", "30", "Creates a twister w/ 3 hits", "*", "Summon x3"],
-    ["55", "Huricane", "GIJKL", "None", "30", "Creates a twister w/ 5 hits", "**", "Summon x5"],
-    ["56", "Cyclone", "EFGHI", "None", "30", "Creates a twister w/ 8 hits", "***", "Summon x8"],
-    // ["57", "Snakegg1", "BEGMN", "Wood", "130", "Squirming snake attack!", "*", "Drone Ground"],
-    // ["58", "Snakegg2", "CEHNP", "Elec", "140", "Shocking snake attack!", "**", "Drone Ground"],
-    // ["59", "Snakegg3", "ACFLS", "Fire", "150", "Scorching snake attack!", "***", "Drone Ground"],
-    ["60", "Drain1", "ABDKO", "None", "50", "Charge to drain HP from enemy", "**", "Dash Drain"],
-    ["61", "Drain2", "ACHNT", "None", "70", "Charge to drain HP from enemy", "**", "Dash Drain"],
-    ["62", "Drain3", "AEFLQ", "None", "90", "Charge to drain HP from enemy", "***", "Dash Drain"],
-    ["63", "BodyBurn", "EFKMN", "Fire", "100", "Engulf all around you in flames!", "****", "Dash"],
-    ["64", "X-Panel1", "BDGLS", "None", "", "Erase 1 panel Range=1", "**", "Close Terrain Broken"],
-    ["65", "X-Panel3", "BDGLS", "None", "", "Erase column Range=1", "***", "Close Terrain Broken"],
-    ["66", "Hammer", "AFIMQ", "None", "100", "Breaks cubes Range=1", "**", "Close Breaker"],
-    ["67", "MetGuard", "ACEGL", "None", "", "Hold A Btn for 3 sec defense!", "*", "Guard Shield"],
-    ["68", "IronShld", "ABORT", "None", "", "Hold btn. to create shield!", "**", "Guard Shield"],
-    ["69", "Recov10", "ACEGL", "None", "-10", "Recover 10HP", "*", "Recover"],
-    ["70", "Recov30", "ACEGL", "None", "-30", "Recover 30HP", "*", "Recover"],
-    ["71", "Recov50", "ACEGL", "None", "-50", "Recover 50HP", "*", "Recover"],
-    ["72", "Recov80", "ACEGL", "None", "-80", "Recover 80HP", "*", "Recover"],
-    ["73", "Recov120", "ACEGL", "None", "-120", "Recover 120HP", "**", "Recover"],
-    ["74", "Recov150", "ACEGL", "None", "-150", "Recover 150HP", "**", "Recover"],
-    ["75", "Recov200", "ACEGL", "None", "-200", "Recover 200HP", "***", "Recover"],
-    ["76", "Recov300", "ACEGL", "None", "-300", "Recover 300HP", "****", "Recover"],
-    ["77", "Steal", "AELPS", "None", "", "Steal left column of enemy area", "*", "Enemy_Front Steal_Control"],
-    ["78", "Geddon1", "FHJLN", "None", "", "All panels become cracked!", "***", "Both_Areas Terrain Cracked"],
-    // ["79", "Geddon2", "ABEIK", "None", "", "Erases all empty panels", "****", "Both_Areas Terrain Broken"],
-    // ["80", "Escape", "FHJLN", "None", "", "Escape from most enemies", "***", "Guard Stealth"],
-    // ["81", "Interupt", "FHJLN", "None", "", "Destroy enemy chip data", "***", "Shot"],
-    ["82", "Repair", "AGHKS", "None", "", "Repair panels in your area", "*", "Own_Area Terrain Normal"],
-    // ["83", "TimeBom1", "EGJLQ", "None", "80", "Sets time bomb in enemy area", "**", "Obstacle Delay-3 Ammo-1"],
-    // ["84", "TimeBom2", "CFJLS", "None", "120", "Sets time bomb in enemy area", "***", "Obstacle Delay-3 Ammo-1"],
-    // ["85", "TimeBom3", "ABGOP", "None", "160", "Sets time bomb in enemy area", "****", "Obstacle Delay-3 Ammo-1"],
-    // ["86", "Cloud", "BGHOR", "Aqua", "30", "Rains up & down on 1 column", "*", "Airdrop Ammo-6"],
-    // ["87", "Cloudier", "ADIMP", "Aqua", "50", "Rains up & down on 1 column", "**", "Airdrop Ammo-7"],
-    // ["88", "Cloudest", "CFJKO", "Aqua", "100", "Rains up & down on 1 column", "***", "Airdrop Ammo-9"],
-    // ["89", "Mine1", "GHMNP", "None", "160", "Hides a mine in enemy area", "**", "Bury Stealth Trap"],
-    // ["90", "Mine2", "CEGJL", "None", "180", "Hides a mine in enemy area", "***", "Bury Stealth Trap"],
-    // ["91", "Mine3", "ABORT", "None", "200", "Hides a mine in enemy area", "****", "Bury Stealth Trap"],
-    // ["92", "Dynamyt1", "BGOQS", "Wood", "100", "Looks right for enemy", "***", "?"],
-    // ["93", "Dynamyt2", "ACKMN", "Wood", "120", "Looks diagonally for enemy", "***", "?"],
-    // ["94", "Dynamyt3", "GKMOP", "Wood", "100", "Looks up & down for enemy", "***", "?"],
-    // ["95", "Remobit1", "ACFNO", "Elec", "80", "Remote control smasher!", "*", "Obstacle Remote Overhead:Airdrop Ammo-3"],
-    // ["96", "Remobit2", "BDEHI", "Elec", "100", "Remote control smasher!", "**", "Obstacle Remote Overead:Airdrop Ammo-3"],
-    // ["97", "Remobit3", "GJKPQ", "Elec", "120", "Remote control smasher!", "***", "Obstacle Remote Overhead:Airdrop Ammo 3"],
-    // ["98", "Lockon1", "CDHIL", "None", "10", "Creates a lock on satellite!", "*", "Drone"],
-    // ["99", "Lockon2", "BEGHM", "None", "15", "Creates a lock on satellite!", "**", "Drone"],
-    // ["100", "Lockon3", "ADKNO", "None", "20", "Creates a lock on satellite!", "***", "Drone"],
-    ["101", "Candle1", "CFIPS", "Fire", "", "Set candle & recover some HP", "**", "Own_Back Obstacle HP=90 Every_Turn=Candle Amount=5"],
-    ["102", "Candle2", "BEGJL", "Fire", "", "Set candle & recover some HP", "***", "Own_Back Obstacle HP=120 Every_Turn=Candle Amount=10"],
-    ["103", "Candle3", "ADHKM", "Fire", "", "Set candle & recover some HP", "****", "Own_Back Obstacle HP=150 Every_Turn=Candle Amount=15"],
-    ["104", "Anubis", "CLNQT", "None", "", "Set Anubis statue to reduce HP", "*****", "Close Obstacle HP=150 Every_Turn=Poison Amount=20"],
-    ["105", "IceCube", "ACILM", "Aqua", "", "Creates a ice cube Range=1", "**", "Close Obstacle HP=200"],
-    ["106", "RockCube", "BEGMO", "None", "", "Creates 3 rock cubes randomly", "***", "Enemy_Random_3 Obstacle HP=200"],
-    // ["107", "BstrGard", "AGKNR", "None", "", "1-turn of MetGuard w/ B Btn.", "***", "??"],
-    // ["108", "BstrBomb", "DHJOT", "None", "", "1-turn of MiniBomb w/ B Btn.", "****", "??"],
-    // ["109", "BstrSwrd", "BELPS", "None", "", "1-turn use of Sword with B Btn.", "****", "??"],
-    // ["110", "BstrPnch", "CFIMQ", "None", "", "1-turn of GutsPnch with B Btn.", "****", "??"],
-    // ["111", "SloGauge", "HKNOQ", "None", "", "Slows down custom gauge", "**", "Pyschic Stats-1"],
-    // ["112", "FstGauge", "ACELN", "None", "", "Speeds up custom gauge", "**", "Psychic Stats+1"],
-    // ["113", "Invis1", "IJLOQ", "None", "", "Temporary immunity", "**", "Guard Invis Rounds=1"],
-    // ["114", "Invis2", "ACFJM", "None", "", "Temporary immunity", "***", "Guard Invis Rounds=2"],
-    // ["115", "Invis3", "BDHKN", "None", "", "Temporary immunity", "****", "Guard Invis Rounds=3"],
-    // ["116", "Dropdown", "ABORT", "Wood", "", "Invisible until you attack!", "*****", "Guard Invis Until Attack"],
-    // ["117", "Popup", "CDHKN", "None", "", "Invisible when not attacking!", "*****", "Guard Invis Until Struck"],
-    // ["118", "IronBody", "CDLQR", "None", "", "30 seconds stoneshape Defense UP", "**", "Guard HalfDamage Rounds 3"],
-    ["119", "Barrier", "DFMRS", "None", "", "Nullify 1 enemy attack", "**", "Guard Barrier"],
-    ["120", "BblWrap1", "CEGIM", "Aqua", "", "Aqua wall Comes back if damaged", "**", "Guard Barrier Refresh 1"],
-    ["121", "BblWrap2", "DFHKN", "Aqua", "", "Aqua wall Comes back if damaged", "**", "Guard Barrier Refresh 2"],
-    ["122", "BblWrap3", "ABLQR", "Aqua", "", "Aqua wall Comes back if damaged", "***", "Guard Barrier Refresh 3"],
-    ["123", "LeafShld", "CDFKQ", "Wood", "", "Turns dmg from 1 hit into HP", "***", "Guard Barrier Recover"],
-    ["124", "AquaAura", "DELRS", "Aqua", "", "Null<10dmg Weak vs. [Elec]", "**", "Guard Barrier Aura 10"],
-    ["125", "FireAura", "BGINT", "Fire", "", "Null<40dmg Weak vs. [Aqua]", "***", "Guard Barrier Aura 40"],
+    // ["9", "MiniBomb", "CEJLP", "None", "50", "Throw a bomb! Depth=3", "*", "Toss"],
+    // ["10", "LilBomb", "BDGOT", "None", "50", "Throw a bomb! Depth=3", "*", "Toss Explode Pattern=Wide"],
+    // ["11", "CrosBomb", "BDHJL", "None", "70", "Cross bomb Depth=3", "**", "Toss Explode Pattern=Cross"],
+    // ["12", "BigBomb", "BGOST", "None", "90", "Bomb with a big boom Depth=3", "****", "Toss Explode Pattern=Around"],
+    // ["13", "Sword", "BKLPS", "None", "80", "Cut down enemies! Range=1", "*", "Sword"],
+    // ["14", "WideSwrd", "CKMNS", "None", "80", "Cut down column! Range=1", "*", "Sword"],
+    // ["15", "LongSwrd", "DENOS", "None", "80", "Cut down enemies! Range=2", "**", "Sword"],
+    // ["16", "FtrSword", "BKLPS", "None", "100", "Warrior's sword Range=3", "***", "Sword"],
+    // ["17", "KngtSwrd", "BCEGH", "None", "150", "Knight's sword Range=3", "****", "Sword"],
+    // ["18", "HeroSwrd", "BDFIJ", "None", "200", "Legendary sword Range=3", "*****", "Sword"],
+    // ["19", "FireSwrd", "BFGNP", "Fire", "100", "Cuts down column Range=1", "**", "Sword"],
+    // ["20", "AquaSwrd", "AMNOP", "Aqua", "150", "Cuts down column Range=1", "***", "Sword"],
+    // ["21", "ElecSwrd", "EGLOS", "Elec", "120", "Cuts down column Range=1", "***", "Sword"],
+    // ["22", "Muramasa", "CEGJK", "None", "???", "Do damage = to your HP loss", "*****", "Sword"],
+    // ["23", "ShokWave", "CKLNP", "None", "60", "Piercing ground wave", "*", "Shot Ground Unblockable"],
+    // ["24", "SoniWave", "CDJMS", "None", "80", "Piercing ground wave", "**", "Shot Ground Unblockable"],
+    // ["25", "DynaWave", "CEMRS", "None", "100", "Piercing ground wave", "***", "Shot Ground Unblockable"],
+    // ["26", "FireTowr", "EFLMT", "Fire", "100", "Fire that can move up & down", "**", "Tower Unblockable"],
+    // ["27", "AquaTowr", "ACGHR", "Aqua", "120", "Aqua that can move up & down", "**", "Tower Unblockable"],
+    // ["28", "WoodTowr", "BCHKN", "Wood", "140", "Log that can move up & down", "**", "Tower Unblockable"],
+    // ["29", "Quake1", "AEHKQ", "None", "90", "Cracks a panel Depth=3", "*", "Toss Shatter"],
+    // ["30", "Quake2", "BCIKQ", "None", "120", "Cracks a panel Depth=3", "**", "Toss Shatter Explode Pattern=Wide"],
+    // ["31", "Quake3", "CDHMQ", "None", "150", "Cracks a panel Depth=3", "***", "Toss Shatter Explode Pattern=Cross"],
+    // ["32", "GutsPnch", "BHMNT", "None", "60", "Knocks stuff over Range=1", "*", "Close Push_Max"],
+    // ["33", "IcePunch", "BHMNT", "Aqua", "80", "Knocks stuff over Range=1", "**", "Close Push_Max"],
+    // ["34", "Dash", "BDGLO", "None", "50", "Knock over all in your path!", "*", "Dash"],
+    // ["35", "Howitzer", "ACGHO", "None", "150", "Breaks panels Depth=3", "****", "Toss Shatter2"],
+    // ["36", "TriArrow", "ABCDE", "None", "40", "Fires a 3-arrow burst", "*", "Shot x3 Metal"],
+    // ["37", "TriSpear", "FGHIJ", "None", "50", "Fires a 3-spear burst", "**", "Shot x3 Metal"],
+    // ["38", "TriLance", "KLMNO", "None", "60", "Fires a 3-lance burst", "****", "Shot x3 Metal"],
+    // // ["39", "Ratton1", "ABCDE", "None", "80", "Missile that can turn once", "*", "Drone Ground"],
+    // // ["40", "Ratton2", "FGHIJ", "None", "100", "Missile that can turn once", "**", "Drone Ground"],
+    // // ["41", "Ratton3", "KLMNO", "None", "120", "Missile that can turn once", "***", "Drone Ground"],
+    // ["42", "Wave", "ADILM", "Aqua", "80", "3-row wave! [Aqua]", "***", "Shot Ground"],
+    // ["43", "RedWave", "BEJNP", "Fire", "100", "3-row lava wave! [Fire]", "***", "Shot Ground"],
+    // ["44", "BigWave", "CHKLQ", "Aqua", "160", "3-row giant wave [Aqua]", "****", "Shot Ground"],
+    // ["45", "Gaia1", "CDLOT", "None", "100", "Rolling 3-column explosion!", "***", "Shot Unblockable"],
+    // ["46", "Gaia2", "CFKPS", "None", "130", "Rolling 3-column explosion!", "****", "Shot Unblockable"],
+    // ["47", "Gaia3", "CGMRT", "None", "160", "Rolling 3-column explosion!", "*****", "Shot Unblockable"],
+    // // ["48", "Thunder1", "AEGHS", "Elec", "90", "A rolling lightning attack", "*", "Wave"],
+    // // ["49", "Thunder2", "BCFIL", "Elec", "120", "A rolling lightning attack", "**", "Wave"],
+    // // ["50", "Thunder3", "DFGKN", "Elec", "150", "A rolling lightning attack", "***", "Wave"],
+    // // ["51", "RingZap1", "GHMNP", "Elec", "100", "Lightning circles you once", "*", "Shot Lag Root"],
+    // // ["52", "RingZap2", "CEGJL", "Elec", "100", "Lightning circles you twice", "**", "Shot Lag Root"],
+    // // ["53", "RingZap3", "ABORT", "Elec", "100", "Lightning circles you thrice", "***", "Shot Lag Root"],
+    // ["54", "Typhoon", "ABDEG", "None", "30", "Creates a twister w/ 3 hits", "*", "Summon x3"],
+    // ["55", "Huricane", "GIJKL", "None", "30", "Creates a twister w/ 5 hits", "**", "Summon x5"],
+    // ["56", "Cyclone", "EFGHI", "None", "30", "Creates a twister w/ 8 hits", "***", "Summon x8"],
+    // // ["57", "Snakegg1", "BEGMN", "Wood", "130", "Squirming snake attack!", "*", "Drone Ground"],
+    // // ["58", "Snakegg2", "CEHNP", "Elec", "140", "Shocking snake attack!", "**", "Drone Ground"],
+    // // ["59", "Snakegg3", "ACFLS", "Fire", "150", "Scorching snake attack!", "***", "Drone Ground"],
+    // ["60", "Drain1", "ABDKO", "None", "50", "Charge to drain HP from enemy", "**", "Dash Drain"],
+    // ["61", "Drain2", "ACHNT", "None", "70", "Charge to drain HP from enemy", "**", "Dash Drain"],
+    // ["62", "Drain3", "AEFLQ", "None", "90", "Charge to drain HP from enemy", "***", "Dash Drain"],
+    // ["63", "BodyBurn", "EFKMN", "Fire", "100", "Engulf all around you in flames!", "****", "Dash"],
+    // ["64", "X-Panel1", "BDGLS", "None", "", "Erase 1 panel Range=1", "**", "Close Terrain Broken"],
+    // ["65", "X-Panel3", "BDGLS", "None", "", "Erase column Range=1", "***", "Close Terrain Broken"],
+    // ["66", "Hammer", "AFIMQ", "None", "100", "Breaks cubes Range=1", "**", "Close Breaker"],
+    // ["67", "MetGuard", "ACEGL", "None", "", "Hold A Btn for 3 sec defense!", "*", "Guard Shield"],
+    // ["68", "IronShld", "ABORT", "None", "", "Hold btn. to create shield!", "**", "Guard Shield"],
+    // ["69", "Recov10", "ACEGL", "None", "-10", "Recover 10HP", "*", "Recover"],
+    // ["70", "Recov30", "ACEGL", "None", "-30", "Recover 30HP", "*", "Recover"],
+    // ["71", "Recov50", "ACEGL", "None", "-50", "Recover 50HP", "*", "Recover"],
+    // ["72", "Recov80", "ACEGL", "None", "-80", "Recover 80HP", "*", "Recover"],
+    // ["73", "Recov120", "ACEGL", "None", "-120", "Recover 120HP", "**", "Recover"],
+    // ["74", "Recov150", "ACEGL", "None", "-150", "Recover 150HP", "**", "Recover"],
+    // ["75", "Recov200", "ACEGL", "None", "-200", "Recover 200HP", "***", "Recover"],
+    // ["76", "Recov300", "ACEGL", "None", "-300", "Recover 300HP", "****", "Recover"],
+    // ["77", "Steal", "AELPS", "None", "", "Steal left column of enemy area", "*", "Enemy_Front Steal_Control"],
+    // ["78", "Geddon1", "FHJLN", "None", "", "All panels become cracked!", "***", "Both_Areas Terrain Cracked"],
+    // // ["79", "Geddon2", "ABEIK", "None", "", "Erases all empty panels", "****", "Both_Areas Terrain Broken"],
+    // // ["80", "Escape", "FHJLN", "None", "", "Escape from most enemies", "***", "Guard Stealth"],
+    // // ["81", "Interupt", "FHJLN", "None", "", "Destroy enemy chip data", "***", "Shot"],
+    // ["82", "Repair", "AGHKS", "None", "", "Repair panels in your area", "*", "Own_Area Terrain Normal"],
+    // // ["83", "TimeBom1", "EGJLQ", "None", "80", "Sets time bomb in enemy area", "**", "Obstacle Delay-3 Ammo-1"],
+    // // ["84", "TimeBom2", "CFJLS", "None", "120", "Sets time bomb in enemy area", "***", "Obstacle Delay-3 Ammo-1"],
+    // // ["85", "TimeBom3", "ABGOP", "None", "160", "Sets time bomb in enemy area", "****", "Obstacle Delay-3 Ammo-1"],
+    // // ["86", "Cloud", "BGHOR", "Aqua", "30", "Rains up & down on 1 column", "*", "Airdrop Ammo-6"],
+    // // ["87", "Cloudier", "ADIMP", "Aqua", "50", "Rains up & down on 1 column", "**", "Airdrop Ammo-7"],
+    // // ["88", "Cloudest", "CFJKO", "Aqua", "100", "Rains up & down on 1 column", "***", "Airdrop Ammo-9"],
+    // // ["89", "Mine1", "GHMNP", "None", "160", "Hides a mine in enemy area", "**", "Bury Stealth Trap"],
+    // // ["90", "Mine2", "CEGJL", "None", "180", "Hides a mine in enemy area", "***", "Bury Stealth Trap"],
+    // // ["91", "Mine3", "ABORT", "None", "200", "Hides a mine in enemy area", "****", "Bury Stealth Trap"],
+    // // ["92", "Dynamyt1", "BGOQS", "Wood", "100", "Looks right for enemy", "***", "?"],
+    // // ["93", "Dynamyt2", "ACKMN", "Wood", "120", "Looks diagonally for enemy", "***", "?"],
+    // // ["94", "Dynamyt3", "GKMOP", "Wood", "100", "Looks up & down for enemy", "***", "?"],
+    // // ["95", "Remobit1", "ACFNO", "Elec", "80", "Remote control smasher!", "*", "Obstacle Remote Overhead:Airdrop Ammo-3"],
+    // // ["96", "Remobit2", "BDEHI", "Elec", "100", "Remote control smasher!", "**", "Obstacle Remote Overead:Airdrop Ammo-3"],
+    // // ["97", "Remobit3", "GJKPQ", "Elec", "120", "Remote control smasher!", "***", "Obstacle Remote Overhead:Airdrop Ammo 3"],
+    // // ["98", "Lockon1", "CDHIL", "None", "10", "Creates a lock on satellite!", "*", "Drone"],
+    // // ["99", "Lockon2", "BEGHM", "None", "15", "Creates a lock on satellite!", "**", "Drone"],
+    // // ["100", "Lockon3", "ADKNO", "None", "20", "Creates a lock on satellite!", "***", "Drone"],
+    // ["101", "Candle1", "CFIPS", "Fire", "", "Set candle & recover some HP", "**", "Own_Back Obstacle HP=90 Every_Turn=Candle Amount=5"],
+    // ["102", "Candle2", "BEGJL", "Fire", "", "Set candle & recover some HP", "***", "Own_Back Obstacle HP=120 Every_Turn=Candle Amount=10"],
+    // ["103", "Candle3", "ADHKM", "Fire", "", "Set candle & recover some HP", "****", "Own_Back Obstacle HP=150 Every_Turn=Candle Amount=15"],
+    // ["104", "Anubis", "CLNQT", "None", "", "Set Anubis statue to reduce HP", "*****", "Close Obstacle HP=150 Every_Turn=Poison Amount=20"],
+    // ["105", "IceCube", "ACILM", "Aqua", "", "Creates a ice cube Range=1", "**", "Close Obstacle HP=200"],
+    // ["106", "RockCube", "BEGMO", "None", "", "Creates 3 rock cubes randomly", "***", "Enemy_Random_3 Obstacle HP=200"],
+    // // ["107", "BstrGard", "AGKNR", "None", "", "1-turn of MetGuard w/ B Btn.", "***", "??"],
+    // // ["108", "BstrBomb", "DHJOT", "None", "", "1-turn of MiniBomb w/ B Btn.", "****", "??"],
+    // // ["109", "BstrSwrd", "BELPS", "None", "", "1-turn use of Sword with B Btn.", "****", "??"],
+    // // ["110", "BstrPnch", "CFIMQ", "None", "", "1-turn of GutsPnch with B Btn.", "****", "??"],
+    // // ["111", "SloGauge", "HKNOQ", "None", "", "Slows down custom gauge", "**", "Pyschic Stats-1"],
+    // // ["112", "FstGauge", "ACELN", "None", "", "Speeds up custom gauge", "**", "Psychic Stats+1"],
+    // // ["113", "Invis1", "IJLOQ", "None", "", "Temporary immunity", "**", "Guard Invis Rounds=1"],
+    // // ["114", "Invis2", "ACFJM", "None", "", "Temporary immunity", "***", "Guard Invis Rounds=2"],
+    // // ["115", "Invis3", "BDHKN", "None", "", "Temporary immunity", "****", "Guard Invis Rounds=3"],
+    // // ["116", "Dropdown", "ABORT", "Wood", "", "Invisible until you attack!", "*****", "Guard Invis Until Attack"],
+    // // ["117", "Popup", "CDHKN", "None", "", "Invisible when not attacking!", "*****", "Guard Invis Until Struck"],
+    // // ["118", "IronBody", "CDLQR", "None", "", "30 seconds stoneshape Defense UP", "**", "Guard HalfDamage Rounds 3"],
+    // ["119", "Barrier", "DFMRS", "None", "", "Nullify 1 enemy attack", "**", "Guard Barrier"],
+    // ["120", "BblWrap1", "CEGIM", "Aqua", "", "Aqua wall Comes back if damaged", "**", "Guard Barrier Refresh 1"],
+    // ["121", "BblWrap2", "DFHKN", "Aqua", "", "Aqua wall Comes back if damaged", "**", "Guard Barrier Refresh 2"],
+    // ["122", "BblWrap3", "ABLQR", "Aqua", "", "Aqua wall Comes back if damaged", "***", "Guard Barrier Refresh 3"],
+    // ["123", "LeafShld", "CDFKQ", "Wood", "", "Turns dmg from 1 hit into HP", "***", "Guard Barrier Recover"],
+    // ["124", "AquaAura", "DELRS", "Aqua", "", "Null<10dmg Weak vs. [Elec]", "**", "Guard Barrier Aura 10"],
+    // ["125", "FireAura", "BGINT", "Fire", "", "Null<40dmg Weak vs. [Aqua]", "***", "Guard Barrier Aura 40"],
     ["126", "WoodAura", "CFJOQ", "Wood", "", "Null<80dmg Weak vs. [Fire]", "****", "Guard Barrier Aura 80"],
     ["127", "LifeAura", "AHKMP", "None", "", "Negate all attacks w/ damage<100", "*****", "Guard Barrier Aura 100"]
 ];
 // TEST CHANGES: Steal Rarity *** => *
+
+const navi_data_from_bcc = [
+    ["195", "MegaMan.EXE", "None", 500, 170, "A", "B", "E", "ChargeShot"],
+    ["196", "Roll.EXE", "None", 400, 140, "C", "A", "E", "HeartFlash"],
+    ["197", "GutsMan.EXE", "None", 600, 130, "C", "C", "E", "GutsHammer"],
+    ["198", "ProtoMan.EXE", "None", 500, 160, "B", "B", "D", "SonicBoom"],
+    ["199", "TurboMan.EXE", "None", 550, 160, "A", "C", "E", "TurboWheel"],
+    ["200", "Ring.EXE", "None", 450, 150, "B", "A", "E", "RingRang"],
+    ["202", "Bass.EXE", "None", 700, 140, "A", "B", "D", "AirBurst"],
+    ["203", "IceMan.EXE", "Aqua", 500, 130, "B", "A", "E", "FreezeTower"],
+    ["204", "FireMan.EXE", "Fire", 500, 130, "B", "C", "D", "FireArm"],
+    ["205", "ElecMan.EXE", "Elec", 450, 130, "B", "B", "A", "SparkStrike"],
+    ["206", "WoodMan.EXE", "Wood", 600, 130, "B", "C", "E", "WoodTower"],
+    ["207", "SkullMan.EXE", "None", 650, 150, "B", "B", "C", "BoneCrush"],
+    ["208", "NumberMan.EXE", "None", 400, 120, "B", "C", "E", "DiceBomb"],
+    ["209", "AirMan.EXE", "None", 550, 140, "C", "B", "E", "AirShot"],
+    ["210", "QuickMan.EXE", "None", 450, 150, "A", "S", "S", "QuickBoomerang"],
+    ["211", "ThunderMan.EXE", "Elec", 550, 120, "C", "C", "E", "ThunderBolt"],
+    ["212", "GateMan.EXE", "None", 600, 130, "B", "B", "E", "GateCannon"],
+    ["213", "SharkMan.EXE", "Aqua", 400, 120, "C", "A", "E", "Fin"],
+    ["214", "ShadowMan.EXE", "None", 450, 130, "S", "S", "D", "Shuriken"],
+    ["215", "KnightMan.EXE", "None", 700, 140, "B", "C", "E", "RoyalWreckingBall"],
+    ["216", "MagnetMan.EXE", "Elec", 600, 120, "S", "C", "E", "MagnetMissile"],
+    ["217", "FreezeMan.EXE", "Aqua", 500, 120, "A", "B", "E", "IceTower"],
+    ["218", "SnakeMan.EXE", "Wood", 450, 120, "B", "A", "D", "SnakeArrow"],
+    ["219", "ToadMan.EXE", "Aqua", 400, 130, "S", "S", "E", "Melody"],
+    ["220", "HeatMan.EXE", "Fire", 650, 120, "B", "B", "E", "FlameTower"],
+    ["221", "ColorMan.EXE", "None", 450, 130, "B", "C", "E", "FireAquaTower"],
+    ["222", "MagicMan.EXE", "Fire", 350, 180, "A", "A", "E", "MagicFire"],
+    ["223", "FlashMan.EXE", "Elec", 550, 110, "A", "B", "E", "NeonLight"],
+    ["224", "BeastMan.EXE", "None", 500, 130, "B", "S", "E", "WildRush"],
+    ["225", "PlantMan.EXE", "Wood", 550, 110, "A", "C", "E", "YellowFlower"],
+    ["226", "FlameMan.EXE", "Fire", 600, 110, "B", "C", "E", "FireBreath"],
+    ["227", "MetalMan.EXE", "None", 650, 140, "B", "B", "E", "MetalFist"],
+    ["228", "KingMan.EXE", "None", 500, 150, "A", "C", "E", "Checkmate"]
+]
 
 const NAME_INDEX = 1;
 const CODES_INDEX = 2;
@@ -138,6 +174,15 @@ const DAMAGE_INDEX = 4;
 const DESCRIPTION_INDEX = 5;
 const RARITY_INDEX = 6;
 const TYPES_INDEX = 7;
+
+const NAVI_NAME_INDEX = 1;
+const NAVI_ELEMENT_INDEX = 2;
+const NAVI_MAX_HP_INDEX = 3;
+const NAVI_POWER_INDEX = 4;
+const NAVI_ACCURACY_INDEX = 5;
+const NAVI_DODGING_INDEX = 6;
+const NAVI_PRIORITY_INDEX = 7;
+const NAVI_ATTACK_NAME_INDEX = 8;
 
 const red = "\x1b[31m";
 const blue = "\x1b[34m";
@@ -181,81 +226,20 @@ const terrain = [
 ];
 const obstacles = [];
 
-const STARTING_HP = 500;
-
-const player1 = {
-    kind: 'Navi',
-    name: 'ProtoMan.nav',
-    space: [0, 0],
-    is_east: false,
-    hand: [],
-    // NOTE: these are not the real Challenger values for ProtoMan.EXE
-    hp: STARTING_HP,
-    max_hp: STARTING_HP,
-    accuracy: "B",
-    dodging: "B",
-    records: {
-        chip_ids_used_this_match: [],
-        chip_uses_by_id: [],
-        chip_wins_by_id: [],
-        chip_kos_by_id: [],
-        chip_losses_by_id: [],
-        wins: 0,
-        ties: 0,
-        losses: 0,
-        matches: 0
-    },
-    navi_chosen_chip_slot: -1,
-    operator_chosen_chip_slot: -1,
-    line_up_spaces_by_chip: {},
-    are_chips_useful: [true, true, true, true, true]
-};
-
-const player2 = {
-    kind: 'Navi',
-    name: 'MagicMan.nav',
-    space: [5, 2],
-    is_east: true,
-    hand: [],
-    // NOTE: these are not the real Challenger values for MagicMan.EXE
-    accuracy: "B",
-    dodging: "B",
-    hp: STARTING_HP,
-    max_hp: STARTING_HP,
-    records: {
-        chip_ids_used_this_match: [],
-        chip_uses_by_id: [],
-        chip_wins_by_id: [],
-        chip_kos_by_id: [],
-        chip_losses_by_id: [],
-        wins: 0,
-        ties: 0,
-        losses: 0,
-        matches: 0
-    },
-    navi_chosen_chip_slot: -1,
-    operator_chosen_chip_slot: -1,
-    line_up_spaces_by_chip: {},
-    are_chips_useful: [true, true, true, true, true]
-};
-
+const player1 = {};
+const player2 = {};
 var last_to_act = player2;
 
 const reporter = { interpreters: [] };
 
-// *** stateless calculation functions on simple objects ***********************
+// *** start stateless calculation functions on generic objects ****************
 
 function random_item(list) {
     return list.length ? list[Math.floor(Math.random() * list.length)] : list;
 }
 
-function are_spaces_equal(a, b) { return a[0] == b[0] && a[1] == b[1]; }
-
-function edges_distance_between_spaces(a, b) {
-    return Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]);
-}
-
 function grab_after_equals(list, word) {
+    if (!list || list.length < 1) return null;
     for (var i = 0; i < list.length; i++) {
         var parts = list[i].split('=');
         if (parts.length == 2 && parts[0] == word) return parts[1];
@@ -263,29 +247,14 @@ function grab_after_equals(list, word) {
     return null;
 }
 
-
 function a_or_an(word) {
     return "AEIOUaeiou".split('').includes(word[0]) ? "an" : "a";
 }
 
-function is_space_valid(space) { 
-    return space[0] >= 0 && space[0] <= 5 && space[1] >= 0 && space[1] <= 2;
-}
-
-function is_weak_to(a, b) {
-    const weaknesses = [
-        "Fire is weak to Aqua", "Aqua is weak to Elec", "Elec is weak to Wood",
-        "Wood is weak to Fire"
-    ];
-    return weaknesses.includes(
-        `${a.element || a} is weak to ${b.element || b}`
-    );
-}
-
 function min_item_by_method(list, method) {
     if (!list || list.length < 1) return null;
-    var min = method(list[0]);
-    var min_item = list[0];
+    var min_item = null;
+    var min = Infinity;
     list.forEach(item => {
         var test_value = method(item);
         if (test_value < min) {
@@ -300,6 +269,33 @@ function unique_items(list) {
     return [...new Set(list)];
 }
 
+// *** end stateless calculation functions on simple objects *******************
+// *** start mutating functions on simple objects ******************************
+
+function shuffle(list) {
+  var m = list.length, t, i;
+  while (m) {
+    i = Math.floor(Math.random() * m--);
+    t = list[m];
+    list[m] = list[i];
+    list[i] = t;
+  }
+  return list;
+}
+
+// *** end mutating functions on simple objects ********************************
+// *** from here on are game-specific functions ********************************
+
+function are_spaces_equal(a, b) { return a[0] == b[0] && a[1] == b[1]; }
+
+function edges_distance_between_spaces(a, b) {
+    return Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]);
+}
+
+function is_space_valid(space) { 
+    return space[0] >= 0 && space[0] <= 5 && space[1] >= 0 && space[1] <= 2;
+}
+
 function unique_spaces(spaces) {
     if (spaces.length <= 1) return spaces;
     // here we are turning every spaces into one larger number and back
@@ -309,7 +305,15 @@ function unique_spaces(spaces) {
     return [...new Set(spaces_ints)].map(x => [x >> 2, x & 3]);
 }
 
-// *** calculation functions on complex objects ********************************
+function is_weak_to(a, b) {
+    const weaknesses = [
+        "Fire is weak to Aqua", "Aqua is weak to Elec", "Elec is weak to Wood",
+        "Wood is weak to Fire"
+    ];
+    return weaknesses.includes(
+        `${a.element || a} is weak to ${b.element || b}`
+    );
+}
 
 const _chips_by_rarity = [[], [], [], [], [], []];
 
@@ -686,7 +690,7 @@ function get_hitcheck_modifier(player, target) {
         return 1.0;
     }
 
-    // the balancing here is based on the median MaxHP of Challenger Navis
+    // the balancing here is based on the median Max_HP of Challenger Navis
     // being 500 and the class increment being 50;
     // a boost of 1 class should give the same advantage in any stat.
     if (aim_num >= dodge_num) return 1.0 + (aim_num - dodge_num) * 0.1;
@@ -747,21 +751,6 @@ function where_does_navi_dodge_chip_from_attacker_striking_spaces(
     if (Math.random() > hit_rate) return random_item(dodge_spaces);
     return null;
 }
-
-// *** mutating functions on simple objects ************************************
-
-function shuffle(list) {
-  var m = list.length, t, i;
-  while (m) {
-    i = Math.floor(Math.random() * m--);
-    t = list[m];
-    list[m] = list[i];
-    list[i] = t;
-  }
-  return list;
-}
-
-// *** navi action methods *****************************************************
 
 function i_move_to_space(player, space, is_dodge = false) {
     // TODO: pathing
@@ -972,8 +961,6 @@ function i_take_my_turn(player) {
     i_start_my_turn(player);
     report(`${name_of(player)}'s turn. (${player.hp}/${player.max_hp})`);
 }
-
-// *** world action methods ****************************************************
 
 function before_every_full_round() { return; }
 
@@ -1461,6 +1448,53 @@ function final_report() {
     console.log(
         `Average turns per match: ${(turns/matches_played).toFixed(1)}`
     );
+}
+
+function set_player_navi_by_name(navi_name) {
+    const exe_name = `${navi_name.split('.')[0]}.EXE`;
+    const navi_data = navi_data_from_bcc.find(x => {
+        return x[NAVI_NAME_INDEX] == exe_name;
+    });
+    initialize_player_navi(player1, navi_data, false);
+}
+
+function set_opponent_navi_by_name(navi_name) {
+    const exe_name = `${navi_name.split('.')[0]}.EXE`;
+    const navi_data = navi_data_from_bcc.find(x => {
+        return x[NAVI_NAME_INDEX] == exe_name;
+    });
+    initialize_player_navi(player2, navi_data, true);
+}
+
+function initialize_player_navi(player, navi_data, is_east) {
+    const navi_name = `${navi_data[NAVI_NAME_INDEX].split('.')[0]}.nav`;
+    player.kind = 'Navi';
+    player.name = navi_name;
+    player.space = is_east ? [5, 2] : [0, 0];
+    player.is_east = is_east;
+    player.hp = navi_data[NAVI_MAX_HP_INDEX];
+    player.max_hp = navi_data[NAVI_MAX_HP_INDEX];
+    player.accuracy = navi_data[NAVI_ACCURACY_INDEX];
+    player.dodging =  navi_data[NAVI_DODGING_INDEX];
+    player.power = navi_data[NAVI_POWER_INDEX];
+    player.priority = navi_data[NAVI_PRIORITY_INDEX];
+    player.hand = [],
+    player.records = {
+        chip_ids_used_this_match: [],
+        chip_uses_by_id: [],
+        chip_wins_by_id: [],
+        chip_kos_by_id: [],
+        chip_losses_by_id: [],
+        wins: 0,
+        ties: 0,
+        losses: 0,
+        matches: 0
+    };
+    player.navi_chosen_chip_slot = -1;
+    player.operator_chosen_chip_slot = -1;
+    player.line_up_spaces_by_chip = {};
+    player.are_chips_useful = [true, true, true, true, true];
+    return player;
 }
 
 // top level execution

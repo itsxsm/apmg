@@ -6,14 +6,21 @@
 </head>
 <body>
   <br>
-  <div id="navi-select">
-    <div id="portrait-megaman" class="navi-select-portrait"></div>
-    <div id="portrait-roll" class="navi-select-portrait"></div>
-    <div id="portrait-protoman" class="navi-select-portrait"></div>
-    <div id="portrait-ring" class="navi-select-portrait"></div>
-    <div id="portrait-gutsman" class="navi-select-portrait"></div>
-    <div id="portrait-turboman" class="navi-select-portrait"></div>
-  </div>
+  <center>
+    <div id="navi-select">
+      <h1 id="choose-navi-header">Choose your navi</h1>
+      <div id="portrait-megaman" class="navi-select-portrait"
+        onclick="operator_chooses_navi('MegaMan.nav')"></div>
+      <div id="portrait-roll" class="navi-select-portrait"
+        onclick="operator_chooses_navi('Roll.nav')"></div>
+      <div id="portrait-protoman" class="navi-select-portrait"
+        onclick="operator_chooses_navi('ProtoMan.nav')"></div>
+      <div id="portrait-gutsman" class="navi-select-portrait"
+        onclick="operator_chooses_navi('GutsMan.nav')"></div>
+  <!--     <div id="portrait-ring" class="navi-select-portrait"></div>
+      <div id="portrait-turboman" class="navi-select-portrait"></div> -->
+    </div>
+  </center>
   <br>
   <br>
   <div id="minigame">
