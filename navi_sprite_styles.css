@@ -260,6 +260,42 @@
   background: url("./sprites/Roll_west.gif") -16px -568px;
 }
 
+.navi.roll.slashing.frame-0 {
+  width: 33px;
+  height: 58px;
+  background: url("./sprites/Roll_west.gif") -16px -493px;
+}
+.navi.roll.slashing.frame-1 {
+  width: 66px;
+  height: 56px;
+  background: url("./sprites/Roll_west.gif") -64px -495px;
+}
+.navi.roll.slashing.frame-2 {
+  width: 67px;
+  height: 56px;
+  background: url("./sprites/Roll_west.gif") -137px -497px;
+}
+.navi.roll.slashing.frame-3 {
+  width: 65px;
+  height: 58px;
+  background: url("./sprites/Roll_west.gif") -219px -494px;
+}
+.navi.roll.slashing.frame-4 {
+  width: 48px;
+  height: 58px;
+  background: url("./sprites/Roll_west.gif") -294px -494px;
+}
+.navi.roll.slashing.frame-5 {
+  width: 42px;
+  height: 58px;
+  background: url("./sprites/Roll_west.gif") -355px -495px;
+}
+.navi.roll.slashing.frame-6 {
+  width: 42px;
+  height: 58px;
+  background: url("./sprites/Roll_west.gif") -408px -497px;
+}
+
 .navi.gutsman.standing {
   width: 60px;
   height: 52px;
@@ -307,6 +343,37 @@
   background: url("./sprites/GutsMan_west.gif") -33px -596px;
 }
 
+.navi.gutsman.slashing.frame-0 {
+  width: 85px;
+  height: 49px;
+  background: url("./sprites/GutsMan_west.gif") -5px -682px;
+}
+.navi.gutsman.slashing.frame-1 {
+  width: 76px;
+  height: 61px;
+  background: url("./sprites/GutsMan_west.gif") -92px -670px;
+}
+.navi.gutsman.slashing.frame-2 {
+  width: 70px;
+  height: 73px;
+  background: url("./sprites/GutsMan_west.gif") -172px -658px;
+}
+.navi.gutsman.slashing.frame-3 {
+  width: 71px;
+  height: 73px;
+  background: url("./sprites/GutsMan_west.gif") -244px -658px;
+}
+.navi.gutsman.slashing.frame-4 {
+  width: 71px;
+  height: 73px;
+  background: url("./sprites/GutsMan_west.gif") -319px -659px;
+}
+.navi.gutsman.slashing.frame-5 {
+  width: 70px;
+  height: 73px;
+  background: url("./sprites/GutsMan_west.gif") -395px -659px;
+}
+
 .navi.ring.standing {
   width: 62px;
   height: 68px;
@@ -352,7 +419,6 @@
   height: 56px;
   background: url("./sprites/Ring_west.gif") -396px -76px;
 }
-/*    row 2   */
 .navi.ring.slashing.frame-4 {
   width: 94px;
   height: 56px;
@@ -406,6 +472,32 @@
   width: 63px;
   height: 55px;
   background: url("./sprites/ElecMan_west.gif") -121px -669px;
+}
+
+.navi.elecman.slashing.frame-0 {
+  width: 36px;
+  height: 65px;
+  background: url("./sprites/ElecMan_west.gif") -7px -852px;
+}
+.navi.elecman.slashing.frame-1 {
+  width: 71px;
+  height: 65px;
+  background: url("./sprites/ElecMan_west.gif") -53px -851px;
+}
+.navi.elecman.slashing.frame-2 {
+  width: 66px;
+  height: 68px;
+  background: url("./sprites/ElecMan_west.gif") -135px -854px;
+}
+.navi.elecman.slashing.frame-3 {
+  width: 65px;
+  height: 79px;
+  background: url("./sprites/ElecMan_west.gif") -209px -843px;
+}
+.navi.elecman.slashing.frame-4 {
+  width: 49px;
+  height: 78px;
+  background: url("./sprites/ElecMan_west.gif") -280px -842px;
 }
 
 

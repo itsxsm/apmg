@@ -70,22 +70,25 @@ const navi_sprite_settings_by_name = {
     },
     'Roll.nav': {
         max_frame_for_pose: {
-            'shooting': 5
+            'shooting': 5,
+            'slashing': 6
         }
     },
     'GutsMan.nav': {
         max_frame_for_pose: {
-            'shooting': 5
+            'shooting': 5,
+            'slashing': 5
         }
     },
     'Ring.nav': {
-        max_frame_or_pose: {
+        max_frame_for_pose: {
             'slashing': 6 
         }
     },
     'ElecMan.nav': {
         max_frame_for_pose: {
-            'shooting': 3
+            'shooting': 3,
+            'slashing': 4
         },
     }
 }
