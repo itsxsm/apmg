@@ -303,7 +303,9 @@ function enque_windup_updates(anim_calcs) {
         return { frame_after: anim_calcs.frame_after};
     } else {
         [...Array(max_frame + 1).keys()].forEach(s_frame => {
-            add_update(frame, () => set_sprite_pose(navi, pose, s_frame));
+            add_update(frame, () => {
+                set_sprite_pose(navi_sprite, pose, s_frame)
+            });
             frame += 15 / (max_frame + 1);
         });
     }
@@ -459,10 +461,13 @@ function enque_reset_standing_poses(anim_calcs) {
 const animation_queue = [];
 
 function animater_update_frame() {
-    while(frame_num >= last_value(animation_queue)[0]) {
+    while(animation_queue.length
+        && frame_num >= last_value(animation_queue)[0])
+    {
         last_value(animation_queue)[1]();
         animation_queue.pop();
     };
+    frame_num++;
     // TODO: unexpected state error logging here
 }
 
