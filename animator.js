@@ -13,11 +13,14 @@ let turn_start_absolute_ms = Date.now();
 const ALL_POSES = ["standing", "attacking", "struck", "shooting", "slashing"];
 const ALL_STANDARD_CHIP_TYPES = ["Shot", "Sword", "Toss"];
 const SPECIAL_CHIP_ANIMATIONS = {};
-var _cache_buster = 0;
+var _cache_buster = 0; // TODO: remove, this is silly
+let frame_num = 0;
 
 const ANIMATION_TIMES_MS = {
     "Recover": 500,
 };
+
+const RF_MS = 1000.0 / 60.0;
 
 function grab_after_dash(space_delim_string, word) {
     if (!space_delim_string || !word) return null;
@@ -93,7 +96,7 @@ const navi_sprite_settings_by_name = {
     }
 }
 
-const card_divs = [0, 1, 2, 3, 4].map(idx => {
+const card_divs = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(idx => {
     return document.getElementById(`battle-chip-card-${idx}`);
 });
 
@@ -108,6 +111,7 @@ const nofill_div = document.getElementById("turn-timer-nofill");
 // keep it simple for now by not having the dictionary at all
 
 const obstacle_anchor = document.getElementById("obstacle-anchor");
+const effect_anchor = document.getElementById("effect-anchor");
 
 function last_value(x) { return x[x.length - 1]; }
 
@@ -229,6 +233,14 @@ function max_frame_for_sprite_animation(sprite, pose_name) {
     return settings.max_frame_for_pose[pose_name];
 }
 
+function add_update(on_frame_num, do_this) {
+    if (on_frame_num < animation_queue[0][0]) {
+        log_error("add_update to an earlier frame");
+        return;
+    }
+    animation_queue.unshift([on_frame_num, do_this]);
+}
+
 function place_swoosh(swoosh_div) {
     const navi = anim_data.enactor;
     var [swoosh_i, swoosh_j] = navi.space;
@@ -266,101 +278,215 @@ function run_swoosh_animation(total_ms, frame) {
     }
     const delay = Math.round(total_ms / 4, 0);
     setTimeout(() => run_swoosh_animation(total_ms, frame + 1), delay);
+
+    return total_ms;
 }
 
-function run_sprite_frame_animation(
-    sprite, pose, total_ms, frame, last_frame)
-{
-    set_sprite_pose(sprite, pose, frame);
-    if (frame >= last_frame) return;
-
-    const delay = Math.round(total_ms / (last_frame + 1), 0);
-    setTimeout(() => {
-        run_sprite_frame_animation(
-            sprite, pose, total_ms, frame + 1, last_frame
-        );
-    }, delay);
-}
-
-function animate_move() {
-    if (!anim_data.moves_to) return 'skip';
+function enque_move_updates(anim_calc) {
+    if (!anim_data.moves_to) return { frame_after: frame_num };
+    
     const navi_sprite = get_sprite_by_navi(anim_data.enactor);
     move_sprite_to_space(navi_sprite, anim_data.moves_to);
     anim_data.moves_to = null;
+    return { frame_after: anim_calc.frame_after + 15 };
 }
-function animate_windup() {
+
+function enque_windup_updates(anim_calc) {
     const pose = anim_data.attack_pose || "attacking";
     const navi_sprite = get_sprite_by_navi(anim_data.enactor); 
     // set_sprite_pose(navi_sprite, "attacking");
-    max_frame = max_frame_for_sprite_animation(navi_sprite, pose);
+    const max_frame = max_frame_for_sprite_animation(navi_sprite, pose);
+    let frame = anim_calc.frame_after;
+    
     if (max_frame == 0) {
-        set_sprite_pose(navi_sprite, pose);
+        add_update(frame, () => set_sprite_pose(navi_sprite, pose));
+        return { frame_after: anim_calc.frame_after};
     } else {
-        run_sprite_frame_animation(navi_sprite, pose, 240, 0, max_frame);
+        [...Array(max_frame + 1).keys()].forEach(s_frame => {
+            add_update(frame, () => set_sprite_pose(navi, pose, s_frame));
+            frame += 15 / (max_frame + 1);
+        });
     }
 
-    if (pose == "slashing") run_swoosh_animation(240, 0);
-}
-function animate_wave() { ; }
-function animate_result() {
-    if (anim_data.dodges_to) {
-        const dodger_sprite = get_sprite_by_navi(
-            get_opponent(anim_data.enactor)
-        );
-        move_sprite_to_space(dodger_sprite, anim_data.dodges_to);
-        anim_data.dodges_to = null;
-    };
+    anim_calc.frame_after = frame;
+    if (pose == "slashing") anim_calc = enque_swoosh_updates(anim_calc);
 
-    anim_data.strikes.forEach(target => {
-        if (!is_navi(target)) return;
-        const target_sprite = get_sprite_by_navi(target);
-        set_sprite_pose(target_sprite, "struck");
+    return anim_calc;
+}
+
+function enque_wave_updates(anim_calc) {
+    return anim_calc;
+}
+
+function enque_result_updates(anim_calc) {
+    const does_add_time = anim_data.dodges_to || anim_data.strikes.length;
+    add_update(anim_calc.frame_after, () => {
+        if (anim_data.dodges_to) {
+            const dodger_sprite = get_sprite_by_navi(
+                get_opponent(anim_data.enactor)
+            );            
+            move_sprite_to_space(dodger_sprite, anim_data.dodges_to);
+            anim_data.dodges_to = null;
+        }
+
+        anim_data.strikes.forEach(target => {
+            if (!is_navi(target)) return;
+            const target_sprite = get_sprite_by_navi(target);
+            set_sprite_pose(target_sprite, "struck");
+        });
     });
+
+    if (does_add_time) anim_calc.frame_after += 15;
+    return anim_calc;
 }
-function reset_standing_poses() {
-    anim_data.enactor = null;
-    anim_data.attack_pose = null;
-    anim_data.spaces_hit = [];
-    anim_data.moves_to = null;
-    anim_data.dodges_to = null;
-    anim_data.strikes.length = 0;
-    set_sprite_pose(sprites[0], "standing");
-    set_sprite_pose(sprites[1], "standing");
+
+function enque_reset_standing_poses(anim_calc) {
+    add_update(anim_calc.frame_after, () => {
+        anim_data.enactor = null;
+        anim_data.attack_pose = null;
+        anim_data.spaces_hit = [];
+        anim_data.moves_to = null;
+        anim_data.dodges_to = null;
+        anim_data.strikes.length = 0;
+        set_sprite_pose(sprites[0], "standing");
+        set_sprite_pose(sprites[1], "standing");
+    });
+
+    return anim_calc;
 }
+
+// function run_sprite_frame_animation(
+//     sprite, pose, total_ms, frame, last_frame)
+// {
+//     set_sprite_pose(sprite, pose, frame);
+//     if (frame >= last_frame) return;
+
+//     const delay = Math.round(total_ms / (last_frame + 1), 0);
+//     setTimeout(() => {
+//         run_sprite_frame_animation(
+//             sprite, pose, total_ms, frame + 1, last_frame
+//         );
+//     }, delay);
+
+//     return total_ms;
+// }
+
+// function animate_move() {
+//     if (!anim_data.moves_to) return 'skip';
+//     const navi_sprite = get_sprite_by_navi(anim_data.enactor);
+//     move_sprite_to_space(navi_sprite, anim_data.moves_to);
+//     anim_data.moves_to = null;
+
+//     return 0;
+// }
+// function animate_windup() {
+//     const pose = anim_data.attack_pose || "attacking";
+//     const navi_sprite = get_sprite_by_navi(anim_data.enactor); 
+//     // set_sprite_pose(navi_sprite, "attacking");
+//     max_frame = max_frame_for_sprite_animation(navi_sprite, pose);
+//     if (max_frame == 0) {
+//         set_sprite_pose(navi_sprite, pose);
+//     } else {
+//         run_sprite_frame_animation(navi_sprite, pose, 240, 0, max_frame);
+//     }
+
+//     if (pose == "slashing") run_swoosh_animation(240, 0);
+
+//     return 240;
+// }
+
+// function run_wave_animation(ms_per_space, space, div, frame, last_frame) {
+//     const ms_per_frame = ms_per_space / (last_frame + 1);
+//     if (!div) {
+//         if (frame != 0) {
+//             log_error("Effect div undefined on frame after 0");
+//             return 0;
+//         }
+//         div = document.createElement("div");
+//         const name = name_of(anim_data.enactor.battle_chip);
+//         const bottom_px = get_bottom_line_px_for_j(space[1]) + 2;;
+//         div.id = "effect-" + name;
+//         div.style.position = "absolute";
+//         div.style.left = space[0] * 40 + "px";
+//         div.style.bottom = bottom_px + "px";
+//         // TODO: better define all the Z planes!
+//         div.style.zIndex = get_z_index_for_j(obstacle.space[1]) + 200;
+//         div.classList.add("effect", "ground-wave", "frame-0")
+//         document.getElementById("battlefield").insertBefore(div, effect_anchor);
+//     } else if (frame > last_frame) {
+//         let new_i = space[0] + (anim_data.enactor.is_east ? -1 : 1);
+//         if (new_i < 0 || new_i > 5) {
+//             div.remove();
+//             return 0;
+//         }
+//         div.classList.replace(`frame-${last_frame}`, "frame-0");
+//         div.style.left = new_i * 40 + "px";
+//         setTimeout(() => {
+//             run_wave_animation(
+//                 ms_per_space, [new_i, space[1]], div, 0, last_frame
+//             );
+//         }, ms_per_frame);
+//     } else {
+//         setTimeout(() => {
+//             run_wave_animation(ms_per_space, space, div, frame + 1, last_frame);
+//         }, ms_per_frame);
+//     }
+// }
+
+// function animate_wave() {
+//     const shockwave_chips = ["ShokWave", "SoniWave", "DynaWave"];
+//     const tidalwave_chips = ["Wave", "RedWave", "BigWave"];
+//     const all_wave_chips = shockwave_chips.concat(tidalwave_chips);
+//     const navi = anim_data.enactor;
+//     if (!all_wave_chips.includes(name_of(navi.battle_chip))) return 0;
+
+//     const distance = navi.is_east ? navi.space[0] : (5 - navi.space[0]);
+//     if (distance == 0) return 0;
+
+//     const ref_frames_per_space = 13;
+//     const ms_per_space = ref_frames_per_space * RF_MS;
+//     const overlap_ref_frames = 6;
+//     const delay_ref_frames = ref_frames_per_space - overlap_ref_frames;
+//     const delay_ms = delay_ref_frames * RF_MS;
+//     run_wave_animation(ms_per_space, 0, 7);
+//     setTimeout(() => run_wave_animation(ms_per_space, 0, 7), delay_ms);
+
+//     // TODO: this method should determine and return time until impact
+//     // so that the struck pose can be animated at the right time
+//     return ms_per_spaces * distance + delay_ms;
+// }
 
 const animation_queue = [];
 
-function run_animation() {
-    if (animation_queue.length == 0) {
-        if (!is_the_game_over()) {
-            _interval_settings.active_interval = setInterval(
-                () => game_turn(), _interval_settings.interval_time
-            );
-        }
-        return;
+function animater_update_frame() {
+    while(frame_num >= last_value(animation_queue)[0]) {
+        last_value(animation_queue)[1]();
+        animation_queue.pop();
+    };
+    // TODO: unexpected state error logging here
+}
+
+_animation_interval = null;
+
+function start_animation_timer() {
+    _animation_interval = setInterval(() => {
+        animater_update_frame();
+    }, RF_MS);
+}
+
+function resume_turn_ber() {
+    if (!is_the_game_over()) {
+        _interval_settings.active_interval = setInterval(
+            () => game_turn(), _interval_settings.interval_time
+        );
     }
-
-    [start_animation, end_animation, timeout_ms] = animation_queue[0];
-    animation_queue.shift();
-
-    var skip = false;
-    if (start_animation) skip = start_animation() == 'skip';
-
-    if (timeout_ms == 0 || skip) {
-        if (end_animation) end_animation();
-        run_animation();
-        return;
-    }
-    setTimeout(() => {
-        if (end_animation) end_animation();
-        run_animation();
-    }, timeout_ms);
 }
 
 function animate_navi_uses_chip_on_target(
     navi, target, does_hit = true)
 {
     clearInterval(_interval_settings.active_interval);
+    start_animation_timer();
 
     anim_data.enactor = navi;
     if (target && does_hit) anim_data.strikes = [target];
@@ -369,16 +495,12 @@ function animate_navi_uses_chip_on_target(
     const is_sword = battle_chip[TYPES_INDEX].split(' ')[0] == "Sword";
     anim_data.attack_pose = is_sword ? "slashing" : "shooting";
 
-    const animations = [
-        [animate_move, null, 500], 
-        [animate_windup, null, 250],
-        [animate_wave, null, 0],
-        [animate_result, reset_standing_poses, 500],
-    ]
-    animations.forEach(animation => {
-        animation_queue.push(animation);
-    });
-    run_animation();
+    let anim_calcs = enque_move_updates({ frame_after: frame_num });
+    anim_calcs = enque_windup_updates(anim_calcs);
+    anim_calcs = enque_wave_updates(anim_calcs);
+    anim_calcs = enque_result_updates(anim_calcs);
+    anim_calcs = enque_reset_standing_poses(anim_calc);
+    add_update(anim_calcs.frame_after + 1, () => resume_turn_ber());
 }
 
 function repaint_barriers() {

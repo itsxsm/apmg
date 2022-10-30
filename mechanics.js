@@ -867,7 +867,33 @@ function i_use_this_attack(player, battle_chip) {
 // };
 
 function replace_players_chip_in_slot(player, chip_slot) {
-    player.hand[chip_slot] = conjure_a_random_battle_chip();
+    var battle_chip = conjure_a_random_battle_chip();
+
+    // TODO: calibrate chip costs and replace this with a balanced method!!
+    // this is just a placeholder so Power actually does something.
+    // Power determines the chance for an automatic upgrade.
+    if (chip_slot <= 4 && battle_chip[DAMAGE_INDEX] != ""
+        && battle_chip[DAMAGE_INDEX] != "???")
+    {
+        const upgrade_chance = (player.power - 100.0)/100.0;
+        if (Math.random() < upgrade_chance) {
+            const rarity = battle_chip[RARITY_INDEX].length;
+            const damage = Math.abs(parseInt(battle_chip[DAMAGE_INDEX], 10));
+            battle_chip = random_item(battle_chip_data_from_bn1.filter(chip => {
+                // upgrade chip has >= damage or recovery
+                // and is the same rarity or 1 better
+                // this undervalues multi-hit chips, but that's OK since it's
+                // just a temporary placeholder
+                return chip[DAMAGE_INDEX] != ""
+                    && chip[DAMAGE_INDEX] != "???"
+                    && chip[RARITY_INDEX].length >= rarity
+                    && chip[RARITY_INDEX].length - rarity <= 1
+                    && Math.abs(parseInt(chip[DAMAGE_INDEX], 10)) >= damage
+            }));
+        }
+    }
+
+    player.hand[chip_slot] = battle_chip;
 }
 
 function i_use_battle_chip_from_slot(player, chip_slot) {
@@ -1368,7 +1394,7 @@ function deal_player_a_hand(player) {
     });
 }
 
-function reset_game() {
+function reset_game(first_time = false) {
     [player1, player2].forEach(p => {
         p.hp = p.max_hp;
         p.barrier_chip = null;
@@ -1382,9 +1408,24 @@ function reset_game() {
             are_spaces_east[i][j] = i >= 3;
         });
     });
-    last_to_act = player2;
 
-    report(`Game reset.`);
+    if (!first_time) report(`Game reset.`);
+
+    if (player1.priority > player2.priority) {
+        report(`${name_of(player1)} has the initiative.`);
+        last_to_act = player2;
+    } else if (player2.priority > player1.priority) {
+        report(`${name_of(player2)} has the initiative.`);
+        last_to_act = player1;
+    } else {
+        if (Math.random() < 0.5) {
+            report(`${name_of(player1)} wins the coin toss for initiative.`);
+            last_to_act = player2;
+        } else {
+            report(`${name_of(player2)} wins the coin toss for initiative.`)
+            last_to_act = player1;
+        }
+    }
 }
 
 function game_turn() {
@@ -1510,6 +1551,7 @@ function run_game(
     deal_player_a_hand(player2);
     report("Game started.");
 
+    reset_game(true);
     if (use_timer) {
         _interval_settings.use = true;
         _interval_settings.matches_to_play = matches_to_play;
@@ -1517,7 +1559,7 @@ function run_game(
         _interval_settings.await_operator = await_operator;
         _interval_settings.active_interval =
             setInterval(() => game_turn(), turn_time);
-        
+
         game_turn();
     } else {
         while (matches_played < matches_to_play) game_turn();

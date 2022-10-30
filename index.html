@@ -3,6 +3,7 @@
 <head>
   <link rel="stylesheet" href="./styles.css">
   <link rel="stylesheet" href="./navi_sprite_styles.css">
+  <link rel="stylesheet" href="./effect_styles.css">
 </head>
 <body>
   <div id="minigame">
@@ -79,6 +80,7 @@
       <div id="swoosh-1" class="sword-swoosh"></div>
       <div id="swoosh-2" class="sword-swoosh"></div>
       <div id="obstacle-anchor"></div>
+      <div id="effect-anchor"></div>
     </div>
     <div id="navi-select">
       <center>
@@ -134,12 +136,70 @@
         <div id="chip-info-4" class="chip-info"></div>
         <div id="chip-name-4" class="chip-name"></div>
       </div>
+
+      <br>
+
+      <div id="chip-card-and-name-box-5"
+        class="card-and-name-box"
+        onclick="operator_chooses_chip_idx(5)">
+        <div id="battle-chip-card-5" class="battle-chip-card"></div>
+        <div id="chip-info-5" class="chip-info"></div>
+        <div id="chip-name-5" class="chip-name"></div>
+      </div><div id="chip-card-and-name-box-1"
+        onclick="operator_chooses_chip_idx(6)"
+        class="card-and-name-box">
+        <div id="battle-chip-card-6" class="battle-chip-card"></div>
+        <div id="chip-info-6" class="chip-info"></div>
+        <div id="chip-name-6" class="chip-name"></div>
+      </div><div id="chip-card-and-name-box-7"
+        onclick="operator_chooses_chip_idx(7)"
+        class="card-and-name-box">
+        <div id="battle-chip-card-7" class="battle-chip-card"></div>
+        <div id="chip-info-7" class="chip-info"></div>
+        <div id="chip-name-7" class="chip-name"></div>
+      </div><div id="chip-card-and-name-box-8"
+        onclick="operator_chooses_chip_idx(8)"
+        class="card-and-name-box">
+        <div id="battle-chip-card-8" class="battle-chip-card"></div>
+        <div id="chip-info-8" class="chip-info"></div>
+        <div id="chip-name-8" class="chip-name"></div>
+      </div><div id="chip-card-and-name-box-9"
+        onclick="operator_chooses_chip_idx(9)"
+        class="card-and-name-box">
+        <div id="battle-chip-card-9" class="battle-chip-card"></div>
+        <div id="chip-info-9" class="chip-info"></div>
+        <div id="chip-name-9" class="chip-name"></div>
+      </div>
     </div>
   </div>
 
-  <div id="tutorial"> <!-- this will be chat for online mode -->
-    
-  </div>
+  <br>
+
+  <center>
+    <div id="tutorial" style="text-align: left; max-width: 475px;">
+      Greetings, Operator.<br />
+      Welcome to the NetBattle minigame!<br />
+      <b>This is the single player demo.<br />
+      Online Multiplayer is scheduled for release on Thursday Nov 17th.</b><br />
+      For now, this demo is the only version. So, let me explain...<br />
+      The top 5 chips are your navi's battle chip.<br />
+      Your navi will select a battle chip to use at the start of their turn.<br />
+      Your navi's choice is highlighted in yellow.<br />
+      You can choose a different battle chip while the turn gauge is filling.<br />
+      Your choice will replace your navi's and be highlighted in green.<br />
+      Choose wisely to help your navi!<br />
+      The bottom 5 chips are your operator battle chips.<br />
+      Your navi cannot use these automatically.<br />
+      However, as an operator, you can select any chip.<br />
+      Select the best chip to achieve victory!<br />
+      Sometimes a chip has no benefit on that turn.<br />
+      For example, a Sword chip has no benefit when it can't reach any target.<br />
+      These chips are displayed in black and white.<br />
+      You can choose them if you really want, but it's not recommended.<br />
+      The minigame continues until one navi's HP reaches zero.<br />
+      That's all for the instructions. Good luck!
+    </div>
+  </center>
 
   <script src="mechanics.js" type="text/javascript"></script>
   <script src="animator.js" type="text/javascript"></script>
