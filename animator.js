@@ -234,7 +234,7 @@ function max_frame_for_sprite_animation(sprite, pose_name) {
 }
 
 function add_update(on_frame_num, do_this) {
-    if (on_frame_num < animation_queue[0][0]) {
+    if (animation_queue.length && on_frame_num < animation_queue[0][0]) {
         log_error("add_update to an earlier frame");
         return;
     }
@@ -282,25 +282,25 @@ function run_swoosh_animation(total_ms, frame) {
     return total_ms;
 }
 
-function enque_move_updates(anim_calc) {
+function enque_move_updates(anim_calcs) {
     if (!anim_data.moves_to) return { frame_after: frame_num };
     
     const navi_sprite = get_sprite_by_navi(anim_data.enactor);
     move_sprite_to_space(navi_sprite, anim_data.moves_to);
     anim_data.moves_to = null;
-    return { frame_after: anim_calc.frame_after + 15 };
+    return { frame_after: anim_calcs.frame_after + 15 };
 }
 
-function enque_windup_updates(anim_calc) {
+function enque_windup_updates(anim_calcs) {
     const pose = anim_data.attack_pose || "attacking";
     const navi_sprite = get_sprite_by_navi(anim_data.enactor); 
     // set_sprite_pose(navi_sprite, "attacking");
     const max_frame = max_frame_for_sprite_animation(navi_sprite, pose);
-    let frame = anim_calc.frame_after;
+    let frame = anim_calcs.frame_after;
     
     if (max_frame == 0) {
         add_update(frame, () => set_sprite_pose(navi_sprite, pose));
-        return { frame_after: anim_calc.frame_after};
+        return { frame_after: anim_calcs.frame_after};
     } else {
         [...Array(max_frame + 1).keys()].forEach(s_frame => {
             add_update(frame, () => set_sprite_pose(navi, pose, s_frame));
@@ -308,19 +308,19 @@ function enque_windup_updates(anim_calc) {
         });
     }
 
-    anim_calc.frame_after = frame;
-    if (pose == "slashing") anim_calc = enque_swoosh_updates(anim_calc);
+    anim_calcs.frame_after = frame;
+    if (pose == "slashing") anim_calcs = enque_swoosh_updates(anim_calcs);
 
-    return anim_calc;
+    return anim_calcs;
 }
 
-function enque_wave_updates(anim_calc) {
-    return anim_calc;
+function enque_wave_updates(anim_calcs) {
+    return anim_calcs;
 }
 
-function enque_result_updates(anim_calc) {
+function enque_result_updates(anim_calcs) {
     const does_add_time = anim_data.dodges_to || anim_data.strikes.length;
-    add_update(anim_calc.frame_after, () => {
+    add_update(anim_calcs.frame_after, () => {
         if (anim_data.dodges_to) {
             const dodger_sprite = get_sprite_by_navi(
                 get_opponent(anim_data.enactor)
@@ -336,12 +336,12 @@ function enque_result_updates(anim_calc) {
         });
     });
 
-    if (does_add_time) anim_calc.frame_after += 15;
-    return anim_calc;
+    if (does_add_time) anim_calcs.frame_after += 15;
+    return anim_calcs;
 }
 
-function enque_reset_standing_poses(anim_calc) {
-    add_update(anim_calc.frame_after, () => {
+function enque_reset_standing_poses(anim_calcs) {
+    add_update(anim_calcs.frame_after, () => {
         anim_data.enactor = null;
         anim_data.attack_pose = null;
         anim_data.spaces_hit = [];
@@ -352,7 +352,7 @@ function enque_reset_standing_poses(anim_calc) {
         set_sprite_pose(sprites[1], "standing");
     });
 
-    return anim_calc;
+    return anim_calcs;
 }
 
 // function run_sprite_frame_animation(
@@ -499,7 +499,7 @@ function animate_navi_uses_chip_on_target(
     anim_calcs = enque_windup_updates(anim_calcs);
     anim_calcs = enque_wave_updates(anim_calcs);
     anim_calcs = enque_result_updates(anim_calcs);
-    anim_calcs = enque_reset_standing_poses(anim_calc);
+    anim_calcs = enque_reset_standing_poses(anim_calcs);
     add_update(anim_calcs.frame_after + 1, () => resume_turn_ber());
 }
 
