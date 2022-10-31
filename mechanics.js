@@ -42,9 +42,9 @@ const battle_chip_data_from_bn1 = [
     // ["39", "Ratton1", "ABCDE", "None", "80", "Missile that can turn once", "*", "Drone Ground"],
     // ["40", "Ratton2", "FGHIJ", "None", "100", "Missile that can turn once", "**", "Drone Ground"],
     // ["41", "Ratton3", "KLMNO", "None", "120", "Missile that can turn once", "***", "Drone Ground"],
-    ["42", "Wave", "ADILM", "Aqua", "80", "3-row wave! [Aqua]", "***", "Shot Ground"],
-    ["43", "RedWave", "BEJNP", "Fire", "100", "3-row lava wave! [Fire]", "***", "Shot Ground"],
-    ["44", "BigWave", "CHKLQ", "Aqua", "160", "3-row giant wave [Aqua]", "****", "Shot Ground"],
+    ["42", "Wave", "ADILM", "Aqua", "80", "3-row wave! [Aqua]", "***", "Shot Ground All_Rows"],
+    ["43", "RedWave", "BEJNP", "Fire", "100", "3-row lava wave! [Fire]", "***", "Shot Ground All_Rows"],
+    ["44", "BigWave", "CHKLQ", "Aqua", "160", "3-row giant wave [Aqua]", "****", "Shot Ground All_Rows"],
     ["45", "Gaia1", "CDLOT", "None", "100", "Rolling 3-column explosion!", "***", "Shot Unblockable"],
     ["46", "Gaia2", "CFKPS", "None", "130", "Rolling 3-column explosion!", "****", "Shot Unblockable"],
     ["47", "Gaia3", "CGMRT", "None", "160", "Rolling 3-column explosion!", "*****", "Shot Unblockable"],
@@ -129,6 +129,34 @@ const battle_chip_data_from_bn1 = [
     ["126", "WoodAura", "CFJOQ", "Wood", "", "Null<80dmg Weak vs. [Fire]", "****", "Guard Barrier Aura 80"],
     ["127", "LifeAura", "AHKMP", "None", "", "Negate all attacks w/ damage<100", "*****", "Guard Barrier Aura 100"]
 ];
+
+const navi_chips = {
+    "MegaMan.nav": ["", "ChargeUp", "M", "None", "Dodge boost and charge", "***", "Guard Evasive Charge"],
+    "MegaMan.nav_charged": ["", "ChargSht", "M", "None", "60", "A charged up blast", "***", "Shot"],
+    "ProtoMan.nav": ["", "SoniBoom", "P", "140", "Hit column w/ nearest enemy", "***", "Shot"],
+    "Ring.nav": ["", "RingRang", "R", "30", "Double ring boomerangs", "***", "Shot"],
+    "ElecMan.nav": ["SprkStrk", "E", "Elec", "90", "Lightning hits enemy panel!", "***", "Drop"],
+    "GutsMan.nav": ["", "GutsHmmr", "G", "None", "40", "Shock foe and crack enemy area", "Close Breaker Shatter Stun"],
+    "Roll.nav": ["", "HeartFls", "R", "60", "Hit enemy and heal some HP", "***", "Blink_Close Bink_Range=5 Also_Recover=50"],
+    "ShadowMan.nav": ["", "Shuriken", "S", "None", "80", "3 throwing star attack", "***", "Drop x3 Evade_Counter"],
+    "PharaohMan.nav": ["", "CofnLasr", "P", "None", "100", "3-row coffin laser!", "***", "Shot Unblockable All_Rows"],
+    "SharkMan.nav": ["", "Fin", "3-row shark fin attack", "S", "90", "Aqua", "90", "***", "Shot Ground All_Rows"],
+    "SkullMan.nav": ["", "BoneCrsh", "S", "None", "150", "Big skull attack on one enemy", "***", "Drop"],
+    "WoodMan.nav": ["", "DethFrst", "W", "Wood", "60", "Skewer entire enemy area", "Enemy_Area Ground"],
+    "MagicMan.nav": ["", "MagicFir", "???", "None", "Magic fire = instant delete!?", "Shot Breaker Instant_KO"],
+    "BombMan.nav": ["", "BombKick", "B", "Fire", "120", "Enemy area CrossBomb Depth=3", "Toss Explode Pattern=Cross"]
+
+}
+
+// const five_star_assignments = [
+//     "HeroSword": "ProtoMan.nav",
+//     "Muramasa": "ShadowMan.nav",
+//     "Gaia3": "GutsMan.nav",
+//     "LifeAura": "Bass.nav",
+//     "Anubis": "SkullMan.nav",
+//     "Popup": "SnakeMan.nav",
+//     "Dropdown": "BeastMan.nav"
+// ]
 // TEST CHANGES: Steal Rarity *** => *
 
 const navi_data_from_bcc = [
@@ -398,6 +426,33 @@ function name_of(x) {
     return (Array.isArray(x) ? x[NAME_INDEX] : x?.name ) || "Anonymous";
 }
 
+function line_up_spaces_for_ratton(player, target_space, battle_chip) {
+    var i = target_space[0];
+
+    const is_space_ratton_blocking = (space) => {
+        return is_space_gap(space) || (is_space_occupied(space)
+            && !are_spaces_equal(space, player.space));
+    }
+
+    const spaces = [];
+    const test_js = [target_space[1]];
+
+    // TODO: add proper blocking/gap check onto the post-cornering movement
+
+    const i_change = player.is_east ? 1 : -1;
+    for (var shift = 1; i + shift * i_change >= 0
+        && i + shift * i_change <= 5; shift++)
+    {
+        test_js.forEach(t_j => {
+            var space = [i + shift * i_change, t_j];
+            is_blocked[t_j] ||= is_space_ratton_blocking(space);
+            if (!is_blocked[t_j]) spaces.push(space);
+        });
+    }
+
+    return spaces;
+}
+
 function spaces_where_player_could_hit_space_with_chip(
     player, target_space, battle_chip)
 {
@@ -407,6 +462,10 @@ function spaces_where_player_could_hit_space_with_chip(
         "Both_Areas", "Recover", "Guard", "Drone", "Autohit"
     ]
     if (all_spaces_hit_types.includes(hit_type)) return ALL_SPACES;
+
+    if (hit_type == "Drone")
+        return line_up_spaces_for_ratton(player, target_space, battle_chip);
+
     var spaces = [];
     var range = 5;
     var exact_range_only = false;

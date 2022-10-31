@@ -10,7 +10,9 @@ if (!reporter || !player1) {
 }
 
 let turn_start_absolute_ms = Date.now();
-const ALL_POSES = ["standing", "attacking", "struck", "shooting", "slashing"];
+const ALL_POSES = [
+    "standing", "attacking", "struck", "shooting", "slashing", "throwing"
+];
 const ALL_STANDARD_CHIP_TYPES = ["Shot", "Sword", "Toss"];
 const SPECIAL_CHIP_ANIMATIONS = {};
 var _cache_buster = 0; // TODO: remove, this is silly
@@ -56,6 +58,12 @@ const sprites = [
     }
 ];
 
+const frame_durations_defaults = {
+    'shooting': [1, 2, 1, 1, 2, 22], // ends with repeat of 1
+    'slashing': [8, 2, 2, 2, 2, 2, 2, 9],
+    'swoosh': [4, 3, 4],
+}
+
 const navi_sprite_settings_by_name = {
     // TODO: any simple way to infer these from defined CSS classes?
     'ProtoMan.nav': {
@@ -69,7 +77,8 @@ const navi_sprite_settings_by_name = {
             'shooting': 5,
             'slashing': 6,
             'throwing': 4
-        }
+        },
+        frame_durations_for_pose: frame_durations_defaults
     },
     'Roll.nav': {
         max_frame_for_pose: {
@@ -102,6 +111,7 @@ const card_divs = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(idx => {
 
 const fill_div = document.getElementById("turn-timer-fill");
 const nofill_div = document.getElementById("turn-timer-nofill");
+const ball_div = document.getElementById("ball");
 
 // for some reason, cannot assign navi references as keys?
 // this results in an object with only one key...
@@ -160,6 +170,21 @@ function get_occupant_by_name(name) {
     return undefined;
 }
 
+function create_placed_wave_effect_div(space) {
+    div = document.createElement("div");
+    const name = name_of(anim_data.enactor.battle_chip);
+    const bottom_px = get_bottom_line_px_for_j(space[1]) + 2;
+    div.id = `effect-${name}_${space[0]}_${space[1]}`;
+    div.style.position = "absolute";
+    div.style.left = space[0] * 40 + "px";
+    div.style.bottom = bottom_px + "px";
+    div.style.zIndex = get_z_index_for_j(space[1]);
+    div.classList.add("effect", "ground-wave")
+    document.getElementById("battlefield").insertBefore(div, effect_anchor);
+    return div;
+}
+
+
 function get_sprite_by_navi(navi) {
     if (navi == player1) return sprites[0];
     if (navi == player2) return sprites[1];
@@ -181,7 +206,7 @@ function set_sprite_pose(sprite, pose, frame = -1) {
     if (!sprite) return;
 
     if (!ALL_POSES.includes(pose)) {
-        log_error(`set_sprite_pose got unrecognized pose: ${pose}`);
+        console.log(`WARNING: set_sprite_pose got unrecognized pose: ${pose}`);
         return;
     }
     if (sprite.div.classList.contains(pose)) {
@@ -234,9 +259,13 @@ function max_frame_for_sprite_animation(sprite, pose_name) {
 }
 
 function add_update(on_frame_num, do_this) {
-    if (animation_queue.length && on_frame_num < animation_queue[0][0]) {
-        log_error("add_update to an earlier frame");
-        return;
+    if (animation_queue.length && on_frame_num < animation_queue[0][0])
+    {
+        var idx = 1;
+        while (idx < animation_queue.length
+            && on_frame_num < animation_queue[idx][0]) idx++;
+        // TODO: double-check to make sure this isn't off by one or two
+        animation_queue.splice(idx, 0, [on_frame_num, do_this]);
     }
     animation_queue.unshift([on_frame_num, do_this]);
 }
@@ -263,25 +292,6 @@ function place_swoosh(swoosh_div) {
     }
 }
 
-function run_swoosh_animation(total_ms, frame) {
-    var swoosh_div_id = anim_data.enactor == player1 ? "swoosh-1" : "swoosh-2";
-    var swoosh_div = document.getElementById(swoosh_div_id);
-    if (frame == 4) {
-        swoosh_div.classList.remove("frame-3");
-        return;
-    }
-    if (frame == 0) {
-        place_swoosh(swoosh_div);
-        swoosh_div.classList.add("frame-0");
-    } else {
-        swoosh_div.classList.replace(`frame-${frame - 1}`, `frame-${frame}`);
-    }
-    const delay = Math.round(total_ms / 4, 0);
-    setTimeout(() => run_swoosh_animation(total_ms, frame + 1), delay);
-
-    return total_ms;
-}
-
 function enque_move_updates(anim_calcs) {
     if (!anim_data.moves_to) return { frame_after: frame_num };
     
@@ -291,13 +301,61 @@ function enque_move_updates(anim_calcs) {
     return { frame_after: anim_calcs.frame_after + 15 };
 }
 
+function clear_div_frame(div, frame) {
+    div.classList.remove(`frame-${frame}`);
+}
+
+function set_div_frame(div, frame) {
+    if (frame > 0) {
+        div.classList.replace(`frame-${frame-1}`, `frame-${frame}`);
+    } else {
+        div.classList.add("frame-0");
+    }
+}
+
+function enque_swoosh_updates(anim_calcs) {
+    var swoosh_div_id = anim_data.enactor == player1 ? "swoosh-1" : "swoosh-2";
+    var swoosh_div = document.getElementById(swoosh_div_id);
+    var next_frame = anim_calcs.slash_starting_frame;
+    [...Array(5).keys()].forEach(s_frame => {
+        if (s_frame == 0) {
+            add_update(next_frame, () => {
+                place_swoosh(swoosh_div);
+                set_div_frame(swoosh_div, 0);
+            }, true);
+            next_frame += 180 / 4;
+        } else if (s_frame == 4) { 
+            add_update(next_frame, () => { 
+                clear_div_frame(swoosh_div, 3) ;
+            }, true);
+        } else {
+            console.log("next_frame = " + next_frame);
+            add_update(next_frame, () => { 
+                console.log(`changed swoosh frame to ${s_frame} at - ${frame_num}`);
+                set_div_frame(swoosh_div, s_frame);
+            }, true);
+            next_frame += 180 / 4;
+        }
+    });
+
+    const swoosh_frame_after = next_frame + 1;
+    if (swoosh_frame_after > anim_calcs.frame_after)
+        anim_calcs.frame_after = swoosh_frame_after;
+    return anim_calcs;
+}
+
 function enque_windup_updates(anim_calcs) {
     const pose = anim_data.attack_pose || "attacking";
-    const navi_sprite = get_sprite_by_navi(anim_data.enactor); 
+
+    if (pose == "throwing") return enque_throw_updates(anim_calcs);
+
+    const navi_sprite = get_sprite_by_navi(anim_data.enactor);
     // set_sprite_pose(navi_sprite, "attacking");
     const max_frame = max_frame_for_sprite_animation(navi_sprite, pose);
+    if (pose == "slashing")
+        anim_calcs.slash_starting_frame = anim_calcs.frame_after;
     let frame = anim_calcs.frame_after;
-    
+
     if (max_frame == 0) {
         add_update(frame, () => set_sprite_pose(navi_sprite, pose));
         return { frame_after: anim_calcs.frame_after};
@@ -306,17 +364,125 @@ function enque_windup_updates(anim_calcs) {
             add_update(frame, () => {
                 set_sprite_pose(navi_sprite, pose, s_frame)
             });
-            frame += 15 / (max_frame + 1);
+            frame += 180 / (max_frame + 1);
         });
     }
 
     anim_calcs.frame_after = frame;
-    if (pose == "slashing") anim_calcs = enque_swoosh_updates(anim_calcs);
-
+    if (pose == "slashing")
+        anim_calcs = enque_swoosh_updates(anim_calcs);
     return anim_calcs;
 }
 
 function enque_wave_updates(anim_calcs) {
+    const shockwave_chips = ["ShokWave", "SoniWave", "DynaWave"];
+    const tidalwave_chips = ["Wave", "RedWave", "BigWave"];
+    const all_wave_chips = shockwave_chips.concat(tidalwave_chips);
+    const navi = anim_data.enactor;
+    if (!all_wave_chips.includes(name_of(navi.battle_chip))) return anim_calcs;
+    const next_frame = anim_calcs.frame_after;
+
+    const [start_i, j] = anim_data.enactor.space;
+    const i_change = anim_data.enactor.is_east ? -1 : 1;
+    // TODO: for now hardcoding for default, later read settings
+    const set_frames = [3, 4, 7, 11, 14, 17, 20, 24];
+    const reset_frame = 27;
+
+    for (var i_shift = 1; start_i + i_shift * i_change >= 0
+        && start_i + i_shift * i_change <= 5;
+        i_shift++)
+    {
+        effect_i = start_i + i_shift * i_change;
+        const div = create_placed_wave_effect_div([effect_i, j]);
+        effect_delay = 18 * i_shift;
+        set_frames.forEach((frame_offset, s_frame) => {
+            const on_frame = next_frame + effect_delay + frame_offset;
+            add_update(on_frame, () => set_div_frame(div, s_frame));
+        });
+        add_update(next_frame + effect_delay + reset_frame, () => {
+            div.remove();
+        });
+    }
+
+    anim_calcs.frame_after += reset_frame + 1;
+    return anim_calcs;
+}
+
+function enque_explode_updates(anim_calcs) {
+    if (!anim_calcs.explode_spaces) return;
+    if (!anim_calcs.explode_spaces.length) {
+        log_error("anim_calcs.explode_spaces was empty");
+        return anim_calcs;
+    }
+
+    const next_frame = anim_calcs.frame_after;
+    const set_frames = [1, 3, 7, 11, 15, 19];
+    const reset_frame = 21;
+    const explode_divs = anim_calcs.explode_spaces.map(space => {
+        return document.getElementById(`explosion_${space[0]}_${space[1]}`);
+    });
+    set_frames.forEach((frame_offset, s_frame) => {
+        const on_frame = next_frame + frame_offset;
+        add_update(on_frame, () => {
+            exploded_divs.forEach(div => set_div_frame(div, s_frame));
+        });
+    });
+    add_update(next_frame + reset_frame, () => {
+        explode_divs.forEach(div => clear_div_frame(div, 5));
+    });
+
+    anim_calcs.frame_after += reset_frame + 1;
+    return anim_calcs;
+}
+
+function enque_throw_updates(anim_calcs) {
+    const next_frame = anim_calcs.frame_after;
+
+    // sprite portion
+    // TODO: for now hardcoding for default, later read settings
+    const set_frames = [1, 6, 10, 13, 18];
+    let reset_frame = 22;
+    const sprite = get_sprite_by_navi(anim_data.enactor);
+
+    set_frames.forEach((frame_offset, s_frame) => {
+        const on_frame = next_frame + frame_offset;
+        add_update(on_frame, () => {
+            set_sprite_pose(sprite, "throwing", s_frame);
+        });
+    });
+    add_update(next_frame + reset_frame, () => {
+        set_sprite_pose(sprite, "standing");
+    });
+
+    // rising phase
+    // let [x_change, y_change] = [(103-42)/22, (77-117)/22];
+    var left = 40 * anim_data.enactor.space[0];
+    var top = 50;
+    var x_change = anim_data.enactor.is_east ? -2 : 2;
+    [...new Array(22).keys()].forEach(offset_m1 => {
+        add_update(next_frame + offset_m1 + 1, () => {
+            ball_div.style.left = `${Math.round(left, 0)}px`;
+            left += x_change;
+            ball_div.style.top = `${Math.round(top, 0)}px`;
+            top -= 1;
+            if (!offset_m1) ball_div.style.visbility = "visible";
+        });
+    });
+
+    // falling phase
+    // [x_change, y_change] = [(182-103)/26, (132-77)/26];
+    [...new Array(26).keys()].forEach(offset_m23 => {
+        add_update(next_frame + offset_m23 + 23, () => {
+            ball_div.style.left = `${Math.round(left, 0)}px`;
+            left += x_change;
+            ball_div.style.top = `${Math.round(top, 0)}px`;
+            top += 2;
+        });
+    });
+
+    add_update(next_frame + 48, () => ball_div.style.visibility = "hidden");
+
+    anim_calcs.frame_after += 49;
     return anim_calcs;
 }
 
@@ -357,84 +523,6 @@ function enque_reset_standing_poses(anim_calcs) {
     return anim_calcs;
 }
 
-// function run_sprite_frame_animation(
-//     sprite, pose, total_ms, frame, last_frame)
-// {
-//     set_sprite_pose(sprite, pose, frame);
-//     if (frame >= last_frame) return;
-
-//     const delay = Math.round(total_ms / (last_frame + 1), 0);
-//     setTimeout(() => {
-//         run_sprite_frame_animation(
-//             sprite, pose, total_ms, frame + 1, last_frame
-//         );
-//     }, delay);
-
-//     return total_ms;
-// }
-
-// function animate_move() {
-//     if (!anim_data.moves_to) return 'skip';
-//     const navi_sprite = get_sprite_by_navi(anim_data.enactor);
-//     move_sprite_to_space(navi_sprite, anim_data.moves_to);
-//     anim_data.moves_to = null;
-
-//     return 0;
-// }
-// function animate_windup() {
-//     const pose = anim_data.attack_pose || "attacking";
-//     const navi_sprite = get_sprite_by_navi(anim_data.enactor); 
-//     // set_sprite_pose(navi_sprite, "attacking");
-//     max_frame = max_frame_for_sprite_animation(navi_sprite, pose);
-//     if (max_frame == 0) {
-//         set_sprite_pose(navi_sprite, pose);
-//     } else {
-//         run_sprite_frame_animation(navi_sprite, pose, 240, 0, max_frame);
-//     }
-
-//     if (pose == "slashing") run_swoosh_animation(240, 0);
-
-//     return 240;
-// }
-
-// function run_wave_animation(ms_per_space, space, div, frame, last_frame) {
-//     const ms_per_frame = ms_per_space / (last_frame + 1);
-//     if (!div) {
-//         if (frame != 0) {
-//             log_error("Effect div undefined on frame after 0");
-//             return 0;
-//         }
-//         div = document.createElement("div");
-//         const name = name_of(anim_data.enactor.battle_chip);
-//         const bottom_px = get_bottom_line_px_for_j(space[1]) + 2;;
-//         div.id = "effect-" + name;
-//         div.style.position = "absolute";
-//         div.style.left = space[0] * 40 + "px";
-//         div.style.bottom = bottom_px + "px";
-//         // TODO: better define all the Z planes!
-//         div.style.zIndex = get_z_index_for_j(obstacle.space[1]) + 200;
-//         div.classList.add("effect", "ground-wave", "frame-0")
-//         document.getElementById("battlefield").insertBefore(div, effect_anchor);
-//     } else if (frame > last_frame) {
-//         let new_i = space[0] + (anim_data.enactor.is_east ? -1 : 1);
-//         if (new_i < 0 || new_i > 5) {
-//             div.remove();
-//             return 0;
-//         }
-//         div.classList.replace(`frame-${last_frame}`, "frame-0");
-//         div.style.left = new_i * 40 + "px";
-//         setTimeout(() => {
-//             run_wave_animation(
-//                 ms_per_space, [new_i, space[1]], div, 0, last_frame
-//             );
-//         }, ms_per_frame);
-//     } else {
-//         setTimeout(() => {
-//             run_wave_animation(ms_per_space, space, div, frame + 1, last_frame);
-//         }, ms_per_frame);
-//     }
-// }
-
 // function animate_wave() {
 //     const shockwave_chips = ["ShokWave", "SoniWave", "DynaWave"];
 //     const tidalwave_chips = ["Wave", "RedWave", "BigWave"];
@@ -474,6 +562,7 @@ function animater_update_frame() {
 _animation_interval = null;
 
 function start_animation_timer() {
+    if (_animation_interval) return;
     _animation_interval = setInterval(() => {
         animater_update_frame();
     }, RF_MS);
@@ -497,8 +586,10 @@ function animate_navi_uses_chip_on_target(
     if (target && does_hit) anim_data.strikes = [target];
 
     const battle_chip = anim_data.enactor.battle_chip;
-    const is_sword = battle_chip[TYPES_INDEX].split(' ')[0] == "Sword";
-    anim_data.attack_pose = is_sword ? "slashing" : "shooting";
+    const types = battle_chip[TYPES_INDEX].split(' ');
+    anim_data.attack_pose = "shooting";
+    if (types[0] == "Sword") anim_data.attack_pose = "slashing";
+    if (types[0] == "Toss") anim_data.attack_pose = "throwing";
 
     let anim_calcs = enque_move_updates({ frame_after: frame_num });
     anim_calcs = enque_windup_updates(anim_calcs);

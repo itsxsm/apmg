@@ -1,0 +1,30 @@
+#sprite-0 {
+  width: 49px;
+  height: 48px;
+  background: url("./sprites/explosion.gif") -8px -4px;
+}
+#sprite-1 {
+  width: 43px;
+  height: 38px;
+  background: url("./sprites/explosion.gif") -61px -10px;
+}
+#sprite-2 {
+  width: 47px;
+  height: 42px;
+  background: url("./sprites/explosion.gif") -107px -9px;
+}
+#sprite-3 {
+  width: 49px;
+  height: 44px;
+  background: url("./sprites/explosion.gif") -159px -9px;
+}
+#sprite-4 {
+  width: 49px;
+  height: 43px;
+  background: url("./sprites/explosion.gif") -213px -12px;
+}
+#sprite-5 {
+  width: 49px;
+  height: 37px;
+  background: url("./sprites/explosion.gif") -272px -14px;
+}

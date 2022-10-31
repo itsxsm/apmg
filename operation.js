@@ -11,7 +11,7 @@ if (!reporter || !player1) {
 // at some point we should add console-only operation,
 // but for now operation is only implemented via GUI
 if (!reporter?.interpreters?.length) {
-    log_error("load Animator before Operation")
+    log_error("load Animator before Operation");
     throw new Error("script loading order error");
 }
 

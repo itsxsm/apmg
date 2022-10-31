@@ -1,0 +1,40 @@
+timing_notes.txt
+
+Shockwave
+0	set last pickaxe frame
+3	wave frame 0
+4	wave frame 1
+7	wave frame 2
+11	wave frame 3
+14 	wave frame 4
+17 	wave frame 5
+18 					new wave frame 0
+20 	wave frame 6
+24 	wave frame 7
+27 	wave frame -
+
+Bomb
+0 	standing pose
+1 	toss frame 0
+6	toss frame 1
+10	toss frame 2
+13 	toss frame 3
+18 	toss frame 4
+22  standing pose
+48  last ball frame
+49  explosions frame 0 (large circles)  1
+51	explosions frame 1 (bright clouds)  3
+55	explosions frame 2 (dark clouds)    7
+59 	explosions frame 3 (darker clouds)  11
+63 	explosions frame 4 (rising smoke)   15
+67 	explosions frame 5 (light smoke)    19
+71	explosions -                        21
+
+ball path
+starting:
+	xAbove = 42, yAbove = 117
+highest:
+	xAbove = 103/106, yAbove = 77
+	on frames 22 & 23
+ending:
+	xAbove = 182, yAbove = 132
